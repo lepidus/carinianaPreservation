@@ -16,3 +16,9 @@ msgstr "Preservação Cariniana"
 
 msgid "plugins.generic.carinianaPreservation.description"
 msgstr "Esse plugin permite a submissão dos periódicos do site para preservação digital pela Cariniana"
+
+msgid "plugins.generic.carinianaPreservation.settings.title"
+msgstr "Configurações da Preservação Cariniana"
+
+msgid "plugins.generic.carinianaPreservation.settings.recipientEmail"
+msgstr "E-mail de destino"

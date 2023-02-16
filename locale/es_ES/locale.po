@@ -16,3 +16,9 @@ msgstr "Preservación Cariniana"
 
 msgid "plugins.generic.plauditPreEndorsement.description"
 msgstr "Este módulo permite la presentación de revistas en el sitio para su preservación digital por parte de Cariniana"
+
+msgid "plugins.generic.carinianaPreservation.settings.title"
+msgstr "Configuración de Preservación Cariniana"
+
+msgid "plugins.generic.carinianaPreservation.settings.recipientEmail"
+msgstr "Correo electrónico de destino"

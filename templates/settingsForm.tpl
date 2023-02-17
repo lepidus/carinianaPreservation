@@ -21,7 +21,7 @@
 
 		{fbvFormArea id="carinianaSettingsFormArea" title="plugins.generic.carinianaPreservation.settings.title"}
 			{fbvFormSection}
-				{fbvElement id="recipientEmail" class="recipientEmail" type="email" value=$recipientEmail required="true" label="plugins.generic.carinianaPreservation.settings.recipientEmail" size=$fbvStyles.size.MEDIUM}
+				{fbvElement id="recipientEmail" class="recipientEmail" type="email" value="{$recipientEmail|escape}" required="true" label="plugins.generic.carinianaPreservation.settings.recipientEmail" size=$fbvStyles.size.MEDIUM}
 			{/fbvFormSection}
 		{/fbvFormArea}
 		{fbvFormButtons submitText="common.save"}

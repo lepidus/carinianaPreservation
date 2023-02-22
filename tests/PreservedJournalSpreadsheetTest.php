@@ -52,7 +52,7 @@ class PreservedJournalSpreadsheetTest extends TestCase
             __("plugins.generic.carinianaPreservation.headers.notesAndComments"),
         ];
 
-        $firstRow = $worksheet->rangeToArray('A1:A8');
+        $firstRow = $worksheet->toArray()[0];
 
         $this->assertEquals($expectedHeaders, $firstRow);
     }

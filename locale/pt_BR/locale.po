@@ -22,3 +22,27 @@ msgstr "Configurações da Preservação Cariniana"
 
 msgid "plugins.generic.carinianaPreservation.settings.recipientEmail"
 msgstr "E-mail de destino"
+
+msgid "plugins.generic.carinianaPreservation.headers.publisherOrInstitution"
+msgstr "Editora/Instituição"
+
+msgid "plugins.generic.carinianaPreservation.headers.title"
+msgstr "Título do periódico"
+
+msgid "plugins.generic.carinianaPreservation.headers.issn"
+msgstr "ISSN"
+
+msgid "plugins.generic.carinianaPreservation.headers.eIssn"
+msgstr "eISSN"
+
+msgid "plugins.generic.carinianaPreservation.headers.baseUrl"
+msgstr "URL base"
+
+msgid "plugins.generic.carinianaPreservation.headers.journalPath"
+msgstr "Identificador do periódico"
+
+msgid "plugins.generic.carinianaPreservation.headers.availableYears"
+msgstr "Anos disponíveis"
+
+msgid "plugins.generic.carinianaPreservation.headers.notesAndComments"
+msgstr "Notas e comentários"

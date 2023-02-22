@@ -56,4 +56,15 @@ class PreservedJournalSpreadsheetTest extends TestCase
 
         $this->assertEquals($expectedHeaders, $firstRow);
     }
+
+    public function testGeneratedSpreadsheetHasJournals(): void
+    {
+        $this->spreadsheet->createSpreadsheet($this->filePath);
+        $worksheet = $this->getWorksheet();
+
+        $expectedJournalData = ['SciELO', 'SciELO Journal n18', '1234-1234', '0101-1010', 'https://scielo-journal-18.com.br/', 'scielojournal18', '2018-2022', 'We are the 18th SciELO journal'];
+        $secondRow = $worksheet->toArray()[1];
+
+        $this->assertEquals($expectedJournalData, $secondRow);
+    }
 }

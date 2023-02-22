@@ -42,6 +42,12 @@ class PreservedJournalSpreadsheet
 
         $this->writeRowOnSpreadSheet($worksheet, $this->getHeaders(), 1);
 
+        $rowIndex = 2;
+        foreach($this->journals as $journal) {
+            $this->writeRowOnSpreadSheet($worksheet, $journal->asRecord(), $rowIndex);
+            $rowIndex++;
+        }
+
         $writer = new Xlsx($spreadsheet);
         $writer->save($filePath);
     }

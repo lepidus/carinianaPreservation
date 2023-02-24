@@ -46,3 +46,9 @@ msgstr "Anos disponíveis"
 
 msgid "plugins.generic.carinianaPreservation.headers.notesAndComments"
 msgstr "Notas e comentários"
+
+msgid "plugins.generic.carinianaPreservation.preservationEmail.subject"
+msgstr "Submissão da revista {$journalAcronym} para preservação digital"
+
+msgid "plugins.generic.carinianaPreservation.preservationEmail.body"
+msgstr "A identificação do conteúdo da revista {$journalAcronym} está anexada a este e-mail"

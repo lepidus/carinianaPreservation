@@ -1,10 +1,12 @@
 <?php
 
 import('lib.pkp.classes.mail.Mail');
+import('plugins.generic.carinianaPreservation.classes.PreservedJournalFactory');
+import('plugins.generic.carinianaPreservation.classes.PreservedJournalSpreadsheet');
 
 class PreservationEmailBuilder {
 
-    public function buildPreservationEmail($journal, $preservationName, $preservationEmail, $locale) {
+    public function buildPreservationEmail($journal, $baseUrl, $preservationName, $preservationEmail, $locale) {
         $email = new Mail();
 
         $fromName = $journal->getLocalizedData('acronym', $locale);
@@ -23,7 +25,24 @@ class PreservationEmailBuilder {
         $email->setSubject($subject);
         $email->setBody($body);
 
+        $spreadsheetFilePath = $this->createJournalSpreadsheet($journal, $baseUrl, $locale);
+        $email->addAttachment($spreadsheetFilePath);
+
         return $email;
+    }
+
+    private function createJournalSpreadsheet($journal, $baseUrl, $locale): string
+    {
+        $preservedJournalFactory = new PreservedJournalFactory();
+        $preservedJournal = $preservedJournalFactory->buildPreservedJournal($journal, $baseUrl, $locale);
+
+        $journalAcronym = $journal->getLocalizedData('acronym', $locale);
+        $spreadsheetFilePath = "planilha_preservacao_$journalAcronym";
+
+        $preservedJournalSpreadsheet = new PreservedJournalSpreadsheet([$preservedJournal]);
+        $preservedJournalSpreadsheet->createSpreadsheet($spreadsheetFilePath);
+
+        return $spreadsheetFilePath;
     }
 
 }

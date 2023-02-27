@@ -23,9 +23,6 @@ class CarinianaPreservationPlugin extends GenericPlugin
             return true;
         }
 
-        // if ($success && $this->getEnabled($mainContextId)) {
-        // }
-
         return $success;
     }
 

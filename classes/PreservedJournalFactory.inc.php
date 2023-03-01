@@ -7,12 +7,12 @@ class PreservedJournalFactory
     public function buildPreservedJournal($journal, $baseUrl, $locale): PreservedJournal
     {
         $publisherOrInstitution = $journal->getData('publisherInstitution');
-        $title = $journal->getData('name', $locale);
+        $title = $journal->getLocalizedData('name', $locale);
         $issn = $journal->getData('printIssn');
         $eIssn = $journal->getData('onlineIssn');
         $journalPath = $journal->getData('urlPath');
         $availableYears = $this->getAvailableYears($journal);
-        $notesAndComments = $journal->getData('description');
+        $notesAndComments = $journal->getLocalizedData('description', $locale);
         
         return new PreservedJournal($publisherOrInstitution, $title, $issn, $eIssn, $baseUrl, $journalPath, $availableYears, $notesAndComments);
     }

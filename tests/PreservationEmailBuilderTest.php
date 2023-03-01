@@ -50,7 +50,7 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
         $this->journal->setData('printIssn', $this->issn);
         $this->journal->setData('onlineIssn', $this->eIssn);
         $this->journal->setData('urlPath', $this->journalPath);
-        $this->journal->setData('description', $this->notesAndComments);
+        $this->journal->setData('description', $this->notesAndComments, $this->locale);
         $this->journal->setData('acronym', $this->journalAcronym, $this->locale);
         $this->journal->setData('contactEmail', $this->journalContactEmail);
     }

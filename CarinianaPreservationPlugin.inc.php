@@ -43,11 +43,15 @@ class CarinianaPreservationPlugin extends GenericPlugin
         return array_merge(
             array(
                 new LinkAction(
+                    'preservationSubmission',
+                    new AjaxModal($router->url($request, null, null, 'manage', null, array('verb' => 'preservationSubmission', 'plugin' => $this->getName(), 'category' => 'generic')), __('plugins.generic.carinianaPreservation.preservationSubmission')),
+                    __('plugins.generic.carinianaPreservation.preservationSubmission'),
+                ),
+                new LinkAction(
                     'settings',
                     new AjaxModal($router->url($request, null, null, 'manage', null, array('verb' => 'settings', 'plugin' => $this->getName(), 'category' => 'generic')), $this->getDisplayName()),
                     __('manager.plugins.settings'),
-                    null
-                ),
+                )
             ),
             parent::getActions($request, $actionArgs)
         );
@@ -60,7 +64,7 @@ class CarinianaPreservationPlugin extends GenericPlugin
 
         switch ($request->getUserVar('verb')) {
             case 'settings':
-                $this->import('CarinianaPreservationSettingsForm');
+                $this->import('classes.form.CarinianaPreservationSettingsForm');
                 $form = new CarinianaPreservationSettingsForm($this, $contextId);
                 if ($request->getUserVar('save')) {
                     $form->readInputData();
@@ -70,6 +74,16 @@ class CarinianaPreservationPlugin extends GenericPlugin
                     }
                 } else {
                     $form->initData();
+                }
+                return new JSONMessage(true, $form->fetch($request));
+            case 'preservationSubmission':
+                $this->import('classes.form.PreservationSubmissionForm');
+                $form = new PreservationSubmissionForm($this, $contextId);
+                if ($request->getUserVar('save')) {
+                    if ($form->validate()) {
+                        $form->execute();
+                        return new JSONMessage(true);
+                    }
                 }
                 return new JSONMessage(true, $form->fetch($request));
         }

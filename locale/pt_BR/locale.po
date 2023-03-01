@@ -52,3 +52,12 @@ msgstr "Submissão da revista {$journalAcronym} para preservação digital"
 
 msgid "plugins.generic.carinianaPreservation.preservationEmail.body"
 msgstr "A identificação do conteúdo da revista {$journalAcronym} está anexada a este e-mail"
+
+msgid "plugins.generic.carinianaPreservation.preservationSubmission"
+msgstr "Submissão para preservação"
+
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.description"
+msgstr "Clique em \"Submeter\" para realizar a submissão deste periódico para preservação digital pela Cariniana"
+
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.missingData"
+msgstr "A submissão do periódico não pôde ser realizada pois alguns dos dados necessários não foram preenchidos"

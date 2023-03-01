@@ -14,7 +14,7 @@
 	{rdelim});
 </script>
 
-<div id="plnSettings">
+<div id="carinianaPreservationSettings">
 	<form class="pkp_form" id="carinianaSettingsForm" method="post" action="{url router=$smarty.const.ROUTE_COMPONENT op="manage" category="generic" plugin=$pluginName verb="settings" save=true}">
 		{csrf}
 		{include file="controllers/notification/inPlaceNotification.tpl" notificationId="carinianaSettingsFormNotification"}

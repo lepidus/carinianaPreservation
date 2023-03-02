@@ -12,3 +12,8 @@ unit_tests:
   before_script:
     - apt update && apt install php-gd php-zip -yqq
     - composer install
+
+release_plugin:
+  before_script:
+    - apt update && apt install php-gd php-zip -yqq
+    - composer install

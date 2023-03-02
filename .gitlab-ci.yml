@@ -10,4 +10,5 @@ include:
 
 unit_tests:
   before_script:
+    - apt update && apt install php7.4-zip
     - composer install

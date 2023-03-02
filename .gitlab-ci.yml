@@ -6,3 +6,8 @@ include:
     ref: main
     file:
       - 'templates/groups/pkp_plugin.yml'
+      - 'templates/groups/ojs_plugins_unit_tests_model.yml'
+
+run_unit_tests:
+  before_script:
+    - composer install

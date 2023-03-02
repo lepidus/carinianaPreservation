@@ -68,7 +68,7 @@ class PreservationSubmissionForm extends Form
         $locale = AppLocale::getLocale();
         $journal = $journalDao->getById($this->contextId);
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
-        $preservationName = $journal->getLocalizedData('acronym', $locale);
+        $preservationName = __('plugins.generic.carinianaPreservation.displayName');
         $preservationEmail = $this->plugin->getSetting($this->contextId, 'recipientEmail');
 
         $preservationEmailBuilder = new PreservationEmailBuilder();

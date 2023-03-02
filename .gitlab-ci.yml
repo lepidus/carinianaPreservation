@@ -15,4 +15,4 @@ unit_tests:
 
 release_plugin:
   before_script:
-    - apk add php-mbstring php-gd php-zip --upgrade --no-cache
+    - apk add php-mbstring php-xml php-gd php-zip --upgrade --no-cache

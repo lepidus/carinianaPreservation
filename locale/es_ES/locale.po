@@ -22,3 +22,42 @@ msgstr "Configuración de Preservación Cariniana"
 
 msgid "plugins.generic.carinianaPreservation.settings.recipientEmail"
 msgstr "Correo electrónico de destino"
+
+msgid "plugins.generic.carinianaPreservation.headers.publisherOrInstitution"
+msgstr "Editor/Institución"
+
+msgid "plugins.generic.carinianaPreservation.headers.title"
+msgstr "Título"
+
+msgid "plugins.generic.carinianaPreservation.headers.issn"
+msgstr "ISSN"
+
+msgid "plugins.generic.carinianaPreservation.headers.eIssn"
+msgstr "eISSN"
+
+msgid "plugins.generic.carinianaPreservation.headers.baseUrl"
+msgstr "URL base"
+
+msgid "plugins.generic.carinianaPreservation.headers.journalPath"
+msgstr "Identificador de la revista"
+
+msgid "plugins.generic.carinianaPreservation.headers.availableYears"
+msgstr "Años disponibles"
+
+msgid "plugins.generic.carinianaPreservation.headers.notesAndComments"
+msgstr "Notas y comentarios"
+
+msgid "plugins.generic.carinianaPreservation.preservationEmail.subject"
+msgstr "Envío de revista {$journalAcronym} para preservación digital"
+
+msgid "plugins.generic.carinianaPreservation.preservationEmail.body"
+msgstr "La identificación de contenido de la revista {$journalAcronym} se adjunta a este correo electrónico"
+
+msgid "plugins.generic.carinianaPreservation.preservationSubmission"
+msgstr "Envío para preservación"
+
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.description"
+msgstr "Haga cliq en \"Enviar\" para enviar esta revista para su preservación digital por Cariniana"
+
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.missingData"
+msgstr "No se ha podido realizar el envío de la revista porque no se cumplimentaron algunos de los datos necesarios"

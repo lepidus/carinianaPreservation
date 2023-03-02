@@ -6,3 +6,9 @@ include:
     ref: main
     file:
       - 'templates/groups/pkp_plugin.yml'
+      - 'templates/groups/ojs_plugins_unit_tests_model.yml'
+
+unit_tests:
+  before_script:
+    - apt update && apt install php-gd php-zip -yqq
+    - composer install

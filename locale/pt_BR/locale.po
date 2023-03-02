@@ -22,3 +22,42 @@ msgstr "Configurações da Preservação Cariniana"
 
 msgid "plugins.generic.carinianaPreservation.settings.recipientEmail"
 msgstr "E-mail de destino"
+
+msgid "plugins.generic.carinianaPreservation.headers.publisherOrInstitution"
+msgstr "Editora/Instituição"
+
+msgid "plugins.generic.carinianaPreservation.headers.title"
+msgstr "Título do periódico"
+
+msgid "plugins.generic.carinianaPreservation.headers.issn"
+msgstr "ISSN"
+
+msgid "plugins.generic.carinianaPreservation.headers.eIssn"
+msgstr "eISSN"
+
+msgid "plugins.generic.carinianaPreservation.headers.baseUrl"
+msgstr "URL base"
+
+msgid "plugins.generic.carinianaPreservation.headers.journalPath"
+msgstr "Identificador do periódico"
+
+msgid "plugins.generic.carinianaPreservation.headers.availableYears"
+msgstr "Anos disponíveis"
+
+msgid "plugins.generic.carinianaPreservation.headers.notesAndComments"
+msgstr "Notas e comentários"
+
+msgid "plugins.generic.carinianaPreservation.preservationEmail.subject"
+msgstr "Submissão da revista {$journalAcronym} para preservação digital"
+
+msgid "plugins.generic.carinianaPreservation.preservationEmail.body"
+msgstr "A identificação do conteúdo da revista {$journalAcronym} está anexada a este e-mail"
+
+msgid "plugins.generic.carinianaPreservation.preservationSubmission"
+msgstr "Submissão para preservação"
+
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.description"
+msgstr "Clique em \"Submeter\" para realizar a submissão deste periódico para preservação digital pela Cariniana"
+
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.missingData"
+msgstr "A submissão do periódico não pôde ser realizada pois alguns dos dados necessários não foram preenchidos"

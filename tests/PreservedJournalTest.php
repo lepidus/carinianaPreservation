@@ -12,13 +12,14 @@ class PreservedJournalTest extends TestCase
     private $title = 'SciELO Journal n18';
     private $issn = '1234-1234';
     private $eIssn = '0101-1010';
+    private $baseUrl = 'https://scielo-journal-18.com.br/';
     private $journalPath = 'scielojournal18';
     private $availableYears = '2018-2022';
     private $notesAndComments = 'We are the 18th SciELO journal';
 
     public function setUp(): void
     {
-        $this->preservedJournal = new PreservedJournal($this->publisherOrInstitution, $this->title, $this->issn, $this->eIssn, $this->journalPath, $this->availableYears, $this->notesAndComments);
+        $this->preservedJournal = new PreservedJournal($this->publisherOrInstitution, $this->title, $this->issn, $this->eIssn, $this->baseUrl, $this->journalPath, $this->availableYears, $this->notesAndComments);
     }
 
     public function testJournalRecord(): void
@@ -28,6 +29,7 @@ class PreservedJournalTest extends TestCase
             'SciELO Journal n18',
             '1234-1234',
             '0101-1010',
+            'https://scielo-journal-18.com.br/',
             'scielojournal18',
             '2018-2022',
             'We are the 18th SciELO journal'

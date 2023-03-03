@@ -37,7 +37,7 @@ class PreservationEmailBuilder {
         $preservedJournal = $preservedJournalFactory->buildPreservedJournal($journal, $baseUrl, $locale);
 
         $journalAcronym = $journal->getLocalizedData('acronym', $locale);
-        $spreadsheetFilePath = "planilha_preservacao_$journalAcronym";
+        $spreadsheetFilePath = "/tmp/planilha_preservacao_$journalAcronym";
 
         $preservedJournalSpreadsheet = new PreservedJournalSpreadsheet([$preservedJournal]);
         $preservedJournalSpreadsheet->createSpreadsheet($spreadsheetFilePath);

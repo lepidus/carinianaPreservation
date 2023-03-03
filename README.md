@@ -1,21 +1,42 @@
-# Cariniana Preservation
-
+# Preservação Cariniana
 ## Description
 
-## Installation
+O plugin Preservação Cariniana tem o intuito de facilitar o processo de preservação digital de periódicos OJS por meio da Rede Cariniana. Sua principal funcionalidade é o envio de um e-mail para um endereço previamente definido com os seguintes dados de identificação do periódico:
 
-1. Enter the administration area of ​​your OJS/OPS website through the __Dashboard__.
-2. Navigate to `Settings`>` Website`> `Plugins`> `Upload a new plugin`.
-3. Under __Upload file__ select the file __carinianaPreservation.tar.gz__.
-4. Click __Save__ and the plugin will be installed on your website.
+* Editora/Instituição
+* Título do periódico
+* ISSN
+* eISSN
+* URL base
+* Identificador do periódico
+* Anos disponíveis
+* Notas e Comentários
 
-## Setting
+## Instalação
 
-After installing this plugin, make sure to configure it. In the `Installed plugins` page, find the Plaudit Pre-Endorsement plugin and open its settings. You should inform three settings: ORCID API Type, ORCID Client Id and ORCID Client Secret.
+1. Entre na área administrativa do seu OJS através do __Painel de Controle__.
+2. Navegue para `Configurações do Website`> `Plugins`> `Enviar novo plugin`.
+3. Selecione o arquivo __carinianaPreservation.tar.gz__.
+4. Clique em __Salvar__ e o plugin estará instalado no seu websites.
 
-After taking this configuration process, the plugin is ready for use.
+## Configuração
 
-## License
-__This plugin is licensed under the GNU General Public License v3.0__
+Após a instalação do plugin, é necessário fazer a sua configuração. Na aba `Plugins instalados` em `Configurações do Website`, procure o plugin "Preservação Cariniana" e abra as suas configurações. Na janela que abrir, você deve informar um e-mail de destino, para o qual será enviado o e-mail com os dados necessários para preservação do periódico.
+
+Após essa configuração, o plugin está pronto para uso.
+
+## Funcionalidades
+
+Na aba `Plugins instalados` em `Configurações do Website`, procure o plugin "Preservação Cariniana". Ele possuirá uma opção chamada "Submissão para preservação". Ao clicar nessa opção será aberta uma janela, para confirmação do envio do e-mail com os dados. Ao clicar em "Submeter", será enviado um e-mail para o endereço configurado anteriormente, contendo uma planilha em anexo, com os dados de identificação do conteúdo do periódico.
+
+Caso algum dos dados necessários para a submissão não tenha sido preenchido no sistema anteriormente, uma mensagem de erro será disparada. Para que não haja erros, os seguintes dados devem ser preenchidos:
+
+* Editora
+* ISSN eletrônico e impresso
+* Ao menos uma edição publicada
+* Resumo do periódico
+
+## Licença
+__Esse plugin é licenciado através da Licença Pública Geral GNU v3.0__
 
 __Copyright (c) 2023 Lepidus Tecnologia__

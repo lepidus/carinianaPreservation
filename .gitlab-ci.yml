@@ -15,6 +15,4 @@ unit_tests:
 
 release_plugin:
   before_script:
-    - apk update
-    - apk add php
     - apk add php-mbstring php-simplexml php-common php-fileinfo php-xml php-gd php-zip php-fpm php-xmlwriter php-xmlreader php-dom php-pdo php-opcache php-zip php-phar php-iconv php-cli --upgrade --no-cache

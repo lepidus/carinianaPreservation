@@ -83,7 +83,8 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
         $expectedBody = __('plugins.generic.carinianaPreservation.preservationEmail.body', ['journalAcronym' => $this->journalAcronym], $this->locale);
         $this->assertEquals($expectedBody, $email->getData('body'));
 
-        $expectedFilePath = $expectedFileName = "planilha_preservacao_$this->journalAcronym";
+        $expectedFileName = "planilha_preservacao_$this->journalAcronym";
+        $expectedFilePath = "/tmp/$expectedFileName";
         $xlsxContentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
         $expectedAttachment = ['path' => $expectedFilePath, 'filename' => $expectedFileName, 'content-type' => $xlsxContentType];
         $this->assertEquals($expectedAttachment, $email->getData('attachments')[0]);

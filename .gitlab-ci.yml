@@ -10,7 +10,7 @@ include:
 
 .unit_test_template:
   before_script:
-    - apt update && apt install php-gd php-zip -yqq
+    - apt update && apt install php{8.1,7.4,7.3}-gd php{8.1,7.4,7.3}-zip -yqq
     - composer install
 
 release_plugin:

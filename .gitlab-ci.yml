@@ -8,7 +8,7 @@ include:
       - 'templates/groups/pkp_plugin.yml'
       - 'templates/groups/ojs_plugins_unit_tests_model.yml'
 
-unit_tests:
+.unit_test_template:
   before_script:
     - apt update && apt install php-gd php-zip -yqq
     - composer install

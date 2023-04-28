@@ -1,5 +1,5 @@
 # Preservação Cariniana
-## Description
+## Descrição
 
 O plugin Preservação Cariniana tem o intuito de facilitar o processo de preservação digital de periódicos OJS por meio da Rede Cariniana. Sua principal funcionalidade é o envio de um e-mail para um endereço previamente definido com os seguintes dados de identificação do periódico:
 

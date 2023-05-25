@@ -10,8 +10,17 @@
 
 <script>
 	$(function() {ldelim}
-		$('#carinianaSettingsForm').pkpHandler('$.pkp.controllers.form.AjaxFormHandler');
-	{rdelim});
+        $('#carinianaSettingsForm').pkpHandler(
+            '$.pkp.controllers.form.FileUploadFormHandler',
+            {ldelim}
+                $uploader: $('#statementUpload'),
+                uploaderOptions: {ldelim}
+					uploadUrl: {url|json_encode op="uploadFile" params=$requestArgs escape=false},
+					baseUrl: {$baseUrl|json_encode}
+                {rdelim}
+            {rdelim}
+        );
+    {rdelim});
 </script>
 
 <div id="carinianaPreservationSettings">
@@ -19,9 +28,17 @@
 		{csrf}
 		{include file="controllers/notification/inPlaceNotification.tpl" notificationId="carinianaSettingsFormNotification"}
 
-		{fbvFormArea id="carinianaSettingsFormArea" title="plugins.generic.carinianaPreservation.settings.title"}
-			{fbvFormSection}
-				{fbvElement id="recipientEmail" class="recipientEmail" type="email" value="{$recipientEmail|escape}" required="true" label="plugins.generic.carinianaPreservation.settings.recipientEmail" size=$fbvStyles.size.MEDIUM}
+		{fbvFormArea id="carinianaSettingsFormArea"}
+			{fbvFormSection title="plugins.generic.carinianaPreservation.settings.recipientEmail"}
+				{fbvElement id="recipientEmail" class="recipientEmail" type="email" value="{$recipientEmail|escape}" required="true" label="plugins.generic.carinianaPreservation.settings.recipientEmail.description" size=$fbvStyles.size.MEDIUM}
+			{/fbvFormSection}
+			{fbvFormSection title="plugins.generic.carinianaPreservation.settings.responsabilityStatement"}
+				{capture assign="downloadStatementUrl"}{url router=$smarty.const.ROUTE_COMPONENT op="manage" category="generic" plugin=$pluginName verb="downloadStatement" save=true}{/capture}
+				<p>{translate key="plugins.generic.carinianaPreservation.settings.responsabilityStatement.description" downloadStatementUrl=$downloadStatementUrl}</p>
+				
+				<input type="hidden" name="submissionId" value="{$submissionId|escape}" />
+				<input type="hidden" name="temporaryFileId" id="temporaryFileId" value="" />
+				{include file="controllers/fileUploadContainer.tpl" id="statementUpload"}
 			{/fbvFormSection}
 		{/fbvFormArea}
 		{fbvFormButtons submitText="common.save"}

@@ -17,11 +17,17 @@ msgstr "Cariniana Preservation"
 msgid "plugins.generic.carinianaPreservation.description"
 msgstr "This plugin allows the submission of site's journals to digital preservation at Cariniana"
 
-msgid "plugins.generic.carinianaPreservation.settings.title"
-msgstr "Cariniana Preservation settings"
-
 msgid "plugins.generic.carinianaPreservation.settings.recipientEmail"
 msgstr "Recipient e-mail"
+
+msgid "plugins.generic.carinianaPreservation.settings.recipientEmail.description"
+msgstr "E-mail destination for preservation data"
+
+msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement"
+msgstr "Responsability statement"
+
+msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.description"
+msgstr "Download, complete and sign the <a href=\"{$downloadStatementUrl}\">disclaimer document</a> and then attach the file in the field below."
 
 msgid "plugins.generic.carinianaPreservation.headers.publisherOrInstitution"
 msgstr "Publisher/Institution"

@@ -12,6 +12,7 @@
  */
 
 import('lib.pkp.classes.plugins.GenericPlugin');
+import('lib.pkp.classes.file.FileManager');
 
 class CarinianaPreservationPlugin extends GenericPlugin
 {
@@ -86,6 +87,10 @@ class CarinianaPreservationPlugin extends GenericPlugin
                     }
                 }
                 return new JSONMessage(true, $form->fetch($request));
+            case 'downloadStatement':
+                $fileManager = new FileManager();
+                $filePath = $this->getPluginPath() . '/resources/Termo_de_Responsabilidade.doc';
+                $fileManager->downloadByPath($filePath);
         }
         return parent::manage($args, $request);
     }

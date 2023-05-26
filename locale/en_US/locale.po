@@ -72,3 +72,6 @@ msgstr "Click on \"Submit\" to submit this journal for digital preservation by C
 
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.missingData"
 msgstr "The submission of the journal could not be carried out because some of the necessary data were not filled in"
+
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.missingResponsabilityStatement"
+msgstr "Responsability statement file not sent. Access the plugin settings to send it"

@@ -72,3 +72,6 @@ msgstr "Haga cliq en \"Enviar\" para enviar esta revista para su preservación d
 
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.missingData"
 msgstr "No se ha podido realizar el envío de la revista porque no se cumplimentaron algunos de los datos necesarios"
+
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.missingResponsabilityStatement"
+msgstr "Archivo de descargo de responsabilidad no enviado. Accede a la configuración del plugin para enviar"

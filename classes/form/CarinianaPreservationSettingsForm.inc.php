@@ -104,8 +104,8 @@ class CarinianaPreservationSettingsForm extends Form
         import('lib.pkp.classes.file.TemporaryFileManager');
         $temporaryFileManager = new TemporaryFileManager();
 
-        $extension = $publicFileManager->getDocumentExtension($statementTempFile->getFileType());
-        $statementFileName = $this->plugin->getName() . '_responsabilityStatement' . $extension;
+        $extension = $publicFileManager->getExtension($statementTempFile->getOriginalFileName());
+        $statementFileName = $this->plugin->getName() . '_responsabilityStatement.' . $extension;
 
         $result = $publicFileManager->copyContextFile(
             $contextId,

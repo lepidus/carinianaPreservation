@@ -65,9 +65,9 @@ class CarinianaPreservationPlugin extends GenericPlugin
 
         switch ($request->getUserVar('verb')) {
             case 'settings':
-                return $this->handlePluginForm($request, 'CarinianaPreservationSettingsForm');
+                return $this->handlePluginForm($request, $contextId, 'CarinianaPreservationSettingsForm');
             case 'preservationSubmission':
-                return $this->handlePluginForm($request, 'PreservationSubmissionForm');
+                return $this->handlePluginForm($request, $contextId, 'PreservationSubmissionForm');
             case 'downloadStatement':
                 $fileManager = new FileManager();
                 $filePath = $this->getPluginPath() . '/resources/Termo_de_Responsabilidade.doc';
@@ -78,7 +78,7 @@ class CarinianaPreservationPlugin extends GenericPlugin
         return parent::manage($args, $request);
     }
 
-    public function handlePluginForm($request, $formClass)
+    public function handlePluginForm($request, $contextId, $formClass)
     {
         $this->import('classes.form.'.$formClass);
         $form = new $formClass($this, $contextId);

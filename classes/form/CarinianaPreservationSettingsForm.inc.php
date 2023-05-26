@@ -47,7 +47,8 @@ class CarinianaPreservationSettingsForm extends Form
 
     public function readInputData()
     {
-        $this->readUserVars(array_keys(self::CONFIG_VARS));
+        $userVars = array_merge(array_keys(self::CONFIG_VARS), ['temporaryFileId']);
+        $this->readUserVars($userVars);
     }
 
     public function fetch($request, $template = null, $display = false)
@@ -66,6 +67,58 @@ class CarinianaPreservationSettingsForm extends Form
             $plugin->updateSetting($contextId, $configVar, $this->getData($configVar), $type);
         }
 
+        $temporaryFileId = $this->getData('temporaryFileId');
+        if($temporaryFileId) {
+            $this->saveResponsabilityStatementFile($contextId, $plugin, $temporaryFileId);
+        }
+
         parent::execute(...$functionArgs);
+    }
+
+    private function saveResponsabilityStatementFile($contextId, $plugin, $temporaryFileId)
+    {
+        $user = Application::get()->getRequest()->getUser();
+        $temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO');
+        $statementTempFile = $temporaryFileDao->getTemporaryFile(
+            $temporaryFileId,
+            $user->getId()
+        );
+
+        $statementFileName = $this->moveStatementTempFile($contextId, $statementTempFile, $user->getId());
+
+        if($statementFileName) {
+            $statementFileData = json_encode([
+                'name' => $statementTempFile->getOriginalFileName(),
+                'uploadName' => $statementFileName,
+                'dateUploaded' => Core::getCurrentDate(),
+            ]);
+
+            $plugin->updateSetting($contextId, 'statementFile', $statementFileData);
+        }
+    }
+
+    private function moveStatementTempFile($contextId, $statementTempFile, $userId)
+    {
+        import('classes.file.PublicFileManager');
+        $publicFileManager = new PublicFileManager();
+        import('lib.pkp.classes.file.TemporaryFileManager');
+        $temporaryFileManager = new TemporaryFileManager();
+
+        $extension = $publicFileManager->getDocumentExtension($statementTempFile->getFileType());
+        $statementFileName = $this->plugin->getName() . '_responsabilityStatement' . $extension;
+
+        $result = $publicFileManager->copyContextFile(
+            $contextId,
+            $statementTempFile->getFilePath(),
+            $statementFileName
+        );
+
+        if (!$result) {
+            return false;
+        }
+
+        $temporaryFileManager->deleteById($statementTempFile->getId(), $userId);
+
+        return $statementFileName;
     }
 }

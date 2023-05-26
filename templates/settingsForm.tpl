@@ -15,7 +15,7 @@
             {ldelim}
                 $uploader: $('#statementUpload'),
                 uploaderOptions: {ldelim}
-					uploadUrl: {url|json_encode op="uploadFile" params=$requestArgs escape=false},
+					uploadUrl: {url|json_encode router=$smarty.const.ROUTE_COMPONENT op="manage" category="generic" plugin=$pluginName verb="uploadStatementFile" save=true escape=false},
 					baseUrl: {$baseUrl|json_encode}
                 {rdelim}
             {rdelim}
@@ -36,7 +36,6 @@
 				{capture assign="downloadStatementUrl"}{url router=$smarty.const.ROUTE_COMPONENT op="manage" category="generic" plugin=$pluginName verb="downloadStatement" save=true}{/capture}
 				<p>{translate key="plugins.generic.carinianaPreservation.settings.responsabilityStatement.description" downloadStatementUrl=$downloadStatementUrl}</p>
 				
-				<input type="hidden" name="submissionId" value="{$submissionId|escape}" />
 				<input type="hidden" name="temporaryFileId" id="temporaryFileId" value="" />
 				{include file="controllers/fileUploadContainer.tpl" id="statementUpload"}
 			{/fbvFormSection}

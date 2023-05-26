@@ -65,33 +65,50 @@ class CarinianaPreservationPlugin extends GenericPlugin
 
         switch ($request->getUserVar('verb')) {
             case 'settings':
-                $this->import('classes.form.CarinianaPreservationSettingsForm');
-                $form = new CarinianaPreservationSettingsForm($this, $contextId);
-                if ($request->getUserVar('save')) {
-                    $form->readInputData();
-                    if ($form->validate()) {
-                        $form->execute();
-                        return new JSONMessage(true);
-                    }
-                } else {
-                    $form->initData();
-                }
-                return new JSONMessage(true, $form->fetch($request));
+                return $this->handlePluginForm($request, 'CarinianaPreservationSettingsForm');
             case 'preservationSubmission':
-                $this->import('classes.form.PreservationSubmissionForm');
-                $form = new PreservationSubmissionForm($this, $contextId);
-                if ($request->getUserVar('save')) {
-                    if ($form->validate()) {
-                        $form->execute();
-                        return new JSONMessage(true);
-                    }
-                }
-                return new JSONMessage(true, $form->fetch($request));
+                return $this->handlePluginForm($request, 'PreservationSubmissionForm');
             case 'downloadStatement':
                 $fileManager = new FileManager();
                 $filePath = $this->getPluginPath() . '/resources/Termo_de_Responsabilidade.doc';
                 $fileManager->downloadByPath($filePath);
+            case 'uploadStatementFile':
+                return $this->saveStatementFile($request);
         }
         return parent::manage($args, $request);
+    }
+
+    public function handlePluginForm($request, $formClass)
+    {
+        $this->import('classes.form.'.$formClass);
+        $form = new $formClass($this, $contextId);
+        if ($request->getUserVar('save')) {
+            $form->readInputData();
+            if ($form->validate()) {
+                $form->execute();
+                return new JSONMessage(true);
+            }
+        } else {
+            $form->initData();
+        }
+        return new JSONMessage(true, $form->fetch($request));
+    }
+
+    public function saveStatementFile($request)
+    {
+        $user = $request->getUser();
+
+        import('lib.pkp.classes.file.TemporaryFileManager');
+        $temporaryFileManager = new TemporaryFileManager();
+        $temporaryFile = $temporaryFileManager->handleUpload('uploadedFile', $user->getId());
+        if ($temporaryFile) {
+            $json = new JSONMessage(true);
+            $json->setAdditionalAttributes(array(
+                'temporaryFileId' => $temporaryFile->getId()
+            ));
+            return $json;
+        } else {
+            return new JSONMessage(false, __('common.uploadFailed'));
+        }
     }
 }

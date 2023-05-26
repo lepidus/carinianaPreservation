@@ -26,6 +26,11 @@ msgstr "Correo electrónico de destino de datos para su conservación"
 msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement"
 msgstr "Condiciones de responsabilidad"
 
+msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.alreadySent"
+msgstr ""
+"El archivo completo de las condiciones de responsabilidad <strong>ya ha sido enviado previamente</strong> y está guardado en el sistema. Sí desea reemplazar el archivo cargado anteriormente, "
+"descargue, complete y firme el documento de <a href=\"{$downloadStatementUrl}\">descargo de responsabilidad</a> y luego adjunte el archivo en el campo a continuación."
+
 msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.description"
 msgstr "Descargue, complete y firme el documento de <a href=\"{$downloadStatementUrl}\">descargo de responsabilidad</a> y luego adjunte el archivo en el campo a continuación."
 

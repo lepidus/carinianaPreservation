@@ -19,6 +19,7 @@ class CarinianaPreservationSettingsForm extends Form
 {
     public const CONFIG_VARS = array(
         'recipientEmail' => 'string',
+        'statementFile' => 'string'
     );
 
     public $contextId;

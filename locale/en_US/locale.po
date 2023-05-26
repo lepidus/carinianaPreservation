@@ -26,6 +26,11 @@ msgstr "E-mail destination for preservation data"
 msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement"
 msgstr "Responsability statement"
 
+msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.alreadySent"
+msgstr ""
+"The completed file of the terms of responsibility has <strong>already been sent</strong> previously and is saved in the system. "
+"If you wish to replace the previously sent file, download, complete and sign the <a href=\"{$downloadStatementUrl}\">disclaimer document</a> and then attach the file in the field below."
+
 msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.description"
 msgstr "Download, complete and sign the <a href=\"{$downloadStatementUrl}\">disclaimer document</a> and then attach the file in the field below."
 

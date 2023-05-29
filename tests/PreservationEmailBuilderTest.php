@@ -27,6 +27,8 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
     private $firstIssueYear = '2018';
     private $lastIssueYear = '2022';
     private $notesAndComments = 'We are the 18th SciELO journal';
+    private $statementOriginalFileName = 'Termos_responsabilidade_cariniana.pdf';
+    private $statementFileName = 'carinianapreservationplugin_responsabilityStatement.pdf';
 
     public function setUp(): void
     {
@@ -35,12 +37,13 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
         $this->preservationEmailBuilder = new PreservationEmailBuilder();
         $this->createTestIssue($this->firstIssueYear);
         $this->createTestIssue($this->lastIssueYear);
+        $this->createStatementFileSetting();
         $this->email = $this->preservationEmailBuilder->buildPreservationEmail($this->journal, $this->baseUrl, $this->preservationName, $this->preservationEmail, $this->locale);
     }
 
     protected function getAffectedTables()
     {
-		return ['issues', 'issue_settings'];
+		return ['issues', 'issue_settings', 'plugin_settings'];
     }
     
     private function createTestJournal(): void
@@ -59,14 +62,26 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
 
     private function createTestIssue($issueYear): void
     {
-        $issueDatePublished = $issueYear.'-01-01';
-        
-        $issue = new Issue();
-        $issue->setData('journalId', $this->journalId);
-        $issue->setData('datePublished', $issueDatePublished);
+    $issueDatePublished = $issueYear.'-01-01';
 
-        $issueDao = DAORegistry::getDAO('IssueDAO');
-        $issueDao->insertObject($issue);
+    $issue = new Issue();
+    $issue->setData('journalId', $this->journalId);
+    $issue->setData('datePublished', $issueDatePublished);
+
+    $issueDao = DAORegistry::getDAO('IssueDAO');
+    $issueDao->insertObject($issue);
+}
+
+    private function createStatementFileSetting(): void
+    {
+        $statementFileData = json_encode([
+            'originalFileName' => $this->statementOriginalFileName,
+            'fileName' => $this->statementFileName,
+            'dateUploaded' => '2023-05-29',
+        ]);
+    
+        $plugin = PluginRegistry::getPlugin('generic', 'carinianapreservationplugin');
+        $plugin->updateSetting($this->journalId, 'statementFile', $statementFileData);
     }
 
     public function testBuiltPreservationEmailName(): void

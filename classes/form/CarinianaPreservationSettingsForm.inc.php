@@ -89,8 +89,8 @@ class CarinianaPreservationSettingsForm extends Form
 
         if($statementFileName) {
             $statementFileData = json_encode([
-                'name' => $statementTempFile->getOriginalFileName(),
-                'uploadName' => $statementFileName,
+                'originalFileName' => $statementTempFile->getOriginalFileName(),
+                'fileName' => $statementFileName,
                 'dateUploaded' => Core::getCurrentDate(),
             ]);
 

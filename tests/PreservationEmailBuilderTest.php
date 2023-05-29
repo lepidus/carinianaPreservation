@@ -78,7 +78,7 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
         $statementFileData = json_encode([
             'originalFileName' => $this->statementOriginalFileName,
             'fileName' => $this->statementFileName,
-            'dateUploaded' => '2023-05-29',
+            'fileType' => 'application/pdf',
         ]);
     
         $plugin = new CarinianaPreservationPlugin();

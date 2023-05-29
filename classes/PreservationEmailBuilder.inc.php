@@ -3,6 +3,7 @@
 import('lib.pkp.classes.mail.Mail');
 import('plugins.generic.carinianaPreservation.classes.PreservedJournalFactory');
 import('plugins.generic.carinianaPreservation.classes.PreservedJournalSpreadsheet');
+import('plugins.generic.carinianaPreservation.CarinianaPreservationPlugin');
 
 class PreservationEmailBuilder {
 
@@ -27,6 +28,9 @@ class PreservationEmailBuilder {
 
         $spreadsheetFilePath = $this->createJournalSpreadsheet($journal, $baseUrl, $locale);
         $email->addAttachment($spreadsheetFilePath);
+        
+        $statementData = $this->getResponsabilityStatementData($journal);
+        $email->addAttachment($statementData['path'], $statementData['name'], $statementData['type']);
 
         return $email;
     }
@@ -43,6 +47,23 @@ class PreservationEmailBuilder {
         $preservedJournalSpreadsheet->createSpreadsheet($spreadsheetFilePath);
 
         return $spreadsheetFilePath;
+    }
+
+    private function getResponsabilityStatementData($journal): array
+    {
+        $plugin = new CarinianaPreservationPlugin();
+        $statementFileData = json_decode($plugin->getSetting($journal->getId(), 'statementFile'), true);
+        
+        import('classes.file.PublicFileManager');
+		$publicFileManager = new PublicFileManager();
+        $publicFilesPath = $publicFileManager->getContextFilesPath($journal->getId());
+        $statementFilePath = $publicFilesPath . '/' . $statementFileData['fileName'];
+
+        return [
+            'path' => $statementFilePath,
+            'name' => $statementFileData['originalFileName'],
+            'type' => $statementFileData['fileType']
+        ];
     }
 
 }

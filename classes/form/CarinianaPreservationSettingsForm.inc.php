@@ -91,7 +91,7 @@ class CarinianaPreservationSettingsForm extends Form
             $statementFileData = json_encode([
                 'originalFileName' => $statementTempFile->getOriginalFileName(),
                 'fileName' => $statementFileName,
-                'dateUploaded' => Core::getCurrentDate(),
+                'fileType' => $statementTempFile->getFileType(),
             ]);
 
             $plugin->updateSetting($contextId, 'statementFile', $statementFileData);

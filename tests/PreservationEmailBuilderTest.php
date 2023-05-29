@@ -6,6 +6,7 @@ import('lib.pkp.tests.DatabaseTestCase');
 import('classes.journal.Journal');
 import('classes.issue.Issue');
 import('plugins.generic.carinianaPreservation.classes.PreservationEmailBuilder');
+import('plugins.generic.carinianaPreservation.CarinianaPreservationPlugin');
 
 class PreservationEmailBuilderTest extends DatabaseTestCase
 {
@@ -80,7 +81,7 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
             'dateUploaded' => '2023-05-29',
         ]);
     
-        $plugin = PluginRegistry::getPlugin('generic', 'carinianapreservationplugin');
+        $plugin = new CarinianaPreservationPlugin();
         $plugin->updateSetting($this->journalId, 'statementFile', $statementFileData);
     }
 
@@ -115,5 +116,13 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
         $xlsxContentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
         $expectedAttachment = ['path' => $expectedFilePath, 'filename' => $expectedFileName, 'content-type' => $xlsxContentType];
         $this->assertEquals($expectedAttachment, $this->email->getData('attachments')[0]);
+    }
+
+    public function testBuiltPreservationEmailStatement(): void
+    {
+        $expectedFilePath = "public/journals/{$this->journalId}/{$this->statementFileName}";
+        $pdfContentType = 'application/pdf';
+        $expectedAttachment = ['path' => $expectedFilePath, 'filename' => $this->statementOriginalFileName, 'content-type' => $pdfContentType];
+        $this->assertEquals($expectedAttachment, $this->email->getData('attachments')[1]);
     }
 }

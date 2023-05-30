@@ -17,11 +17,22 @@ msgstr "Cariniana Preservation"
 msgid "plugins.generic.carinianaPreservation.description"
 msgstr "This plugin allows the submission of site's journals to digital preservation at Cariniana"
 
-msgid "plugins.generic.carinianaPreservation.settings.title"
-msgstr "Cariniana Preservation settings"
-
 msgid "plugins.generic.carinianaPreservation.settings.recipientEmail"
 msgstr "Recipient e-mail"
+
+msgid "plugins.generic.carinianaPreservation.settings.recipientEmail.description"
+msgstr "E-mail destination for preservation data"
+
+msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement"
+msgstr "Responsability statement"
+
+msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.alreadySent"
+msgstr ""
+"The completed file of the terms of responsibility has <strong>already been sent</strong> previously and is saved in the system. "
+"If you wish to replace the previously sent file, download, complete and sign the <a href=\"{$downloadStatementUrl}\">disclaimer document</a> and then attach the file in the field below."
+
+msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.description"
+msgstr "Download, complete and sign the <a href=\"{$downloadStatementUrl}\">disclaimer document</a> and then attach the file in the field below."
 
 msgid "plugins.generic.carinianaPreservation.headers.publisherOrInstitution"
 msgstr "Publisher/Institution"
@@ -61,3 +72,6 @@ msgstr "Click on \"Submit\" to submit this journal for digital preservation by C
 
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.missingData"
 msgstr "The submission of the journal could not be carried out because some of the necessary data were not filled in"
+
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.missingResponsabilityStatement"
+msgstr "Responsability statement file not sent. Access the plugin settings to send it"

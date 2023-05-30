@@ -14,10 +14,16 @@ describe("Cariniana Preservation Plugin - Checking of plugin's settings", functi
         cy.get('#component-grid-settings-plugins-settingsplugingrid-category-generic-row-carinianapreservationplugin > .first_column > .show_extras').click();
         cy.get('a[id^=component-grid-settings-plugins-settingsplugingrid-category-generic-row-carinianapreservationplugin-settings-button]').click();
         
+        cy.contains('Recipient e-mail');
         cy.get('input[id^=recipientEmail]').clear().type('destino.cariniana@gmail.com');
         cy.get('button[id^=submitFormButton]').contains('Save').click();
         
         cy.get('a[id^=component-grid-settings-plugins-settingsplugingrid-category-generic-row-carinianapreservationplugin-settings-button]').click();
         cy.get('input[id^=recipientEmail]').should('have.value', 'destino.cariniana@gmail.com');
+
+        cy.contains('Responsability statement');
+        cy.contains('Download, complete and sign the disclaimer document and then attach the file in the field below.');
+
+        cy.get('.pkpFormField--upload__uploadActions');
     });
 });

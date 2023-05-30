@@ -6,10 +6,12 @@ import('lib.pkp.tests.DatabaseTestCase');
 import('classes.journal.Journal');
 import('classes.issue.Issue');
 import('plugins.generic.carinianaPreservation.classes.PreservationEmailBuilder');
+import('plugins.generic.carinianaPreservation.CarinianaPreservationPlugin');
 
 class PreservationEmailBuilderTest extends DatabaseTestCase
 {
     private $preservationEmailBuilder;
+    private $email;
     private $journal;
     private $journalId = 2;
     private $locale = 'pt_BR';
@@ -26,6 +28,8 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
     private $firstIssueYear = '2018';
     private $lastIssueYear = '2022';
     private $notesAndComments = 'We are the 18th SciELO journal';
+    private $statementOriginalFileName = 'Termos_responsabilidade_cariniana.pdf';
+    private $statementFileName = 'carinianapreservationplugin_responsabilityStatement.pdf';
 
     public function setUp(): void
     {
@@ -34,11 +38,13 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
         $this->preservationEmailBuilder = new PreservationEmailBuilder();
         $this->createTestIssue($this->firstIssueYear);
         $this->createTestIssue($this->lastIssueYear);
+        $this->createStatementFileSetting();
+        $this->email = $this->preservationEmailBuilder->buildPreservationEmail($this->journal, $this->baseUrl, $this->preservationName, $this->preservationEmail, $this->locale);
     }
 
     protected function getAffectedTables()
     {
-		return ['issues', 'issue_settings'];
+		return ['issues', 'issue_settings', 'plugin_settings'];
     }
     
     private function createTestJournal(): void
@@ -57,36 +63,66 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
 
     private function createTestIssue($issueYear): void
     {
-        $issueDatePublished = $issueYear.'-01-01';
-        
-        $issue = new Issue();
-        $issue->setData('journalId', $this->journalId);
-        $issue->setData('datePublished', $issueDatePublished);
+    $issueDatePublished = $issueYear.'-01-01';
 
-        $issueDao = DAORegistry::getDAO('IssueDAO');
-        $issueDao->insertObject($issue);
+    $issue = new Issue();
+    $issue->setData('journalId', $this->journalId);
+    $issue->setData('datePublished', $issueDatePublished);
+
+    $issueDao = DAORegistry::getDAO('IssueDAO');
+    $issueDao->insertObject($issue);
+}
+
+    private function createStatementFileSetting(): void
+    {
+        $statementFileData = json_encode([
+            'originalFileName' => $this->statementOriginalFileName,
+            'fileName' => $this->statementFileName,
+            'fileType' => 'application/pdf',
+        ]);
+    
+        $plugin = new CarinianaPreservationPlugin();
+        $plugin->updateSetting($this->journalId, 'statementFile', $statementFileData);
     }
 
-    public function testBuildsPreservationEmail(): void
+    public function testBuiltPreservationEmailName(): void
     {
-        $email = $this->preservationEmailBuilder->buildPreservationEmail($this->journal, $this->baseUrl, $this->preservationName, $this->preservationEmail, $this->locale);
-        
         $expectedFrom = ['name' => $this->journalAcronym, 'email' => $this->journalContactEmail];
-        $this->assertEquals($expectedFrom, $email->getData('from'));
-        
+        $this->assertEquals($expectedFrom, $this->email->getData('from'));
+    }
+
+    public function testBuiltPreservationEmailRecipient(): void
+    {
         $expectedRecipient = ['name' => $this->preservationName, 'email' => $this->preservationEmail];
-        $this->assertEquals($expectedRecipient, $email->getData('recipients')[0]);
-        
+        $this->assertEquals($expectedRecipient, $this->email->getData('recipients')[0]);
+    }
+
+    public function testBuiltPreservationEmailSubject(): void
+    {
         $expectedSubject = __('plugins.generic.carinianaPreservation.preservationEmail.subject', ['journalAcronym' => $this->journalAcronym], $this->locale);
-        $this->assertEquals($expectedSubject, $email->getData('subject'));
+        $this->assertEquals($expectedSubject, $this->email->getData('subject'));
+    }
 
+    public function testBuiltPreservationEmailBody(): void
+    {
         $expectedBody = __('plugins.generic.carinianaPreservation.preservationEmail.body', ['journalAcronym' => $this->journalAcronym], $this->locale);
-        $this->assertEquals($expectedBody, $email->getData('body'));
+        $this->assertEquals($expectedBody, $this->email->getData('body'));
+    }
 
+    public function testBuiltPreservationEmailSpreadsheet(): void
+    {
         $expectedFileName = "planilha_preservacao_$this->journalAcronym";
         $expectedFilePath = "/tmp/$expectedFileName";
         $xlsxContentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
         $expectedAttachment = ['path' => $expectedFilePath, 'filename' => $expectedFileName, 'content-type' => $xlsxContentType];
-        $this->assertEquals($expectedAttachment, $email->getData('attachments')[0]);
+        $this->assertEquals($expectedAttachment, $this->email->getData('attachments')[0]);
+    }
+
+    public function testBuiltPreservationEmailStatement(): void
+    {
+        $expectedFilePath = "public/journals/{$this->journalId}/{$this->statementFileName}";
+        $pdfContentType = 'application/pdf';
+        $expectedAttachment = ['path' => $expectedFilePath, 'filename' => $this->statementOriginalFileName, 'content-type' => $pdfContentType];
+        $this->assertEquals($expectedAttachment, $this->email->getData('attachments')[1]);
     }
 }

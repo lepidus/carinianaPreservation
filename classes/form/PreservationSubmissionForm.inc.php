@@ -58,6 +58,10 @@ class PreservationSubmissionForm extends Form
                 $this->addError('preservationSubmission', __("plugins.generic.carinianaPreservation.preservationSubmission.missingData"));
         }
         
+        $statementFile = $this->plugin->getSetting($this->contextId, 'statementFile');
+        if(empty($data))
+            $this->addError('preservationSubmission', __("plugins.generic.carinianaPreservation.preservationSubmission.missingResponsabilityStatement"));
+
         return parent::validate($callHooks);
     }
     

@@ -32,9 +32,12 @@ Na aba `Plugins instalados` em `Configurações do Website`, procure o plugin "P
 Caso algum dos dados necessários para a submissão não tenha sido preenchido no sistema anteriormente, uma mensagem de erro será disparada. Para que não haja erros, os seguintes dados devem ser preenchidos:
 
 * Editora
+* Título
 * ISSN eletrônico e impresso
 * Ao menos uma edição publicada
+* Abreviatura do periódico
 * Resumo do periódico
+* Contato Principal do periódico
 
 ## Licença
 __Esse plugin é licenciado através da Licença Pública Geral GNU v3.0__

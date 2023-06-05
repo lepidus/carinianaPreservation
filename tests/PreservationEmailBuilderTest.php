@@ -63,15 +63,15 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
 
     private function createTestIssue($issueYear): void
     {
-    $issueDatePublished = $issueYear.'-01-01';
+        $issueDatePublished = $issueYear.'-01-01';
 
-    $issue = new Issue();
-    $issue->setData('journalId', $this->journalId);
-    $issue->setData('datePublished', $issueDatePublished);
+        $issue = new Issue();
+        $issue->setData('journalId', $this->journalId);
+        $issue->setData('datePublished', $issueDatePublished);
 
-    $issueDao = DAORegistry::getDAO('IssueDAO');
-    $issueDao->insertObject($issue);
-}
+        $issueDao = DAORegistry::getDAO('IssueDAO');
+        $issueDao->insertObject($issue);
+    }
 
     private function createStatementFileSetting(): void
     {

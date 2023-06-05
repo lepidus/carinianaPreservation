@@ -33,9 +33,6 @@ class PreservationXmlBuilderTest extends PKPTestCase
         $this->issues[] = $this->createTestIssue(2018, 'RBRB 2sem 2018', 1, 2);
         $this->issues[] = $this->createTestIssue(2019, 'RBRB 1sem 2019', 2, 1);
         $this->xml = $this->createExpectedXml();
-        
-        $this->xml->formatOutput = true;
-        $this->xml->save($this->xmlPath);
     }
 
     private function createTestJournal(): void
@@ -66,7 +63,9 @@ class PreservationXmlBuilderTest extends PKPTestCase
     {
         $property = $dom->createElement('property');
         $property->setAttribute('name', $name);
-        if($value) $property->setAttribute('value', $value);
+        if($value) {
+            $property->setAttribute('value', $value);
+        }
 
         return $property;
     }
@@ -96,7 +95,7 @@ class PreservationXmlBuilderTest extends PKPTestCase
 
         $keyProperty = $this->createXmlProperty($dom, "key", $key);
         $paramProperty->appendChild($keyProperty);
-        
+
         $valueProperty = $this->createXmlProperty($dom, "value", $value);
         $paramProperty->appendChild($valueProperty);
 
@@ -133,7 +132,7 @@ class PreservationXmlBuilderTest extends PKPTestCase
 
         $param2Property = $this->createPreservedYearParamProperty($dom, 2, 'journal_id', $this->journalPath);
         $preservedYear->appendChild($param2Property);
-        
+
         $param3Property = $this->createPreservedYearParamProperty($dom, 3, 'year', $year);
         $preservedYear->appendChild($param3Property);
 
@@ -149,7 +148,7 @@ class PreservationXmlBuilderTest extends PKPTestCase
     private function createExpectedXml()
     {
         $dom = new DOMDocument('1.0', 'UTF-8');
-        
+
         $lockssConfig = $dom->createElement('lockss-config');
         $dom->appendChild($lockssConfig);
 
@@ -175,7 +174,7 @@ class PreservationXmlBuilderTest extends PKPTestCase
 
         $writtenXml = new DOMDocument();
         $writtenXml->load($this->xmlPath);
-        
+
         $this->assertEquals($this->xml->saveXML(), $writtenXml->saveXML());
     }
 }

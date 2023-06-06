@@ -32,7 +32,7 @@ class PreservationXmlBuilder {
 
         $preservedYearsData = $this->getPreservedYearsData();
         foreach($preservedYearsData as $preservedYear) {
-            $preservedYearProperty = $this->createPreservedYearProperty($dom, $preservedYear['year'], $preservedYear['title'], $preservedYear['volume']);
+            $preservedYearProperty = $this->createPreservedYearProperty($dom, $preservedYear['year'], $preservedYear['title'], $preservedYear['volume'], $preservedYear['volumeText']);
             $titleProperty->appendChild($preservedYearProperty);
         }
 
@@ -58,16 +58,19 @@ class PreservationXmlBuilder {
             $firstIssue = $issuesFromYear[0];
             $lastIssue = $issuesFromYear[$numIssues-1];
 
-            if($firstIssue->getData('volume') == $lastIssue->getData('volume'))
-                $volume = $firstIssue->getData('volume');
+            $indexToUse = (is_null($firstIssue->getData('volume')) ? 'number' : 'volume');
+
+            if($firstIssue->getData($indexToUse) == $lastIssue->getData($indexToUse))
+                $volumeText = $firstIssue->getData($indexToUse);
             else
-                $volume = $firstIssue->getData('volume') . "-" . $lastIssue->getData('volume');
+                $volumeText = $firstIssue->getData($indexToUse) . "-" . $lastIssue->getData($indexToUse);
             
             $year = $firstIssue->getData('year');
             $preservedYearsData[$year] = [
                 'year' => $year,
                 'title' => $firstIssue->getData('title', $this->locale),
-                'volume' => $volume
+                'volume' => $firstIssue->getData($indexToUse),
+                'volumeText' => $volumeText
             ];
         }
 
@@ -118,7 +121,7 @@ class PreservationXmlBuilder {
         return $paramProperty;
     }
 
-    private function createPreservedYearProperty($dom, $year, $title, $volume)
+    private function createPreservedYearProperty($dom, $year, $title, $volume, $volumeText)
     {
         $journalAcronym = $this->journal->getData('acronym', $this->locale);
         $preservedYearNodeName = 'OJS3Plugin' . $journalAcronym . $volume . '_' . $year;
@@ -138,7 +141,7 @@ class PreservationXmlBuilder {
                 'year' => $year
             ],
             'attributes.year' => $year,
-            'attributes.volume' => $volume
+            'attributes.volume' => $volumeText
         ];
 
         foreach ($preservedYearProperties as $propertyName => $propertyValue) {

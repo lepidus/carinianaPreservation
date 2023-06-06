@@ -29,10 +29,6 @@ class PreservationXmlBuilderTest extends PKPTestCase
     {
         parent::setUp();
         $this->createTestJournal();
-        $this->issues[] = $this->createTestIssue(2018, 'RBRB 1sem 2018', 1, 1);
-        $this->issues[] = $this->createTestIssue(2018, 'RBRB 2sem 2018', 1, 2);
-        $this->issues[] = $this->createTestIssue(2019, 'RBRB 1sem 2019', 2, 1);
-        $this->xml = $this->createExpectedXml();
     }
 
     private function createTestJournal(): void
@@ -145,7 +141,7 @@ class PreservationXmlBuilderTest extends PKPTestCase
         return $preservedYear;
     }
 
-    private function createExpectedXml()
+    private function createExpectedXml($preservedYears)
     {
         $dom = new DOMDocument('1.0', 'UTF-8');
 
@@ -158,19 +154,25 @@ class PreservationXmlBuilderTest extends PKPTestCase
         $titleProperty = $this->createXmlProperty($dom, 'org.lockss.title');
         $lockssConfig->appendChild($titleProperty);
 
-        $firstPreservedYear = $this->createPreservedYearProperty($dom, '2018', '1');
-        $titleProperty->appendChild($firstPreservedYear);
-
-        $secondPreservedYear = $this->createPreservedYearProperty($dom, '2019', '2');
-        $titleProperty->appendChild($secondPreservedYear);
+        foreach($preservedYears as $year => $volume) {
+            $preservedYearProperty = $this->createPreservedYearProperty($dom, $year, $volume);
+            $titleProperty->appendChild($preservedYearProperty);
+        }
 
         $dom->formatOutput = true;
 
         return $dom;
     }
 
-    public function testPreservationXmlCreation(): void
+    public function testPreservationXmlCreationUsingVolume(): void
     {
+        $this->issues = [
+            $this->createTestIssue(2018, 'RBRB 1sem 2018', 1, 1),
+            $this->createTestIssue(2018, 'RBRB 2sem 2018', 1, 2),
+            $this->createTestIssue(2019, 'RBRB 1sem 2019', 2, 1)
+        ];
+        $this->xml = $this->createExpectedXml(['2018' => '1', '2019' => '2']);
+        
         $preservationXmlBuilder = new PreservationXmlBuilder($this->journal, $this->issues, $this->baseUrl, $this->locale);
         $preservationXmlBuilder->createPreservationXml($this->xmlPath);
 

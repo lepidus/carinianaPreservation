@@ -161,8 +161,10 @@ class PreservationXmlBuilderTest extends PKPTestCase
         $firstPreservedYear = $this->createPreservedYearProperty($dom, '2018', '1');
         $titleProperty->appendChild($firstPreservedYear);
 
-        $secondPreservedYear = $this->createPreservedYearProperty($dom, '2019', '1');
+        $secondPreservedYear = $this->createPreservedYearProperty($dom, '2019', '2');
         $titleProperty->appendChild($secondPreservedYear);
+
+        $dom->formatOutput = true;
 
         return $dom;
     }

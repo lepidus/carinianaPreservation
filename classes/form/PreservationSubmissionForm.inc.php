@@ -42,25 +42,35 @@ class PreservationSubmissionForm extends Form
         $journal = $journalDao->getById($this->contextId);
 
         $locale = AppLocale::getLocale();
-        $necessaryData = [
-            $journal->getData('publisherInstitution'),
-            $journal->getLocalizedData('name', $locale),
-            $journal->getData('printIssn'),
-            $journal->getData('onlineIssn'),
-            $journal->getData('urlPath'),
-            $journal->getLocalizedData('description', $locale),
-            $journal->getLocalizedData('acronym', $locale),
-            $journal->getData('contactEmail')
+        $requirements = [
+            'manager.setup.publisher' => $journal->getData('publisherInstitution'),
+            'manager.setup.contextTitle' => $journal->getLocalizedData('name', $locale),
+            'manager.setup.printIssn' => $journal->getData('printIssn'),
+            'manager.setup.onlineIssn' => $journal->getData('onlineIssn'),
+            'context.path' => $journal->getData('urlPath'),
+            'manager.setup.contextSummary' => $journal->getLocalizedData('description', $locale),
+            'manager.setup.contextInitials' => $journal->getLocalizedData('acronym', $locale),
+            'admin.settings.contactEmail' => $journal->getData('contactEmail')
         ];
 
-        foreach($necessaryData as $data) {
-            if(empty($data))
-                $this->addError('preservationSubmission', __("plugins.generic.carinianaPreservation.preservationSubmission.missingData"));
+        $requirementIsMissing = false;
+        $missingRequirements = [];
+        foreach($requirements as $name => $value) {
+            if(empty($value)) {
+                $requirementIsMissing = true;
+                $missingRequirements[] = __($name);
+            }
         }
         
+        if($requirementIsMissing) {
+            $missingRequirements = implode(', ', $missingRequirements);
+            $this->addError('preservationSubmission', __("plugins.generic.carinianaPreservation.preservationSubmission.missingRequirements", ['missingRequirements' => $missingRequirements]));
+        }
+
         $statementFile = $this->plugin->getSetting($this->contextId, 'statementFile');
-        if(empty($data))
+        if(empty($statementFile)) {
             $this->addError('preservationSubmission', __("plugins.generic.carinianaPreservation.preservationSubmission.missingResponsabilityStatement"));
+        }
 
         return parent::validate($callHooks);
     }

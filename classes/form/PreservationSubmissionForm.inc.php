@@ -41,28 +41,8 @@ class PreservationSubmissionForm extends Form
         $journalDao = DAORegistry::getDAO('JournalDAO');
         $journal = $journalDao->getById($this->contextId);
 
-        $locale = AppLocale::getLocale();
-        $requirements = [
-            'manager.setup.publisher' => $journal->getData('publisherInstitution'),
-            'manager.setup.contextTitle' => $journal->getLocalizedData('name', $locale),
-            'manager.setup.printIssn' => $journal->getData('printIssn'),
-            'manager.setup.onlineIssn' => $journal->getData('onlineIssn'),
-            'context.path' => $journal->getData('urlPath'),
-            'manager.setup.contextSummary' => $journal->getLocalizedData('description', $locale),
-            'manager.setup.contextInitials' => $journal->getLocalizedData('acronym', $locale),
-            'admin.settings.contactEmail' => $journal->getData('contactEmail')
-        ];
-
-        $requirementIsMissing = false;
-        $missingRequirements = [];
-        foreach($requirements as $name => $value) {
-            if(empty($value)) {
-                $requirementIsMissing = true;
-                $missingRequirements[] = __($name);
-            }
-        }
-        
-        if($requirementIsMissing) {
+        list($requirementsAreMissing, $missingRequirements) = $this->requirementsAreMissing($journal);
+        if($requirementsAreMissing) {
             $missingRequirements = implode(', ', $missingRequirements);
             $this->addError('preservationSubmission', __("plugins.generic.carinianaPreservation.preservationSubmission.missingRequirements", ['missingRequirements' => $missingRequirements]));
         }
@@ -75,6 +55,31 @@ class PreservationSubmissionForm extends Form
         return parent::validate($callHooks);
     }
     
+    private function requirementsAreMissing($journal): array
+    {
+        $requirements = [
+            'manager.setup.publisher' => $journal->getData('publisherInstitution'),
+            'manager.setup.contextTitle' => $journal->getLocalizedData('name'),
+            'manager.setup.printIssn' => $journal->getData('printIssn'),
+            'manager.setup.onlineIssn' => $journal->getData('onlineIssn'),
+            'context.path' => $journal->getData('urlPath'),
+            'manager.setup.contextSummary' => $journal->getLocalizedData('description'),
+            'manager.setup.contextInitials' => $journal->getLocalizedData('acronym'),
+            'admin.settings.contactEmail' => $journal->getData('contactEmail')
+        ];
+
+        $requirementsAreMissing = false;
+        $missingRequirements = [];
+        foreach($requirements as $name => $value) {
+            if(empty($value)) {
+                $requirementsAreMissing = true;
+                $missingRequirements[] = __($name);
+            }
+        }
+
+        return [$requirementsAreMissing, $missingRequirements];
+    }
+
     public function execute(...$functionArgs)
     {
         $journalDao = DAORegistry::getDAO('JournalDAO');

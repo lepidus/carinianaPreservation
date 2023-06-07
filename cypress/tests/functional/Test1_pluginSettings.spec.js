@@ -1,29 +1,31 @@
-function loginAdminUser() {
-    cy.get('input[id=username]').clear();
-    cy.get('input[id=username]').type(Cypress.env('OJSAdminUsername'), { delay: 0 });
-    cy.get('input[id=password]').type(Cypress.env('OJSAdminPassword'), { delay: 0 });
-    cy.get('button[class=submit]').click();
-}
-
 describe("Cariniana Preservation Plugin - Checking of plugin's settings", function() {
-    it("Setting of recipient e-mail in plugin's settings", function() {
-        cy.visit(Cypress.env('baseUrl') + 'index.php/' + Cypress.env('journalAcronym') + '/management/settings/website');
-        loginAdminUser();
+    it("Sets recipient e-mail and responsability statement", function() {
+        const pluginRowId = 'component-grid-settings-plugins-settingsplugingrid-category-generic-row-carinianapreservationplugin';
+        cy.login('dbarnes', null, 'publicknowledge');
+        cy.get('a:contains("Website")').click();
 
-        cy.get('#plugins-button').click();
-        cy.get('#component-grid-settings-plugins-settingsplugingrid-category-generic-row-carinianapreservationplugin > .first_column > .show_extras').click();
-        cy.get('a[id^=component-grid-settings-plugins-settingsplugingrid-category-generic-row-carinianapreservationplugin-settings-button]').click();
+		cy.waitJQuery();
+		cy.get('button#plugins-button').click();
+        cy.get('#' + pluginRowId + ' > .first_column > .show_extras').click();
+        cy.get('a[id^='+ pluginRowId + '-settings-button]').click();
         
         cy.contains('Recipient e-mail');
         cy.get('input[id^=recipientEmail]').clear().type('destino.cariniana@gmail.com');
+        cy.contains('Responsability statement');
+        cy.fixture('dummy.pdf', { encoding: 'base64' }).then((fileContent) => {
+			cy.get('#statementUpload input[type=file]')
+				.upload({
+					fileContent,
+					fileName: 'responsability_statement.pdf',
+					mimeType: 'application/pdf',
+					encoding: 'base64',
+				});
+		});
+        cy.wait(200);
         cy.get('button[id^=submitFormButton]').contains('Save').click();
         
-        cy.get('a[id^=component-grid-settings-plugins-settingsplugingrid-category-generic-row-carinianapreservationplugin-settings-button]').click();
+        cy.get('a[id^=' + pluginRowId + '-settings-button]').click();
         cy.get('input[id^=recipientEmail]').should('have.value', 'destino.cariniana@gmail.com');
-
-        cy.contains('Responsability statement');
-        cy.contains('Download, complete and sign the disclaimer document and then attach the file in the field below.');
-
-        cy.get('.pkpFormField--upload__uploadActions');
+        cy.contains('The completed file of the terms of responsibility has already been sent previously and is saved in the system');
     });
 });

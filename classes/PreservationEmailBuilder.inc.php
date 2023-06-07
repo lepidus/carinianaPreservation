@@ -74,6 +74,8 @@ class PreservationEmailBuilder {
     {
         $issueDao = DAORegistry::getDAO('IssueDAO');
         $issues = $issueDao->getIssues($journal->getId())->toArray();
+        $issues = array_reverse($issues);
+
         $journalAcronym = $journal->getLocalizedData('acronym', $locale);
         $xmlFilePath = "/tmp/marcacoes_preservacao_{$journalAcronym}.xml";
         

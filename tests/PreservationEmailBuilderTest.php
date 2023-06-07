@@ -111,7 +111,7 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
 
     public function testBuiltPreservationEmailSpreadsheet(): void
     {
-        $expectedFileName = "planilha_preservacao_$this->journalAcronym";
+        $expectedFileName = "planilha_preservacao_{$this->journalAcronym}.xlsx";
         $expectedFilePath = "/tmp/$expectedFileName";
         $xlsxContentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
         $expectedAttachment = ['path' => $expectedFilePath, 'filename' => $expectedFileName, 'content-type' => $xlsxContentType];
@@ -124,5 +124,14 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
         $pdfContentType = 'application/pdf';
         $expectedAttachment = ['path' => $expectedFilePath, 'filename' => $this->statementOriginalFileName, 'content-type' => $pdfContentType];
         $this->assertEquals($expectedAttachment, $this->email->getData('attachments')[1]);
+    }
+
+    public function testBuiltPreservationEmailXml(): void
+    {
+        $expectedFileName = "marcacoes_preservacao_{$this->journalAcronym}.xml";
+        $expectedFilePath = "/tmp/$expectedFileName";
+        $xmlContentType = 'text/xml';
+        $expectedAttachment = ['path' => $expectedFilePath, 'filename' => $expectedFileName, 'content-type' => $xmlContentType];
+        $this->assertEquals($expectedAttachment, $this->email->getData('attachments')[2]);
     }
 }

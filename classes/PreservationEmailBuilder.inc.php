@@ -3,6 +3,7 @@
 import('lib.pkp.classes.mail.Mail');
 import('plugins.generic.carinianaPreservation.classes.PreservedJournalFactory');
 import('plugins.generic.carinianaPreservation.classes.PreservedJournalSpreadsheet');
+import('plugins.generic.carinianaPreservation.classes.PreservationXmlBuilder');
 import('plugins.generic.carinianaPreservation.CarinianaPreservationPlugin');
 
 class PreservationEmailBuilder {
@@ -32,6 +33,9 @@ class PreservationEmailBuilder {
         $statementData = $this->getResponsabilityStatementData($journal);
         $email->addAttachment($statementData['path'], $statementData['name'], $statementData['type']);
 
+        $xmlFilePath = $this->createXml($journal, $baseUrl, $locale);
+        $email->addAttachment($xmlFilePath);
+
         return $email;
     }
 
@@ -41,7 +45,7 @@ class PreservationEmailBuilder {
         $preservedJournal = $preservedJournalFactory->buildPreservedJournal($journal, $baseUrl, $locale);
 
         $journalAcronym = $journal->getLocalizedData('acronym', $locale);
-        $spreadsheetFilePath = "/tmp/planilha_preservacao_$journalAcronym";
+        $spreadsheetFilePath = "/tmp/planilha_preservacao_{$journalAcronym}.xlsx";
 
         $preservedJournalSpreadsheet = new PreservedJournalSpreadsheet([$preservedJournal]);
         $preservedJournalSpreadsheet->createSpreadsheet($spreadsheetFilePath);
@@ -66,4 +70,16 @@ class PreservationEmailBuilder {
         ];
     }
 
+    private function createXml($journal, $baseUrl, $locale): string
+    {
+        $issueDao = DAORegistry::getDAO('IssueDAO');
+        $issues = $issueDao->getIssues($journal->getId())->toArray();
+        $journalAcronym = $journal->getLocalizedData('acronym', $locale);
+        $xmlFilePath = "/tmp/marcacoes_preservacao_{$journalAcronym}.xml";
+        
+        $preservationXmlBuilder = new PreservationXmlBuilder($journal, $issues, $baseUrl, $locale);
+        $preservationXmlBuilder->createPreservationXml($xmlFilePath);
+
+        return $xmlFilePath;
+    }
 }

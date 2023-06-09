@@ -17,11 +17,11 @@ msgstr "Preservación Cariniana"
 msgid "plugins.generic.plauditPreEndorsement.description"
 msgstr "Este módulo permite la presentación de revistas en el sitio para su preservación digital por parte de Cariniana"
 
-msgid "plugins.generic.carinianaPreservation.settings.recipientEmail"
-msgstr "Correo electrónico de destino"
+msgid "plugins.generic.carinianaPreservation.settings.extraCopyEmail"
+msgstr "Copia adicional de correo electrónico"
 
-msgid "plugins.generic.carinianaPreservation.settings.recipientEmail.description"
-msgstr "Correo electrónico de destino de datos para su conservación"
+msgid "plugins.generic.carinianaPreservation.settings.extraCopyEmail.description"
+msgstr "Esta dirección se colocará como copia en el correo electrónico de envío de la revista para su preservación"
 
 msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement"
 msgstr "Condiciones de responsabilidad"

@@ -34,9 +34,6 @@
 		{include file="controllers/notification/inPlaceNotification.tpl" notificationId="carinianaSettingsFormNotification"}
 
 		{fbvFormArea id="carinianaSettingsFormArea"}
-			{fbvFormSection title="plugins.generic.carinianaPreservation.settings.recipientEmail"}
-				{fbvElement id="recipientEmail" class="recipientEmail" type="email" value="{$recipientEmail|escape}" required="true" label="plugins.generic.carinianaPreservation.settings.recipientEmail.description" size=$fbvStyles.size.MEDIUM}
-			{/fbvFormSection}
 			{fbvFormSection title="plugins.generic.carinianaPreservation.settings.responsabilityStatement"}
 				{capture assign="downloadStatementUrl"}{url router=$smarty.const.ROUTE_COMPONENT op="manage" category="generic" plugin=$pluginName verb="downloadStatement" save=true}{/capture}
 				{if $statementFile}
@@ -47,6 +44,9 @@
 				
 				<input type="hidden" name="temporaryFileId" id="temporaryFileId" value="" />
 				{include file="controllers/fileUploadContainer.tpl" id="statementUpload"}
+			{/fbvFormSection}
+			{fbvFormSection title="plugins.generic.carinianaPreservation.settings.extraCopyEmail"}
+				{fbvElement id="extraCopyEmail" class="extraCopyEmail" type="email" value="{$extraCopyEmail|escape}" label="plugins.generic.carinianaPreservation.settings.extraCopyEmail.description" size=$fbvStyles.size.MEDIUM}
 			{/fbvFormSection}
 		{/fbvFormArea}
 		{fbvFormButtons submitText="common.save"}

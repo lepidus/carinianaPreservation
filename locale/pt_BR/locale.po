@@ -17,11 +17,11 @@ msgstr "Preservação Cariniana"
 msgid "plugins.generic.carinianaPreservation.description"
 msgstr "Esse plugin permite a submissão dos periódicos do site para preservação digital pela Cariniana"
 
-msgid "plugins.generic.carinianaPreservation.settings.recipientEmail"
-msgstr "E-mail de destino"
+msgid "plugins.generic.carinianaPreservation.settings.extraCopyEmail"
+msgstr "E-mail de cópia extra"
 
-msgid "plugins.generic.carinianaPreservation.settings.recipientEmail.description"
-msgstr "E-mail de destino dos dados para preservação"
+msgid "plugins.generic.carinianaPreservation.settings.extraCopyEmail.description"
+msgstr "Este endereço será colocado como cópia no e-mail de submissão do periódico para preservação"
 
 msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement"
 msgstr "Termos de responsabilidade"

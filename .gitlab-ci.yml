@@ -16,6 +16,7 @@ include:
 
 .integration_tests:
   before_script:
+    - wget -O composer.phar https://getcomposer.org/composer-stable.phar
     - php composer.phar install -d ${PLUGIN_NAME}
 
 release_plugin:

@@ -6,21 +6,26 @@ import('plugins.generic.carinianaPreservation.classes.PreservedJournalSpreadshee
 import('plugins.generic.carinianaPreservation.classes.PreservationXmlBuilder');
 import('plugins.generic.carinianaPreservation.CarinianaPreservationPlugin');
 
+define('CARINIANA_NAME', 'Rede Cariniana');
+define('CARINIANA_EMAIL', 'cariniana@ibict.br');
+
 class PreservationEmailBuilder {
 
-    public function buildPreservationEmail($journal, $baseUrl, $preservationName, $preservationEmail, $locale) {
+    public function buildPreservationEmail($journal, $baseUrl, $locale) {
         $email = new Mail();
 
         $fromName = $journal->getLocalizedData('acronym', $locale);
         $fromEmail = $journal->getData('contactEmail');
         $email->setFrom($fromEmail, $fromName);
         
-        $email->setRecipients([
-            [
-                'name' => $preservationName,
-                'email' => $preservationEmail,
-            ],
-        ]);
+        $email->addRecipient(CARINIANA_EMAIL, CARINIANA_NAME);
+        $email->addCc($fromEmail, $fromName);
+
+        $plugin = new CarinianaPreservationPlugin();
+        $extraCopyEmail = $plugin->getSetting($journal->getId(), 'extraCopyEmail');
+        if(!empty($extraCopyEmail)) {
+            $email->addCc($extraCopyEmail);
+        }
         
         $subject = __('plugins.generic.carinianaPreservation.preservationEmail.subject', ['journalAcronym' => $fromName], $locale);
         $body = __('plugins.generic.carinianaPreservation.preservationEmail.body', ['journalAcronym' => $fromName], $locale);

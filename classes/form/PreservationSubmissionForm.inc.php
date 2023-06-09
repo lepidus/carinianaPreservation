@@ -91,7 +91,7 @@ class PreservationSubmissionForm extends Form
 
         import('plugins.generic.carinianaPreservation.classes.PreservationEmailBuilder');
         $preservationEmailBuilder = new PreservationEmailBuilder();
-        $email = $preservationEmailBuilder->buildPreservationEmail($journal, $baseUrl, $preservationName, $preservationEmail, $locale);
+        $email = $preservationEmailBuilder->buildPreservationEmail($journal, $baseUrl, $locale);
         $email->send();
     }
 }

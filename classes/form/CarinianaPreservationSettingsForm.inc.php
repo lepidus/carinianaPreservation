@@ -18,7 +18,7 @@ import('lib.pkp.classes.form.Form');
 class CarinianaPreservationSettingsForm extends Form
 {
     public const CONFIG_VARS = array(
-        'recipientEmail' => 'string',
+        'extraCopyEmail' => 'string',
         'statementFile' => 'string'
     );
 
@@ -33,7 +33,6 @@ class CarinianaPreservationSettingsForm extends Form
 
         $this->addCheck(new FormValidatorPost($this));
         $this->addCheck(new FormValidatorCSRF($this));
-        $this->addCheck(new FormValidator($this, 'recipientEmail', 'required', 'plugins.generic.carinianaPreservation.settings.recipientEmail'));
     }
 
     public function initData()

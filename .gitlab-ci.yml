@@ -16,7 +16,7 @@ include:
 
 .integration_tests:
   before_script:
-    - composer install
+    - php composer.phar install -d ${PLUGIN_NAME}
 
 release_plugin:
   before_script:

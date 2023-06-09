@@ -17,8 +17,7 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
     private $locale = 'pt_BR';
     private $journalAcronym = 'RBRB';
     private $journalContactEmail = 'contact@rbrb.com.br';
-    private $preservationName = 'Preservacao Cariniana';
-    private $preservationEmail = 'destino.cariniana@gmail.com';
+    private $extraCopyEmail = 'extra.contact@rbrb.com.br';
     private $publisherOrInstitution = 'SciELO';
     private $title = 'SciELO Journal n18';
     private $issn = '1234-1234';
@@ -31,6 +30,9 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
     private $statementOriginalFileName = 'Termos_responsabilidade_cariniana.pdf';
     private $statementFileName = 'carinianapreservationplugin_responsabilityStatement.pdf';
 
+    const CARINIANA_NAME = 'Rede Cariniana';
+    const CARINIANA_EMAIL = 'cariniana@ibict.br';
+
     public function setUp(): void
     {
         parent::setUp();
@@ -39,7 +41,7 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
         $this->createTestIssue($this->firstIssueYear);
         $this->createTestIssue($this->lastIssueYear);
         $this->createStatementFileSetting();
-        $this->email = $this->preservationEmailBuilder->buildPreservationEmail($this->journal, $this->baseUrl, $this->preservationName, $this->preservationEmail, $this->locale);
+        $this->email = $this->preservationEmailBuilder->buildPreservationEmail($this->journal, $this->baseUrl, self::CARINIANA_NAME, self::CARINIANA_EMAIL, $this->locale);
     }
 
     protected function getAffectedTables()
@@ -85,7 +87,7 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
         $plugin->updateSetting($this->journalId, 'statementFile', $statementFileData);
     }
 
-    public function testBuiltPreservationEmailName(): void
+    public function testBuiltPreservationEmailFrom(): void
     {
         $expectedFrom = ['name' => $this->journalAcronym, 'email' => $this->journalContactEmail];
         $this->assertEquals($expectedFrom, $this->email->getData('from'));
@@ -93,8 +95,29 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
 
     public function testBuiltPreservationEmailRecipient(): void
     {
-        $expectedRecipient = ['name' => $this->preservationName, 'email' => $this->preservationEmail];
+        $expectedRecipient = ['name' => self::CARINIANA_NAME, 'email' => self::CARINIANA_EMAIL];
         $this->assertEquals($expectedRecipient, $this->email->getData('recipients')[0]);
+    }
+
+    public function testBuiltPreservationEmailCarbonCopies(): void
+    {
+        $expectedCarbonCopies = [
+            ['name' => $this->journalAcronym, 'email' => $this->journalContactEmail]
+        ];
+        $this->assertEquals($expectedCarbonCopies, $this->email->getData('ccs'));
+    }
+
+    public function testBuiltPreservationEmailCarbonCopiesWithExtra(): void
+    {
+        $plugin = new CarinianaPreservationPlugin();
+        $plugin->updateSetting($this->journalId, 'extraCopyEmail', $this->extraCopyEmail);
+        $this->email = $this->preservationEmailBuilder->buildPreservationEmail($this->journal, $this->baseUrl, self::CARINIANA_NAME, self::CARINIANA_EMAIL, $this->locale);
+        
+        $expectedCarbonCopies = [
+            ['name' => $this->journalAcronym, 'email' => $this->journalContactEmail],
+            ['name' => '', 'email' => $this->extraCopyEmail]
+        ];
+        $this->assertEquals($expectedCarbonCopies, $this->email->getData('ccs'));
     }
 
     public function testBuiltPreservationEmailSubject(): void

@@ -30,9 +30,6 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
     private $statementOriginalFileName = 'Termos_responsabilidade_cariniana.pdf';
     private $statementFileName = 'carinianapreservationplugin_responsabilityStatement.pdf';
 
-    const CARINIANA_NAME = 'Rede Cariniana';
-    const CARINIANA_EMAIL = 'cariniana@ibict.br';
-
     public function setUp(): void
     {
         parent::setUp();
@@ -41,7 +38,7 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
         $this->createTestIssue($this->firstIssueYear);
         $this->createTestIssue($this->lastIssueYear);
         $this->createStatementFileSetting();
-        $this->email = $this->preservationEmailBuilder->buildPreservationEmail($this->journal, $this->baseUrl, self::CARINIANA_NAME, self::CARINIANA_EMAIL, $this->locale);
+        $this->email = $this->preservationEmailBuilder->buildPreservationEmail($this->journal, $this->baseUrl, $this->locale);
     }
 
     protected function getAffectedTables()
@@ -95,7 +92,7 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
 
     public function testBuiltPreservationEmailRecipient(): void
     {
-        $expectedRecipient = ['name' => self::CARINIANA_NAME, 'email' => self::CARINIANA_EMAIL];
+        $expectedRecipient = ['name' => CARINIANA_NAME, 'email' => CARINIANA_EMAIL];
         $this->assertEquals($expectedRecipient, $this->email->getData('recipients')[0]);
     }
 
@@ -111,7 +108,7 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
     {
         $plugin = new CarinianaPreservationPlugin();
         $plugin->updateSetting($this->journalId, 'extraCopyEmail', $this->extraCopyEmail);
-        $this->email = $this->preservationEmailBuilder->buildPreservationEmail($this->journal, $this->baseUrl, self::CARINIANA_NAME, self::CARINIANA_EMAIL, $this->locale);
+        $this->email = $this->preservationEmailBuilder->buildPreservationEmail($this->journal, $this->baseUrl, $this->locale);
         
         $expectedCarbonCopies = [
             ['name' => $this->journalAcronym, 'email' => $this->journalContactEmail],

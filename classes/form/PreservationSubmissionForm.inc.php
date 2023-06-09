@@ -14,7 +14,6 @@
 
 
 import('lib.pkp.classes.form.Form');
-import('plugins.generic.carinianaPreservation.classes.PreservationEmailBuilder');
 
 class PreservationSubmissionForm extends Form
 {
@@ -90,6 +89,7 @@ class PreservationSubmissionForm extends Form
         $preservationName = __('plugins.generic.carinianaPreservation.displayName');
         $preservationEmail = $this->plugin->getSetting($this->contextId, 'recipientEmail');
 
+        import('plugins.generic.carinianaPreservation.classes.PreservationEmailBuilder');
         $preservationEmailBuilder = new PreservationEmailBuilder();
         $email = $preservationEmailBuilder->buildPreservationEmail($journal, $baseUrl, $preservationName, $preservationEmail, $locale);
         $email->send();

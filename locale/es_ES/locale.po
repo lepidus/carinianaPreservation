@@ -15,7 +15,7 @@ msgid "plugins.generic.plauditPreEndorsement.displayName"
 msgstr "Preservación Cariniana"
 
 msgid "plugins.generic.plauditPreEndorsement.description"
-msgstr "Este módulo permite la presentación de revistas en el sitio para su preservación digital por parte de Cariniana"
+msgstr "Este módulo permite conservar revistas brasileñas publicadas en OJS en la red Cariniana"
 
 msgid "plugins.generic.carinianaPreservation.settings.extraCopyEmail"
 msgstr "Copia adicional de correo electrónico"

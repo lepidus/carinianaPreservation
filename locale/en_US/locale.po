@@ -15,7 +15,7 @@ msgid "plugins.generic.carinianaPreservation.displayName"
 msgstr "Cariniana Preservation"
 
 msgid "plugins.generic.carinianaPreservation.description"
-msgstr "This plugin allows the submission of site's journals to digital preservation at Cariniana"
+msgstr "This plugin allows preserving Brazilian journals published in OJS in the Cariniana network"
 
 msgid "plugins.generic.carinianaPreservation.settings.extraCopyEmail"
 msgstr "Extra copy e-mail"

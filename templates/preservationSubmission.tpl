@@ -19,9 +19,9 @@
         {csrf}
         {include file="controllers/notification/inPlaceNotification.tpl" notificationId="preservationSubmissionFormNotification"}
 
-        <p>
-            {translate key="plugins.generic.carinianaPreservation.preservationSubmission.description"}
-        </p>
+        <p>{translate key="plugins.generic.carinianaPreservation.preservationSubmission.emailAddresses" emailCopies=$emailCopies}</p>
+
+        <p>{translate key="plugins.generic.carinianaPreservation.preservationSubmission.instruction"}</p>
         {fbvFormButtons submitText="form.submit" hideCancel=true}
     </form>
 </div>

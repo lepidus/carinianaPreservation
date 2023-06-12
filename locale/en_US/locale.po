@@ -15,7 +15,7 @@ msgid "plugins.generic.carinianaPreservation.displayName"
 msgstr "Cariniana Preservation"
 
 msgid "plugins.generic.carinianaPreservation.description"
-msgstr "This plugin allows the submission of site's journals to digital preservation at Cariniana"
+msgstr "This plugin allows preserving Brazilian journals published in OJS in the Cariniana network"
 
 msgid "plugins.generic.carinianaPreservation.settings.extraCopyEmail"
 msgstr "Extra copy e-mail"
@@ -67,7 +67,12 @@ msgstr "The {$journalAcronym} journal's content identification is attached to th
 msgid "plugins.generic.carinianaPreservation.preservationSubmission"
 msgstr "Submission for preservation"
 
-msgid "plugins.generic.carinianaPreservation.preservationSubmission.description"
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.emailAddresses"
+msgstr ""
+"The e-mail with the journal data wil be sent to the e-mail address of Cariniana Network (cariniana@ibict.br), "
+"with copy to the address(es): {$emailCopies}"
+
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.instruction"
 msgstr "Click on \"Submit\" to submit this journal for digital preservation by Cariniana"
 
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.missingRequirements"

@@ -15,7 +15,7 @@ msgid "plugins.generic.plauditPreEndorsement.displayName"
 msgstr "Preservación Cariniana"
 
 msgid "plugins.generic.plauditPreEndorsement.description"
-msgstr "Este módulo permite la presentación de revistas en el sitio para su preservación digital por parte de Cariniana"
+msgstr "Este módulo permite conservar revistas brasileñas publicadas en OJS en la red Cariniana"
 
 msgid "plugins.generic.carinianaPreservation.settings.extraCopyEmail"
 msgstr "Copia adicional de correo electrónico"
@@ -67,7 +67,12 @@ msgstr "La identificación de contenido de la revista {$journalAcronym} se adjun
 msgid "plugins.generic.carinianaPreservation.preservationSubmission"
 msgstr "Envío para preservación"
 
-msgid "plugins.generic.carinianaPreservation.preservationSubmission.description"
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.emailAddresses"
+msgstr ""
+"El correo electrónico con los datos de la revista será enviado a la dirección de correo electrónico de la Rede Cariniana (cariniana@ibict.br), "
+"con copia a la(s) dirección(es) de correo electrónico: {$emailCopies}"
+
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.instruction"
 msgstr "Haga cliq en \"Enviar\" para enviar esta revista para su preservación digital por Cariniana"
 
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.missingRequirements"

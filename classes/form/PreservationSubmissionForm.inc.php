@@ -30,9 +30,25 @@ class PreservationSubmissionForm extends Form
     public function fetch($request, $template = null, $display = false)
     {
         $templateMgr = TemplateManager::getManager($request);
-        $templateMgr->assign('pluginName', $this->plugin->getName());
-        $templateMgr->assign('applicationName', Application::get()->getName());
+        $emailCopies = $this->getPreservationEmailCopies();
+
+        $templateMgr->assign([
+            'pluginName' => $this->plugin->getName(),
+            'applicationName' => Application::get()->getName(),
+            'emailCopies' => $emailCopies
+        ]);
+
         return parent::fetch($request, $template, $display);
+    }
+
+    private function getPreservationEmailCopies(): string
+    {
+        $journalDao = DAORegistry::getDAO('JournalDAO');
+        $journal = $journalDao->getById($this->contextId);
+        $contactEmail = $journal->getData('contactEmail');
+        $extraCopyEmail = $this->plugin->getSetting($journal->getId(), 'extraCopyEmail');
+
+        return (empty($extraCopyEmail) ? $contactEmail : implode(', ', [$contactEmail, $extraCopyEmail]));
     }
 
     public function validate($callHooks = true)
@@ -53,7 +69,7 @@ class PreservationSubmissionForm extends Form
 
         return parent::validate($callHooks);
     }
-    
+
     private function requirementsAreMissing($journal): array
     {
         $requirements = [
@@ -82,7 +98,7 @@ class PreservationSubmissionForm extends Form
     public function execute(...$functionArgs)
     {
         $journalDao = DAORegistry::getDAO('JournalDAO');
-        
+
         $locale = AppLocale::getLocale();
         $journal = $journalDao->getById($this->contextId);
         $baseUrl = Application::get()->getRequest()->getBaseUrl();

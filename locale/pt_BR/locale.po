@@ -67,7 +67,12 @@ msgstr "A identificação do conteúdo da revista {$journalAcronym} está anexad
 msgid "plugins.generic.carinianaPreservation.preservationSubmission"
 msgstr "Submissão para preservação"
 
-msgid "plugins.generic.carinianaPreservation.preservationSubmission.description"
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.emailAddresses"
+msgstr ""
+"O e-mail com os dados do periódico será enviado para endereço de e-mail da Rede Cariniana (cariniana@ibict.br), "
+"com cópia para o(s) endereço(s) de e-mail: {$emailCopies}"
+
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.instruction"
 msgstr "Clique em \"Submeter\" para realizar a submissão deste periódico para preservação digital pela Cariniana"
 
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.missingRequirements"

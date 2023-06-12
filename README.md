@@ -1,7 +1,7 @@
 # Preservação Cariniana
 ## Descrição
 
-O plugin Preservação Cariniana tem o intuito de facilitar o processo de preservação digital de periódicos OJS por meio da Rede Cariniana. Sua principal funcionalidade é o envio de um e-mail para um endereço previamente definido com os seguintes dados de identificação do periódico:
+O plugin Preservação Cariniana tem o intuito de facilitar o processo de preservação digital de periódicos OJS por meio da Rede Cariniana. Sua principal funcionalidade é o envio de um e-mail para rede Carianiana com as seguintes informações do periódico a ser preservado:
 
 * Editora/Instituição
 * Título do periódico
@@ -12,6 +12,8 @@ O plugin Preservação Cariniana tem o intuito de facilitar o processo de preser
 * Anos disponíveis
 * Notas e Comentários
 
+Além destas informações, também é enviado o Termo de Responsabilidade e Autorização para preservação na rede Cariniana, preenchido pelos responsáveis pelo periódico.
+
 ## Instalação
 
 1. Entre na área administrativa do seu OJS através do __Painel de Controle__.
@@ -21,15 +23,19 @@ O plugin Preservação Cariniana tem o intuito de facilitar o processo de preser
 
 ## Configuração
 
-Após a instalação do plugin, é necessário fazer a sua configuração. Na aba `Plugins instalados` em `Configurações do Website`, procure o plugin "Preservação Cariniana" e abra as suas configurações. Na janela que abrir, você deve informar um e-mail de destino, para o qual será enviado o e-mail com os dados necessários para preservação do periódico.
+Após a instalação do plugin, é necessário fazer a sua configuração. Na aba `Plugins instalados` em `Configurações do Website`, procure o plugin "Preservação Cariniana" e abra as suas configurações. Na janela que abrir, você deve anexar o Termo de Responsabilidade e Autorização preenchido e assinado pela pessoa responsável pelo periódico.
 
-Após essa configuração, o plugin está pronto para uso.
+Opcionalmente você poderá informar um e-mail para o qual serão copiadas as informações enviadas para a rede Cariniana, quando o periódico for submetido para preservação.
+
+Após a configuração, o plugin está pronto para uso.
 
 ## Funcionalidades
 
-Na aba `Plugins instalados` em `Configurações do Website`, procure o plugin "Preservação Cariniana". Ele possuirá uma opção chamada "Submissão para preservação". Ao clicar nessa opção será aberta uma janela, para confirmação do envio do e-mail com os dados. Ao clicar em "Submeter", será enviado um e-mail para o endereço configurado anteriormente, contendo uma planilha em anexo, com os dados de identificação do conteúdo do periódico.
+Na aba `Plugins instalados` em `Configurações do Website`, procure o plugin "Preservação Cariniana". Ele possuirá uma opção chamada "Submissão para preservação". Ao clicar nessa opção será aberta uma janela, para confirmação do envio do e-mail com os dados. 
 
-Caso algum dos dados necessários para a submissão não tenha sido preenchido no sistema anteriormente, uma mensagem de erro será disparada. Para que não haja erros, os seguintes dados devem ser preenchidos:
+Ao clicar em "Submeter", será enviado um e-mail para a rede Cariniana, contendo como anexos o Termo de Responsabilidade e Autorização preenchido, uma planilha com os dados de identificação do conteúdo do periódico, e um documento XML contendo os dados para inserção do periódico na rede Cariania.
+
+Caso algum dos dados necessários para a submissão não tenha sido preenchido no OJS anteriormente, uma mensagem de erro será disparada. Para que não haja erros, os seguintes dados devem ser preenchidos:
 
 * Editora
 * Título
@@ -37,7 +43,7 @@ Caso algum dos dados necessários para a submissão não tenha sido preenchido n
 * Ao menos uma edição publicada
 * Abreviatura do periódico
 * Resumo do periódico
-* Contato Principal do periódico
+* Contato Principal e Técnico do periódico
 
 ## Licença
 __Esse plugin é licenciado através da Licença Pública Geral GNU v3.0__

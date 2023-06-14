@@ -67,6 +67,9 @@ msgstr "The {$journalAcronym} journal's content identification is attached to th
 msgid "plugins.generic.carinianaPreservation.preservationSubmission"
 msgstr "Submission for preservation"
 
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.notesAndComments.description"
+msgstr "If you are interested, insert here some relevant information about the publication"
+
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.emailAddresses"
 msgstr ""
 "The e-mail with the journal data wil be sent to the e-mail address of Cariniana Network (cariniana@ibict.br), "

@@ -67,6 +67,9 @@ msgstr "La identificación de contenido de la revista {$journalAcronym} se adjun
 msgid "plugins.generic.carinianaPreservation.preservationSubmission"
 msgstr "Envío para preservación"
 
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.notesAndComments.description"
+msgstr "Si está interesado, inserte aquí alguna información relevante sobre la publicación"
+
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.emailAddresses"
 msgstr ""
 "El correo electrónico con los datos de la revista será enviado a la dirección de correo electrónico de la Rede Cariniana (cariniana@ibict.br), "

@@ -4,7 +4,7 @@ import('plugins.generic.carinianaPreservation.classes.PreservedJournal');
 
 class PreservedJournalFactory
 {
-    public function buildPreservedJournal($journal, $baseUrl, $locale): PreservedJournal
+    public function buildPreservedJournal($journal, $baseUrl, $notesAndComments, $locale): PreservedJournal
     {
         $publisherOrInstitution = $journal->getData('publisherInstitution');
         $title = $journal->getLocalizedData('name', $locale);
@@ -12,8 +12,7 @@ class PreservedJournalFactory
         $eIssn = $journal->getData('onlineIssn');
         $journalPath = $journal->getData('urlPath');
         $availableYears = $this->getAvailableYears($journal);
-        $notesAndComments = $journal->getLocalizedData('description', $locale);
-        
+
         return new PreservedJournal($publisherOrInstitution, $title, $issn, $eIssn, $baseUrl, $journalPath, $availableYears, $notesAndComments);
     }
 
@@ -23,7 +22,9 @@ class PreservedJournalFactory
         $issues = $issueDao->getIssues($journal->getId());
 
         $lastIssue = $firstIssue = $issues->next();
-        while($issue = $issues->next()) $firstIssue = $issue;
+        while($issue = $issues->next()) {
+            $firstIssue = $issue;
+        }
 
         $lastIssueYear = (new DateTime($lastIssue->getData('datePublished')))->format('Y');
         $firstIssueYear = (new DateTime($firstIssue->getData('datePublished')))->format('Y');

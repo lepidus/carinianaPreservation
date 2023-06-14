@@ -11,7 +11,7 @@ define('CARINIANA_EMAIL', 'cariniana@ibict.br');
 
 class PreservationEmailBuilder
 {
-    public function buildPreservationEmail($journal, $baseUrl, $locale)
+    public function buildPreservationEmail($journal, $baseUrl, $notesAndComments, $locale)
     {
         $email = new Mail();
 
@@ -33,7 +33,7 @@ class PreservationEmailBuilder
         $email->setSubject($subject);
         $email->setBody($body);
 
-        $spreadsheetFilePath = $this->createJournalSpreadsheet($journal, $baseUrl, $locale);
+        $spreadsheetFilePath = $this->createJournalSpreadsheet($journal, $baseUrl, $notesAndComments, $locale);
         $email->addAttachment($spreadsheetFilePath);
 
         $statementData = $this->getResponsabilityStatementData($journal);
@@ -45,10 +45,10 @@ class PreservationEmailBuilder
         return $email;
     }
 
-    private function createJournalSpreadsheet($journal, $baseUrl, $locale): string
+    private function createJournalSpreadsheet($journal, $baseUrl, $notesAndComments, $locale): string
     {
         $preservedJournalFactory = new PreservedJournalFactory();
-        $preservedJournal = $preservedJournalFactory->buildPreservedJournal($journal, $baseUrl, $locale);
+        $preservedJournal = $preservedJournalFactory->buildPreservedJournal($journal, $baseUrl, $notesAndComments, $locale);
 
         $journalAcronym = $journal->getLocalizedData('acronym', $locale);
         $spreadsheetFilePath = "/tmp/planilha_preservacao_{$journalAcronym}.xlsx";

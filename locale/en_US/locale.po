@@ -72,7 +72,7 @@ msgstr "If you are interested, insert here some relevant information about the p
 
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.emailAddresses"
 msgstr ""
-"The e-mail with the journal data wil be sent to the e-mail address of Cariniana Network (cariniana@ibict.br), "
+"The e-mail with the journal data will be sent to the e-mail address of Cariniana Network (cariniana@ibict.br), "
 "with copy to the address(es): {$emailCopies}"
 
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.instruction"

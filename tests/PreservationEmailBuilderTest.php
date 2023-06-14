@@ -38,14 +38,14 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
         $this->createTestIssue($this->firstIssueYear);
         $this->createTestIssue($this->lastIssueYear);
         $this->createStatementFileSetting();
-        $this->email = $this->preservationEmailBuilder->buildPreservationEmail($this->journal, $this->baseUrl, $this->locale);
+        $this->email = $this->preservationEmailBuilder->buildPreservationEmail($this->journal, $this->baseUrl, $this->notesAndComments, $this->locale);
     }
 
     protected function getAffectedTables()
     {
-		return ['issues', 'issue_settings', 'plugin_settings'];
+        return ['issues', 'issue_settings', 'plugin_settings'];
     }
-    
+
     private function createTestJournal(): void
     {
         $this->journal = new Journal();
@@ -55,7 +55,6 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
         $this->journal->setData('printIssn', $this->issn);
         $this->journal->setData('onlineIssn', $this->eIssn);
         $this->journal->setData('urlPath', $this->journalPath);
-        $this->journal->setData('description', $this->notesAndComments, $this->locale);
         $this->journal->setData('acronym', $this->journalAcronym, $this->locale);
         $this->journal->setData('contactEmail', $this->journalContactEmail);
     }
@@ -79,7 +78,7 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
             'fileName' => $this->statementFileName,
             'fileType' => 'application/pdf',
         ]);
-    
+
         $plugin = new CarinianaPreservationPlugin();
         $plugin->updateSetting($this->journalId, 'statementFile', $statementFileData);
     }
@@ -108,8 +107,8 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
     {
         $plugin = new CarinianaPreservationPlugin();
         $plugin->updateSetting($this->journalId, 'extraCopyEmail', $this->extraCopyEmail);
-        $this->email = $this->preservationEmailBuilder->buildPreservationEmail($this->journal, $this->baseUrl, $this->locale);
-        
+        $this->email = $this->preservationEmailBuilder->buildPreservationEmail($this->journal, $this->baseUrl, $this->notesAndComments, $this->locale);
+
         $expectedCarbonCopies = [
             ['name' => $this->journalAcronym, 'email' => $this->journalContactEmail],
             ['name' => '', 'email' => $this->extraCopyEmail]

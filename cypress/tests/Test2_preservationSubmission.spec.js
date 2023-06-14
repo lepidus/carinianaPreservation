@@ -1,4 +1,11 @@
 describe("Cariniana Preservation Plugin - Submission to preservation", function () {
+    it("Removes ISSN and eISSN from the journal settings", function () {
+        cy.login('dbarnes', null, 'publicknowledge');
+        cy.get('li a:contains("Journal")').click();
+        cy.get('input[name="onlineIssn"]').clear();
+        cy.get('input[name="printIssn"]').clear();
+        cy.get('.pkpButton:visible').contains('Save').click();
+    });
     it("Messages on submission for preservation", function () {
         const pluginRowId = 'component-grid-settings-plugins-settingsplugingrid-category-generic-row-carinianapreservationplugin';
         cy.login('dbarnes', null, 'publicknowledge');
@@ -18,6 +25,6 @@ describe("Cariniana Preservation Plugin - Submission to preservation", function 
         cy.contains("Click on \"Submit\" to submit this journal for digital preservation by Cariniana");
 
         cy.get('.submitFormButton').contains('Submit').click();
-        cy.contains('The submission of the journal could not be carried out. The following data need to be filled: Journal Summary');
+        cy.contains('The submission of the journal could not be carried out. The following data need to be filled: Print ISSN, Online ISSN');
     });
 });

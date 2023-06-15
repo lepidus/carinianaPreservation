@@ -27,6 +27,12 @@ class PreservationSubmissionForm extends Form
         parent::__construct($plugin->getTemplateResource('preservationSubmission.tpl'));
     }
 
+    public function readInputData()
+    {
+        $userVars = ['notesAndComments'];
+        $this->readUserVars($userVars);
+    }
+
     public function fetch($request, $template = null, $display = false)
     {
         $templateMgr = TemplateManager::getManager($request);
@@ -78,7 +84,6 @@ class PreservationSubmissionForm extends Form
             'manager.setup.printIssn' => $journal->getData('printIssn'),
             'manager.setup.onlineIssn' => $journal->getData('onlineIssn'),
             'context.path' => $journal->getData('urlPath'),
-            'manager.setup.contextSummary' => $journal->getLocalizedData('description'),
             'manager.setup.contextInitials' => $journal->getLocalizedData('acronym'),
             'admin.settings.contactEmail' => $journal->getData('contactEmail')
         ];
@@ -102,12 +107,11 @@ class PreservationSubmissionForm extends Form
         $locale = AppLocale::getLocale();
         $journal = $journalDao->getById($this->contextId);
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
-        $preservationName = __('plugins.generic.carinianaPreservation.displayName');
-        $preservationEmail = $this->plugin->getSetting($this->contextId, 'recipientEmail');
+        $notesAndComments = $this->getData('notesAndComments');
 
         import('plugins.generic.carinianaPreservation.classes.PreservationEmailBuilder');
         $preservationEmailBuilder = new PreservationEmailBuilder();
-        $email = $preservationEmailBuilder->buildPreservationEmail($journal, $baseUrl, $locale);
+        $email = $preservationEmailBuilder->buildPreservationEmail($journal, $baseUrl, $notesAndComments, $locale);
         $email->send();
     }
 }

@@ -32,7 +32,7 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
 
     protected function getAffectedTables()
     {
-		return ['issues', 'issue_settings'];
+        return ['issues', 'issue_settings'];
     }
 
     private function createTestJournal(): void
@@ -44,13 +44,12 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
         $this->journal->setData('printIssn', $this->issn);
         $this->journal->setData('onlineIssn', $this->eIssn);
         $this->journal->setData('urlPath', $this->journalPath);
-        $this->journal->setData('description', $this->notesAndComments, $this->locale);
     }
 
     private function createTestIssue($issueYear): void
     {
         $issueDatePublished = $issueYear.'-01-01';
-        
+
         $issue = new Issue();
         $issue->setData('journalId', $this->journalId);
         $issue->setData('datePublished', $issueDatePublished);
@@ -61,7 +60,7 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
 
     public function testFactoryBuildsPreservedJournal(): void
     {
-        $preservedJournal = $this->preservedJournalFactory->buildPreservedJournal($this->journal, $this->baseUrl, $this->locale);
+        $preservedJournal = $this->preservedJournalFactory->buildPreservedJournal($this->journal, $this->baseUrl, $this->notesAndComments, $this->locale);
 
         $expectedRecord = [
             'SciELO',
@@ -72,6 +71,23 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
             'scielojournal18',
             '2018-2022',
             'We are the 18th SciELO journal'
+        ];
+        $this->assertEquals($expectedRecord, $preservedJournal->asRecord());
+    }
+
+    public function testFactoryBuildsPreservedJournalWithEmptyNotesAndComments(): void
+    {
+        $preservedJournal = $this->preservedJournalFactory->buildPreservedJournal($this->journal, $this->baseUrl, "", $this->locale);
+
+        $expectedRecord = [
+            'SciELO',
+            'SciELO Journal n18',
+            '1234-1234',
+            '0101-1010',
+            'https://scielo-journal-18.com.br/',
+            'scielojournal18',
+            '2018-2022',
+            ''
         ];
         $this->assertEquals($expectedRecord, $preservedJournal->asRecord());
     }

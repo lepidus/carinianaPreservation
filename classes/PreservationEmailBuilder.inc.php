@@ -9,15 +9,16 @@ import('plugins.generic.carinianaPreservation.CarinianaPreservationPlugin');
 define('CARINIANA_NAME', 'Rede Cariniana');
 define('CARINIANA_EMAIL', 'cariniana@ibict.br');
 
-class PreservationEmailBuilder {
-
-    public function buildPreservationEmail($journal, $baseUrl, $locale) {
+class PreservationEmailBuilder
+{
+    public function buildPreservationEmail($journal, $baseUrl, $notesAndComments, $locale)
+    {
         $email = new Mail();
 
         $fromName = $journal->getLocalizedData('acronym', $locale);
         $fromEmail = $journal->getData('contactEmail');
         $email->setFrom($fromEmail, $fromName);
-        
+
         $email->addRecipient(CARINIANA_EMAIL, CARINIANA_NAME);
         $email->addCc($fromEmail, $fromName);
 
@@ -26,15 +27,15 @@ class PreservationEmailBuilder {
         if(!empty($extraCopyEmail)) {
             $email->addCc($extraCopyEmail);
         }
-        
+
         $subject = __('plugins.generic.carinianaPreservation.preservationEmail.subject', ['journalAcronym' => $fromName], $locale);
         $body = __('plugins.generic.carinianaPreservation.preservationEmail.body', ['journalAcronym' => $fromName], $locale);
         $email->setSubject($subject);
         $email->setBody($body);
 
-        $spreadsheetFilePath = $this->createJournalSpreadsheet($journal, $baseUrl, $locale);
+        $spreadsheetFilePath = $this->createJournalSpreadsheet($journal, $baseUrl, $notesAndComments, $locale);
         $email->addAttachment($spreadsheetFilePath);
-        
+
         $statementData = $this->getResponsabilityStatementData($journal);
         $email->addAttachment($statementData['path'], $statementData['name'], $statementData['type']);
 
@@ -44,10 +45,10 @@ class PreservationEmailBuilder {
         return $email;
     }
 
-    private function createJournalSpreadsheet($journal, $baseUrl, $locale): string
+    private function createJournalSpreadsheet($journal, $baseUrl, $notesAndComments, $locale): string
     {
         $preservedJournalFactory = new PreservedJournalFactory();
-        $preservedJournal = $preservedJournalFactory->buildPreservedJournal($journal, $baseUrl, $locale);
+        $preservedJournal = $preservedJournalFactory->buildPreservedJournal($journal, $baseUrl, $notesAndComments, $locale);
 
         $journalAcronym = $journal->getLocalizedData('acronym', $locale);
         $spreadsheetFilePath = "/tmp/planilha_preservacao_{$journalAcronym}.xlsx";
@@ -62,9 +63,9 @@ class PreservationEmailBuilder {
     {
         $plugin = new CarinianaPreservationPlugin();
         $statementFileData = json_decode($plugin->getSetting($journal->getId(), 'statementFile'), true);
-        
+
         import('classes.file.PublicFileManager');
-		$publicFileManager = new PublicFileManager();
+        $publicFileManager = new PublicFileManager();
         $publicFilesPath = $publicFileManager->getContextFilesPath($journal->getId());
         $statementFilePath = $publicFilesPath . '/' . $statementFileData['fileName'];
 
@@ -83,7 +84,7 @@ class PreservationEmailBuilder {
 
         $journalAcronym = $journal->getLocalizedData('acronym', $locale);
         $xmlFilePath = "/tmp/marcacoes_preservacao_{$journalAcronym}.xml";
-        
+
         $preservationXmlBuilder = new PreservationXmlBuilder($journal, $issues, $baseUrl, $locale);
         $preservationXmlBuilder->createPreservationXml($xmlFilePath);
 

@@ -12,7 +12,6 @@
  * @brief Form to submit a journal to digital preservation by Cariniana
  */
 
-
 import('lib.pkp.classes.form.Form');
 
 class PreservationSubmissionForm extends Form
@@ -63,13 +62,13 @@ class PreservationSubmissionForm extends Form
         $journal = $journalDao->getById($this->contextId);
 
         list($requirementsAreMissing, $missingRequirements) = $this->requirementsAreMissing($journal);
-        if($requirementsAreMissing) {
+        if ($requirementsAreMissing) {
             $missingRequirements = implode(', ', $missingRequirements);
             $this->addError('preservationSubmission', __("plugins.generic.carinianaPreservation.preservationSubmission.missingRequirements", ['missingRequirements' => $missingRequirements]));
         }
 
         $statementFile = $this->plugin->getSetting($this->contextId, 'statementFile');
-        if(empty($statementFile)) {
+        if (empty($statementFile)) {
             $this->addError('preservationSubmission', __("plugins.generic.carinianaPreservation.preservationSubmission.missingResponsabilityStatement"));
         }
 
@@ -90,8 +89,8 @@ class PreservationSubmissionForm extends Form
 
         $requirementsAreMissing = false;
         $missingRequirements = [];
-        foreach($requirements as $name => $value) {
-            if(empty($value)) {
+        foreach ($requirements as $name => $value) {
+            if (empty($value)) {
                 $requirementsAreMissing = true;
                 $missingRequirements[] = __($name);
             }

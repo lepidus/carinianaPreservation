@@ -2,13 +2,13 @@
 
 import('classes.journal.Journal');
 
-class PreservationXmlBuilder {
-    
+class PreservationXmlBuilder
+{
     private $journal;
     private $issues;
     private $baseUrl;
     private $locale;
-    
+
     public function __construct(Journal $journal, array $issues, string $baseUrl, string $locale)
     {
         $this->journal = $journal;
@@ -31,7 +31,7 @@ class PreservationXmlBuilder {
         $lockssConfig->appendChild($titleProperty);
 
         $preservedYearsData = $this->getPreservedYearsData();
-        foreach($preservedYearsData as $preservedYear) {
+        foreach ($preservedYearsData as $preservedYear) {
             $preservedYearProperty = $this->createPreservedYearProperty($dom, $preservedYear['year'], $preservedYear['title'], $preservedYear['volume'], $preservedYear['volumeText']);
             $titleProperty->appendChild($preservedYearProperty);
         }
@@ -45,26 +45,28 @@ class PreservationXmlBuilder {
         $preservedYearsData = [];
 
         $issuesByYear = [];
-        foreach($this->issues as $issue) {
+        foreach ($this->issues as $issue) {
             $issueYear = $issue->getData('year');
-            if(array_key_exists($issueYear, $issuesByYear))
+            if (array_key_exists($issueYear, $issuesByYear)) {
                 $issuesByYear[$issueYear] = array_merge($issuesByYear[$issueYear], [$issue]);
-            else
+            } else {
                 $issuesByYear[$issueYear] = [$issue];
+            }
         }
 
-        foreach($issuesByYear as $issuesFromYear) {
+        foreach ($issuesByYear as $issuesFromYear) {
             $numIssues = count($issuesFromYear);
             $firstIssue = $issuesFromYear[0];
-            $lastIssue = $issuesFromYear[$numIssues-1];
+            $lastIssue = $issuesFromYear[$numIssues - 1];
 
             $indexToUse = (is_null($firstIssue->getData('volume')) ? 'number' : 'volume');
 
-            if($firstIssue->getData($indexToUse) == $lastIssue->getData($indexToUse))
+            if ($firstIssue->getData($indexToUse) == $lastIssue->getData($indexToUse)) {
                 $volumeText = $firstIssue->getData($indexToUse);
-            else
+            } else {
                 $volumeText = $firstIssue->getData($indexToUse) . "-" . $lastIssue->getData($indexToUse);
-            
+            }
+
             $year = $firstIssue->getData('year');
             $preservedYearsData[$year] = [
                 'year' => $year,
@@ -81,7 +83,7 @@ class PreservationXmlBuilder {
     {
         $property = $dom->createElement('property');
         $property->setAttribute('name', $name);
-        if($value) {
+        if ($value) {
             $property->setAttribute('value', $value);
         }
 
@@ -145,15 +147,14 @@ class PreservationXmlBuilder {
         ];
 
         foreach ($preservedYearProperties as $propertyName => $propertyValue) {
-            if($propertyName == 'params') {
+            if ($propertyName == 'params') {
                 $i = 1;
-                foreach($propertyValue as $paramName => $paramValue) {
+                foreach ($propertyValue as $paramName => $paramValue) {
                     $paramNode = $this->createPreservedYearParamProperty($dom, $i, $paramName, $paramValue);
                     $preservedYear->appendChild($paramNode);
                     $i++;
                 }
-            }
-            else {
+            } else {
                 $propertyNode = $this->createXmlProperty($dom, $propertyName, $propertyValue);
                 $preservedYear->appendChild($propertyNode);
             }

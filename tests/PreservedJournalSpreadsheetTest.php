@@ -2,8 +2,8 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use PHPUnit\Framework\TestCase;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PHPUnit\Framework\TestCase;
 
 import('classes.submission.Submission');
 import('plugins.generic.carinianaPreservation.classes.PreservedJournalSpreadsheet');

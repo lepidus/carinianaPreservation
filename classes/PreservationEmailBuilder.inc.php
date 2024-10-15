@@ -24,7 +24,7 @@ class PreservationEmailBuilder
 
         $plugin = new CarinianaPreservationPlugin();
         $extraCopyEmail = $plugin->getSetting($journal->getId(), 'extraCopyEmail');
-        if(!empty($extraCopyEmail)) {
+        if (!empty($extraCopyEmail)) {
             $email->addCc($extraCopyEmail);
         }
 

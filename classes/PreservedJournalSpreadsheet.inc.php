@@ -30,8 +30,8 @@ class PreservedJournalSpreadsheet
 
     private function writeRowOnSpreadSheet($worksheet, $data, $rowIndex)
     {
-        for($columnIndex = 1; $columnIndex <= count($data); $columnIndex++) {
-            $worksheet->setCellValueByColumnAndRow($columnIndex, $rowIndex, $data[$columnIndex-1]);
+        for ($columnIndex = 1; $columnIndex <= count($data); $columnIndex++) {
+            $worksheet->setCellValueByColumnAndRow($columnIndex, $rowIndex, $data[$columnIndex - 1]);
         }
     }
 
@@ -43,7 +43,7 @@ class PreservedJournalSpreadsheet
         $this->writeRowOnSpreadSheet($worksheet, $this->getHeaders(), 1);
 
         $rowIndex = 2;
-        foreach($this->journals as $journal) {
+        foreach ($this->journals as $journal) {
             $this->writeRowOnSpreadSheet($worksheet, $journal->asRecord(), $rowIndex);
             $rowIndex++;
         }

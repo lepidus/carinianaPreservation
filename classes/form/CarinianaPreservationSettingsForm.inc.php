@@ -68,7 +68,7 @@ class CarinianaPreservationSettingsForm extends Form
         }
 
         $temporaryFileId = $this->getData('temporaryFileId');
-        if($temporaryFileId) {
+        if ($temporaryFileId) {
             $this->saveResponsabilityStatementFile($contextId, $plugin, $temporaryFileId);
         }
 
@@ -86,7 +86,7 @@ class CarinianaPreservationSettingsForm extends Form
 
         $statementFileName = $this->moveStatementTempFile($contextId, $statementTempFile, $user->getId());
 
-        if($statementFileName) {
+        if ($statementFileName) {
             $statementFileData = json_encode([
                 'originalFileName' => $statementTempFile->getOriginalFileName(),
                 'fileName' => $statementFileName,

@@ -136,7 +136,7 @@ class PreservationXmlBuilder
             'eissn' => $this->journal->getData('onlineIssn'),
             'type' => 'journal',
             'title' => $title,
-            'plugin' => 'org.lockss.plugin.ojs3.OJS3Plugin',
+            'plugin' => 'org.lockss.plugin.ojs3.ClockssOJS3Plugin',
             'params' => [
                 'base_url' => $this->baseUrl,
                 'journal_id' => $this->journal->getData('urlPath'),

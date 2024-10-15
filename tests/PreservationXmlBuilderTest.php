@@ -120,7 +120,7 @@ class PreservationXmlBuilderTest extends PKPTestCase
         $titleProperty = $this->createXmlProperty($dom, 'title', "RBRB 1sem $year");
         $preservedYear->appendChild($titleProperty);
 
-        $pluginProperty = $this->createXmlProperty($dom, 'plugin', 'org.lockss.plugin.ojs3.OJS3Plugin');
+        $pluginProperty = $this->createXmlProperty($dom, 'plugin', 'org.lockss.plugin.ojs3.ClockssOJS3Plugin');
         $preservedYear->appendChild($pluginProperty);
 
         $param1Property = $this->createPreservedYearParamProperty($dom, 1, 'base_url', $this->baseUrl);

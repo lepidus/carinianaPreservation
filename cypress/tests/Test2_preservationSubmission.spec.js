@@ -18,13 +18,13 @@ describe("Cariniana Preservation Plugin - Submission to preservation", function 
         cy.wait(200);
 
         cy.contains("The e-mail with the journal data will be sent to the e-mail address of Cariniana Network (cariniana@ibict.br), with copy to the address(es): rvaca@mailinator.com, copia.extra.cariniana@gmail.com");
-        
+
         cy.contains("Notes and comments");
         cy.contains("If you are interested, insert here some relevant information about the publication");
-        
+
         cy.contains("Click on \"Submit\" to submit this journal for digital preservation by Cariniana");
 
         cy.get('.submitFormButton').contains('Submit').click();
-        cy.contains('The submission of the journal could not be carried out. The following data need to be filled: Print ISSN, Online ISSN');
+        cy.contains('The submission of the journal could not be carried out. The following data need to be filled: ISSN');
     });
 });

@@ -82,9 +82,9 @@ class PreservationXmlBuilder
     private function createXmlProperty($dom, $name, $value = null)
     {
         $property = $dom->createElement('property');
-        $property->setAttribute('name', $name);
+        $property->setAttribute('name', $this->normalize($name));
         if ($value) {
-            $property->setAttribute('value', $value);
+            $property->setAttribute('value', $this->normalize($value));
         }
 
         return $property;
@@ -136,7 +136,7 @@ class PreservationXmlBuilder
             'eissn' => $this->journal->getData('onlineIssn'),
             'type' => 'journal',
             'title' => $title,
-            'plugin' => 'org.lockss.plugin.ojs3.OJS3Plugin',
+            'plugin' => 'org.lockss.plugin.ojs3.ClockssOJS3Plugin',
             'params' => [
                 'base_url' => $this->baseUrl,
                 'journal_id' => $this->journal->getData('urlPath'),
@@ -147,6 +147,10 @@ class PreservationXmlBuilder
         ];
 
         foreach ($preservedYearProperties as $propertyName => $propertyValue) {
+            if (!$propertyValue) {
+                continue;
+            }
+
             if ($propertyName == 'params') {
                 $i = 1;
                 foreach ($propertyValue as $paramName => $paramValue) {
@@ -154,12 +158,20 @@ class PreservationXmlBuilder
                     $preservedYear->appendChild($paramNode);
                     $i++;
                 }
-            } else {
-                $propertyNode = $this->createXmlProperty($dom, $propertyName, $propertyValue);
-                $preservedYear->appendChild($propertyNode);
+                continue;
             }
+
+            $propertyNode = $this->createXmlProperty($dom, $propertyName, $propertyValue);
+            $preservedYear->appendChild($propertyNode);
         }
 
         return $preservedYear;
+    }
+
+    private function normalize($string)
+    {
+        $string = str_replace('&', 'E', $string);
+        $string = iconv("utf-8", "ascii//TRANSLIT", $string);
+        return $string;
     }
 }

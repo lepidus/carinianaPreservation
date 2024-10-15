@@ -13,7 +13,16 @@ class PreservedJournalFactory
         $journalPath = $journal->getData('urlPath');
         $availableYears = $this->getAvailableYears($journal);
 
-        return new PreservedJournal($publisherOrInstitution, $title, $issn, $eIssn, $baseUrl, $journalPath, $availableYears, $notesAndComments);
+        return new PreservedJournal(
+            $publisherOrInstitution,
+            $title,
+            $issn,
+            $eIssn,
+            $baseUrl,
+            $journalPath,
+            $availableYears,
+            $notesAndComments
+        );
     }
 
     private function getAvailableYears($journal): string

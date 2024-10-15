@@ -82,9 +82,9 @@ class PreservationXmlBuilder
     private function createXmlProperty($dom, $name, $value = null)
     {
         $property = $dom->createElement('property');
-        $property->setAttribute('name', $name);
+        $property->setAttribute('name', $this->normalize($name));
         if ($value) {
-            $property->setAttribute('value', $value);
+            $property->setAttribute('value', $this->normalize($value));
         }
 
         return $property;
@@ -161,5 +161,12 @@ class PreservationXmlBuilder
         }
 
         return $preservedYear;
+    }
+
+    private function normalize($string)
+    {
+        $string = str_replace('&', 'E', $string);
+        $string = iconv("utf-8", "ascii//TRANSLIT", $string);
+        return $string;
     }
 }

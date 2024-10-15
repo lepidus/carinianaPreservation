@@ -46,7 +46,7 @@ class PreservationSubmissionForm extends Form
         return parent::fetch($request, $template, $display);
     }
 
-    private function getPreservationEmailCopies(): string
+    private function getPreservationEmailCopies()
     {
         $journalDao = DAORegistry::getDAO('JournalDAO');
         $journal = $journalDao->getById($this->contextId);
@@ -61,42 +61,53 @@ class PreservationSubmissionForm extends Form
         $journalDao = DAORegistry::getDAO('JournalDAO');
         $journal = $journalDao->getById($this->contextId);
 
-        list($requirementsAreMissing, $missingRequirements) = $this->requirementsAreMissing($journal);
-        if ($requirementsAreMissing) {
-            $missingRequirements = implode(', ', $missingRequirements);
-            $this->addError('preservationSubmission', __("plugins.generic.carinianaPreservation.preservationSubmission.missingRequirements", ['missingRequirements' => $missingRequirements]));
+        $missingRequirements = $this->getMissingRequirements($journal);
+        if (!empty($missingRequirements)) {
+            $missingRequirementsStr = implode(', ', $missingRequirements);
+            $this->addError('preservationSubmission', __(
+                "plugins.generic.carinianaPreservation.preservationSubmission.missingRequirements",
+                ['missingRequirements' => $missingRequirementsStr]
+            ));
         }
 
         $statementFile = $this->plugin->getSetting($this->contextId, 'statementFile');
         if (empty($statementFile)) {
-            $this->addError('preservationSubmission', __("plugins.generic.carinianaPreservation.preservationSubmission.missingResponsabilityStatement"));
+            $this->addError('preservationSubmission', __(
+                "plugins.generic.carinianaPreservation.preservationSubmission.missingResponsabilityStatement"
+            ));
         }
 
         return parent::validate($callHooks);
     }
 
-    private function requirementsAreMissing($journal): array
+    private function getMissingRequirements($journal)
     {
+        \AppLocale::requireComponents(
+            LOCALE_COMPONENT_PKP_ADMIN,
+            LOCALE_COMPONENT_APP_EDITOR
+        );
+
+        $issueDao = DAORegistry::getDAO('IssueDAO');
+        $issues = $issueDao->getPublishedIssues($journal->getId())->toArray();
+
         $requirements = [
             'manager.setup.publisher' => $journal->getData('publisherInstitution'),
             'manager.setup.contextTitle' => $journal->getLocalizedData('name'),
-            'manager.setup.printIssn' => $journal->getData('printIssn'),
-            'manager.setup.onlineIssn' => $journal->getData('onlineIssn'),
+            'journal.issn' => $journal->getData('printIssn') ?? $journal->getData('onlineIssn'),
             'context.path' => $journal->getData('urlPath'),
             'manager.setup.contextInitials' => $journal->getLocalizedData('acronym'),
-            'admin.settings.contactEmail' => $journal->getData('contactEmail')
+            'admin.settings.contactEmail' => $journal->getData('contactEmail'),
+            'editor.publishedIssues' => $issues
         ];
 
-        $requirementsAreMissing = false;
         $missingRequirements = [];
         foreach ($requirements as $name => $value) {
             if (empty($value)) {
-                $requirementsAreMissing = true;
                 $missingRequirements[] = __($name);
             }
         }
 
-        return [$requirementsAreMissing, $missingRequirements];
+        return $missingRequirements;
     }
 
     public function execute(...$functionArgs)

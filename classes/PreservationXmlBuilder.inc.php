@@ -147,6 +147,10 @@ class PreservationXmlBuilder
         ];
 
         foreach ($preservedYearProperties as $propertyName => $propertyValue) {
+            if (!$propertyValue) {
+                continue;
+            }
+
             if ($propertyName == 'params') {
                 $i = 1;
                 foreach ($propertyValue as $paramName => $paramValue) {
@@ -154,10 +158,11 @@ class PreservationXmlBuilder
                     $preservedYear->appendChild($paramNode);
                     $i++;
                 }
-            } else {
-                $propertyNode = $this->createXmlProperty($dom, $propertyName, $propertyValue);
-                $preservedYear->appendChild($propertyNode);
+                continue;
             }
+
+            $propertyNode = $this->createXmlProperty($dom, $propertyName, $propertyValue);
+            $preservedYear->appendChild($propertyNode);
         }
 
         return $preservedYear;

@@ -59,7 +59,7 @@ class PreservationXmlBuilderTest extends PKPTestCase
     {
         $property = $dom->createElement('property');
         $property->setAttribute('name', $name);
-        if($value) {
+        if ($value) {
             $property->setAttribute('value', $value);
         }
 
@@ -154,7 +154,7 @@ class PreservationXmlBuilderTest extends PKPTestCase
         $titleProperty = $this->createXmlProperty($dom, 'org.lockss.title');
         $lockssConfig->appendChild($titleProperty);
 
-        foreach($preservedYears as $preservedYear) {
+        foreach ($preservedYears as $preservedYear) {
             list($year, $volume, $volumeText) = $preservedYear;
             $preservedYearProperty = $this->createPreservedYearProperty($dom, $year, $volume, $volumeText);
             $titleProperty->appendChild($preservedYearProperty);
@@ -174,7 +174,7 @@ class PreservationXmlBuilderTest extends PKPTestCase
             $this->createTestIssue(2019, 'RBRB 2sem 2019', 2, 2)
         ];
         $this->xml = $this->createExpectedXml([['2018', '1', '1'], ['2019', '2', '2']]);
-        
+
         $preservationXmlBuilder = new PreservationXmlBuilder($this->journal, $this->issues, $this->baseUrl, $this->locale);
         $preservationXmlBuilder->createPreservationXml($this->xmlPath);
 
@@ -193,7 +193,7 @@ class PreservationXmlBuilderTest extends PKPTestCase
             $this->createTestIssue(2019, 'RBRB 2sem 2019', null, 4)
         ];
         $this->xml = $this->createExpectedXml([['2018', '1', '1-2'], ['2019', '3', '3-4']]);
-        
+
         $preservationXmlBuilder = new PreservationXmlBuilder($this->journal, $this->issues, $this->baseUrl, $this->locale);
         $preservationXmlBuilder->createPreservationXml($this->xmlPath);
 

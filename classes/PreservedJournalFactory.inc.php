@@ -22,7 +22,7 @@ class PreservedJournalFactory
         $issues = $issueDao->getIssues($journal->getId());
 
         $lastIssue = $firstIssue = $issues->next();
-        while($issue = $issues->next()) {
+        while ($issue = $issues->next()) {
             $firstIssue = $issue;
         }
 

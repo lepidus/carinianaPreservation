@@ -29,16 +29,23 @@ class PreservedJournalFactory
     {
         $issueDao = DAORegistry::getDAO('IssueDAO');
         $issues = array_reverse($issueDao->getPublishedIssues($journal->getId())->toArray());
-        $lastIssue = end($issues);
-        $issuesYear = "";
+        $issuesYearList = [];
+        $availableYears = "";
 
         foreach ($issues as $issue) {
-            $issuesYear .= (new DateTime($issue->getData('datePublished')))->format('Y');
-            if ($issue != $lastIssue) {
-                $issuesYear .= "; ";
+            $issuesYearList[] = (new DateTime($issue->getData('datePublished')))->format('Y');
+        }
+
+        $issuesYearList = array_unique($issuesYearList);
+        $lastIssueYear = end($issuesYearList);
+
+        foreach ($issuesYearList as $issueYear) {
+            $availableYears .= $issueYear;
+            if ($issueYear != $lastIssueYear) {
+                $availableYears .= "; ";
             }
         }
 
-        return $issuesYear;
+        return $availableYears;
     }
 }

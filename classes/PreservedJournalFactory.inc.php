@@ -28,7 +28,7 @@ class PreservedJournalFactory
     private function getAvailableYears($journal): string
     {
         $issueDao = DAORegistry::getDAO('IssueDAO');
-        $issues = array_reverse($issueDao->getIssues($journal->getId())->toArray());
+        $issues = array_reverse($issueDao->getPublishedIssues($journal->getId())->toArray());
         $lastIssue = end($issues);
         $issuesYear = "";
 

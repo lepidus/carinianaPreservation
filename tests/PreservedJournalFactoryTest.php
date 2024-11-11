@@ -53,6 +53,7 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
         $issue = new Issue();
         $issue->setData('journalId', $this->journalId);
         $issue->setData('datePublished', $issueDatePublished);
+        $issue->setPublished(true);
 
         $issueDao = DAORegistry::getDAO('IssueDAO');
         $issueDao->insertObject($issue);

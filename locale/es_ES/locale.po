@@ -11,10 +11,10 @@ msgstr ""
 "PO-Revision-Date: 2023-02-15T23:03:20+00:00\n"
 "Language: Español\n"
 
-msgid "plugins.generic.plauditPreEndorsement.displayName"
+msgid "plugins.generic.carinianaPreservation.displayName"
 msgstr "Preservación Cariniana"
 
-msgid "plugins.generic.plauditPreEndorsement.description"
+msgid "plugins.generic.carinianaPreservation.description"
 msgstr "Este módulo permite conservar revistas brasileñas publicadas en OJS en la red Cariniana"
 
 msgid "plugins.generic.carinianaPreservation.settings.extraCopyEmail"
@@ -54,6 +54,9 @@ msgstr "Identificador de la revista"
 
 msgid "plugins.generic.carinianaPreservation.headers.availableYears"
 msgstr "Años disponibles"
+
+msgid "plugins.generic.carinianaPreservation.headers.issuesVolumes"
+msgstr "Volumen de los números"
 
 msgid "plugins.generic.carinianaPreservation.headers.notesAndComments"
 msgstr "Notas y comentarios"

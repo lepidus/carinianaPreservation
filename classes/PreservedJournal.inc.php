@@ -9,6 +9,7 @@ class PreservedJournal
     private $baseUrl;
     private $journalPath;
     private $availableYears;
+    private $issuesVolumes;
     private $notesAndComments;
 
     public function __construct(
@@ -19,6 +20,7 @@ class PreservedJournal
         string $baseUrl,
         string $journalPath,
         string $availableYears,
+        ?string $issuesVolumes,
         string $notesAndComments
     ) {
         $this->publisherOrInstitution = $publisherOrInstitution;
@@ -28,6 +30,7 @@ class PreservedJournal
         $this->baseUrl = $baseUrl;
         $this->journalPath = $journalPath;
         $this->availableYears = $availableYears;
+        $this->issuesVolumes = $issuesVolumes;
         $this->notesAndComments = $notesAndComments;
     }
 
@@ -41,6 +44,7 @@ class PreservedJournal
             $this->baseUrl,
             $this->journalPath,
             $this->availableYears,
+            $this->issuesVolumes,
             $this->notesAndComments
         ];
     }

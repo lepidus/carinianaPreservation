@@ -12,6 +12,7 @@ class PreservedJournalFactory
         $eIssn = $journal->getData('onlineIssn');
         $journalPath = $journal->getData('urlPath');
         $availableYears = $this->getAvailableYears($journal);
+        $issuesVolumes = $this->getIssuesVolumes($journal);
 
         return new PreservedJournal(
             $publisherOrInstitution,
@@ -21,6 +22,7 @@ class PreservedJournalFactory
             $baseUrl,
             $journalPath,
             $availableYears,
+            $issuesVolumes,
             $notesAndComments
         );
     }
@@ -28,16 +30,41 @@ class PreservedJournalFactory
     private function getAvailableYears($journal): string
     {
         $issueDao = DAORegistry::getDAO('IssueDAO');
-        $issues = $issueDao->getIssues($journal->getId());
+        $issues = array_reverse($issueDao->getPublishedIssues($journal->getId())->toArray());
+        $issuesYearList = [];
+        $availableYears = "";
 
-        $lastIssue = $firstIssue = $issues->next();
-        while ($issue = $issues->next()) {
-            $firstIssue = $issue;
+        foreach ($issues as $issue) {
+            $issuesYearList[] = (new DateTime($issue->getData('datePublished')))->format('Y');
         }
 
-        $lastIssueYear = (new DateTime($lastIssue->getData('datePublished')))->format('Y');
-        $firstIssueYear = (new DateTime($firstIssue->getData('datePublished')))->format('Y');
+        $issuesYearList = array_unique($issuesYearList);
+        $lastIssueYear = end($issuesYearList);
 
-        return "$firstIssueYear-$lastIssueYear";
+        foreach ($issuesYearList as $issueYear) {
+            $availableYears .= $issueYear;
+            if ($issueYear != $lastIssueYear) {
+                $availableYears .= "; ";
+            }
+        }
+
+        return $availableYears;
+    }
+
+    private function getIssuesVolumes($journal): string
+    {
+        $issueDao = DAORegistry::getDAO('IssueDAO');
+        $issues = array_reverse($issueDao->getPublishedIssues($journal->getId())->toArray());
+        $lastIssue = end($issues);
+        $volumes = "";
+
+        foreach ($issues as $issue) {
+            $volumes .= $issue->getVolume();
+            if ($issue != $lastIssue && !empty($issue->getVolume())) {
+                $volumes .= "; ";
+            }
+        }
+
+        return $volumes;
     }
 }

@@ -14,12 +14,23 @@ class PreservedJournalTest extends TestCase
     private $eIssn = '0101-1010';
     private $baseUrl = 'https://scielo-journal-18.com.br/';
     private $journalPath = 'scielojournal18';
-    private $availableYears = '2018-2022';
+    private $availableYears = '2018; 2022';
     private $notesAndComments = 'We are the 18th SciELO journal';
+    private $issuesVolumes = '1; 2; 12; 18';
 
     public function setUp(): void
     {
-        $this->preservedJournal = new PreservedJournal($this->publisherOrInstitution, $this->title, $this->issn, $this->eIssn, $this->baseUrl, $this->journalPath, $this->availableYears, $this->notesAndComments);
+        $this->preservedJournal = new PreservedJournal(
+            $this->publisherOrInstitution,
+            $this->title,
+            $this->issn,
+            $this->eIssn,
+            $this->baseUrl,
+            $this->journalPath,
+            $this->availableYears,
+            $this->issuesVolumes,
+            $this->notesAndComments,
+        );
     }
 
     public function testJournalRecord(): void
@@ -31,7 +42,8 @@ class PreservedJournalTest extends TestCase
             '0101-1010',
             'https://scielo-journal-18.com.br/',
             'scielojournal18',
-            '2018-2022',
+            '2018; 2022',
+            '1; 2; 12; 18',
             'We are the 18th SciELO journal'
         ];
         $this->assertEquals($expectedRecord, $this->preservedJournal->asRecord());

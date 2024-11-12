@@ -19,6 +19,8 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
     private $journalPath = 'scielojournal18';
     private $firstIssueYear = '2018';
     private $lastIssueYear = '2022';
+    private $firstIssueVolume = 1;
+    private $secondIssueVolume = 2;
     private $notesAndComments = 'We are the 18th SciELO journal';
 
     public function setUp(): void
@@ -26,8 +28,8 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
         parent::setUp();
         $this->createTestJournal();
         $this->preservedJournalFactory = new PreservedJournalFactory();
-        $this->createTestIssue($this->firstIssueYear);
-        $this->createTestIssue($this->lastIssueYear);
+        $this->createTestIssue($this->firstIssueYear, $this->firstIssueVolume);
+        $this->createTestIssue($this->lastIssueYear, $this->secondIssueVolume);
     }
 
     protected function getAffectedTables()
@@ -46,13 +48,15 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
         $this->journal->setData('urlPath', $this->journalPath);
     }
 
-    private function createTestIssue($issueYear): void
+    private function createTestIssue($issueYear, $issueVolume): void
     {
         $issueDatePublished = $issueYear.'-01-01';
 
         $issue = new Issue();
         $issue->setData('journalId', $this->journalId);
         $issue->setData('datePublished', $issueDatePublished);
+        $issue->setVolume($issueVolume);
+        $issue->setPublished(true);
 
         $issueDao = DAORegistry::getDAO('IssueDAO');
         $issueDao->insertObject($issue);
@@ -69,7 +73,8 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
             '0101-1010',
             'https://scielo-journal-18.com.br/',
             'scielojournal18',
-            '2018-2022',
+            '2018; 2022',
+            '1; 2',
             'We are the 18th SciELO journal'
         ];
         $this->assertEquals($expectedRecord, $preservedJournal->asRecord());
@@ -86,7 +91,8 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
             '0101-1010',
             'https://scielo-journal-18.com.br/',
             'scielojournal18',
-            '2018-2022',
+            '2018; 2022',
+            '1; 2',
             ''
         ];
         $this->assertEquals($expectedRecord, $preservedJournal->asRecord());

@@ -12,6 +12,7 @@ class PreservedJournalFactory
         $eIssn = $journal->getData('onlineIssn');
         $journalPath = $journal->getData('urlPath');
         $availableYears = $this->getAvailableYears($journal);
+        $issuesVolumes = $this->getIssuesVolumes($journal);
 
         return new PreservedJournal(
             $publisherOrInstitution,
@@ -21,6 +22,7 @@ class PreservedJournalFactory
             $baseUrl,
             $journalPath,
             $availableYears,
+            $issuesVolumes,
             $notesAndComments
         );
     }
@@ -47,5 +49,22 @@ class PreservedJournalFactory
         }
 
         return $availableYears;
+    }
+
+    private function getIssuesVolumes($journal): string
+    {
+        $issueDao = DAORegistry::getDAO('IssueDAO');
+        $issues = array_reverse($issueDao->getPublishedIssues($journal->getId())->toArray());
+        $lastIssue = end($issues);
+        $volumes = "";
+
+        foreach ($issues as $issue) {
+            $volumes .= $issue->getVolume();
+            if ($issue != $lastIssue && !empty($issue->getVolume())) {
+                $volumes .= "; ";
+            }
+        }
+
+        return $volumes;
     }
 }

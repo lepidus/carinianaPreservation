@@ -16,7 +16,17 @@ class PreservedJournalSpreadsheetTest extends TestCase
     public function setUp(): void
     {
         $journals = [
-            new PreservedJournal('SciELO', 'SciELO Journal n18', '1234-1234', '0101-1010', 'https://scielo-journal-18.com.br/', 'scielojournal18', '2018-2022', 'We are the 18th SciELO journal')
+            new PreservedJournal(
+                'SciELO',
+                'SciELO Journal n18',
+                '1234-1234',
+                '0101-1010',
+                'https://scielo-journal-18.com.br/',
+                'scielojournal18',
+                '2018; 2022',
+                '1; 2; 12; 18',
+                'We are the 18th SciELO journal'
+            )
         ];
 
         $this->spreadsheet = new PreservedJournalSpreadsheet($journals);
@@ -49,6 +59,7 @@ class PreservedJournalSpreadsheetTest extends TestCase
             __("plugins.generic.carinianaPreservation.headers.baseUrl"),
             __("plugins.generic.carinianaPreservation.headers.journalPath"),
             __("plugins.generic.carinianaPreservation.headers.availableYears"),
+            __("plugins.generic.carinianaPreservation.headers.issuesVolumes"),
             __("plugins.generic.carinianaPreservation.headers.notesAndComments"),
         ];
 
@@ -62,7 +73,7 @@ class PreservedJournalSpreadsheetTest extends TestCase
         $this->spreadsheet->createSpreadsheet($this->filePath);
         $worksheet = $this->getWorksheet();
 
-        $expectedJournalData = ['SciELO', 'SciELO Journal n18', '1234-1234', '0101-1010', 'https://scielo-journal-18.com.br/', 'scielojournal18', '2018-2022', 'We are the 18th SciELO journal'];
+        $expectedJournalData = ['SciELO', 'SciELO Journal n18', '1234-1234', '0101-1010', 'https://scielo-journal-18.com.br/', 'scielojournal18', '2018; 2022', '1; 2; 12; 18', 'We are the 18th SciELO journal'];
         $secondRow = $worksheet->toArray()[1];
 
         $this->assertEquals($expectedJournalData, $secondRow);

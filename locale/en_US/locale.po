@@ -55,6 +55,9 @@ msgstr "Journal's identifier"
 msgid "plugins.generic.carinianaPreservation.headers.availableYears"
 msgstr "Available years"
 
+msgid "plugins.generic.carinianaPreservation.headers.issuesVolumes"
+msgstr "Issues volumes"
+
 msgid "plugins.generic.carinianaPreservation.headers.notesAndComments"
 msgstr "Notes and comments"
 

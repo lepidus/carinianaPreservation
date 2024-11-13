@@ -19,8 +19,15 @@ class PreservationEmailBuilder
         $fromEmail = $journal->getData('contactEmail');
         $email->setFrom($fromEmail, $fromName);
 
-        $email->addRecipient(CARINIANA_EMAIL, CARINIANA_NAME);
-        $email->addCc($fromEmail, $fromName);
+        if (Config::getVar('carinianapreservation', 'email_for_tests')) {
+            $email->addRecipient(
+                Config::getVar('carinianapreservation', 'email_for_tests'),
+                $journal->getData('contactName')
+            );
+        } else {
+            $email->addRecipient(CARINIANA_EMAIL, CARINIANA_NAME);
+            $email->addCc($fromEmail, $fromName);
+        }
 
         $plugin = new CarinianaPreservationPlugin();
         $extraCopyEmail = $plugin->getSetting($journal->getId(), 'extraCopyEmail');

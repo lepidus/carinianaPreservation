@@ -17,6 +17,7 @@ class PreservedJournalTest extends TestCase
     private $availableYears = '2018; 2022';
     private $notesAndComments = 'We are the 18th SciELO journal';
     private $issuesVolumes = '1; 2; 12; 18';
+    private $ojsVersion = '3.3.0.20';
 
     public function setUp(): void
     {
@@ -30,6 +31,7 @@ class PreservedJournalTest extends TestCase
             $this->availableYears,
             $this->issuesVolumes,
             $this->notesAndComments,
+            $this->ojsVersion,
         );
     }
 
@@ -44,7 +46,8 @@ class PreservedJournalTest extends TestCase
             'scielojournal18',
             '2018; 2022',
             '1; 2; 12; 18',
-            'We are the 18th SciELO journal'
+            'We are the 18th SciELO journal',
+            '3.3.0.20'
         ];
         $this->assertEquals($expectedRecord, $this->preservedJournal->asRecord());
     }

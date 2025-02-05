@@ -75,7 +75,8 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
             'scielojournal18',
             '2018; 2022',
             '1; 2',
-            'We are the 18th SciELO journal'
+            'We are the 18th SciELO journal',
+            '3.3.0.20'
         ];
         $this->assertEquals($expectedRecord, $preservedJournal->asRecord());
     }
@@ -93,7 +94,8 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
             'scielojournal18',
             '2018; 2022',
             '1; 2',
-            ''
+            '',
+            '3.3.0.20'
         ];
         $this->assertEquals($expectedRecord, $preservedJournal->asRecord());
     }

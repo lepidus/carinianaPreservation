@@ -25,7 +25,8 @@ class PreservedJournalSpreadsheet
             __("plugins.generic.carinianaPreservation.headers.journalPath"),
             __("plugins.generic.carinianaPreservation.headers.availableYears"),
             __("plugins.generic.carinianaPreservation.headers.issuesVolumes"),
-            __("plugins.generic.carinianaPreservation.headers.notesAndComments")
+            __("plugins.generic.carinianaPreservation.headers.notesAndComments"),
+            __("admin.version")
         ];
     }
 

@@ -13,6 +13,8 @@ class PreservedJournalFactory
         $journalPath = $journal->getData('urlPath');
         $availableYears = $this->getAvailableYears($journal);
         $issuesVolumes = $this->getIssuesVolumes($journal);
+        $versionDao = DAORegistry::getDAO('VersionDAO'); /* @var $versionDao VersionDAO */
+        $ojsVersion = $versionDao->getCurrentVersion();
 
         return new PreservedJournal(
             $publisherOrInstitution,
@@ -23,7 +25,8 @@ class PreservedJournalFactory
             $journalPath,
             $availableYears,
             $issuesVolumes,
-            $notesAndComments
+            $notesAndComments,
+            $ojsVersion->getVersionString()
         );
     }
 

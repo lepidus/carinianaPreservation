@@ -22,6 +22,7 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
     private $firstIssueVolume = 1;
     private $secondIssueVolume = 2;
     private $notesAndComments = 'We are the 18th SciELO journal';
+    private $ojsVersion;
 
     public function setUp(): void
     {
@@ -30,6 +31,9 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
         $this->preservedJournalFactory = new PreservedJournalFactory();
         $this->createTestIssue($this->firstIssueYear, $this->firstIssueVolume);
         $this->createTestIssue($this->lastIssueYear, $this->secondIssueVolume);
+        $versionDao = DAORegistry::getDAO('VersionDAO'); /* @var $versionDao VersionDAO */
+        $currentVersion = $versionDao->getCurrentVersion();
+        $this->ojsVersion = $currentVersion->getVersionString();
     }
 
     protected function getAffectedTables()
@@ -75,7 +79,8 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
             'scielojournal18',
             '2018; 2022',
             '1; 2',
-            'We are the 18th SciELO journal'
+            'We are the 18th SciELO journal',
+            $this->ojsVersion
         ];
         $this->assertEquals($expectedRecord, $preservedJournal->asRecord());
     }
@@ -93,7 +98,8 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
             'scielojournal18',
             '2018; 2022',
             '1; 2',
-            ''
+            '',
+            $this->ojsVersion
         ];
         $this->assertEquals($expectedRecord, $preservedJournal->asRecord());
     }

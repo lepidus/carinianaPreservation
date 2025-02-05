@@ -12,6 +12,7 @@ O plugin Preservação Cariniana tem o intuito de facilitar o processo de preser
 * Anos disponíveis
 * Volumes das edições
 * Notas e Comentários
+* Versão do OJS
 
 Além destas informações, também é enviado o Termo de Responsabilidade e Autorização para preservação na rede Cariniana, preenchido pelos responsáveis pelo periódico.
 
@@ -57,4 +58,4 @@ Caso algum dos dados necessários para a submissão não tenha sido preenchido n
 ## Licença
 __Esse plugin é licenciado através da Licença Pública Geral GNU v3.0__
 
-__Copyright (c) 2023 Lepidus Tecnologia__
+__Copyright (c) 2023-2025 Lepidus Tecnologia__

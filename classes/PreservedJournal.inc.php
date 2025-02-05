@@ -11,6 +11,7 @@ class PreservedJournal
     private $availableYears;
     private $issuesVolumes;
     private $notesAndComments;
+    private $ojsVersion;
 
     public function __construct(
         string $publisherOrInstitution,
@@ -21,7 +22,8 @@ class PreservedJournal
         string $journalPath,
         string $availableYears,
         ?string $issuesVolumes,
-        string $notesAndComments
+        string $notesAndComments,
+        string $ojsVersion
     ) {
         $this->publisherOrInstitution = $publisherOrInstitution;
         $this->title = $title;
@@ -32,6 +34,7 @@ class PreservedJournal
         $this->availableYears = $availableYears;
         $this->issuesVolumes = $issuesVolumes;
         $this->notesAndComments = $notesAndComments;
+        $this->ojsVersion = $ojsVersion;
     }
 
     public function asRecord(): array
@@ -45,7 +48,8 @@ class PreservedJournal
             $this->journalPath,
             $this->availableYears,
             $this->issuesVolumes,
-            $this->notesAndComments
+            $this->notesAndComments,
+            $this->ojsVersion
         ];
     }
 }

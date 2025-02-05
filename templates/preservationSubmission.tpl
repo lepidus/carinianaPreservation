@@ -1,7 +1,7 @@
 {**
  * templates/preservationSubmission.tpl
  *
- * Copyright (c) 2023 Lepidus Tecnologia
+ * Copyright (c) 2023-2025 Lepidus Tecnologia
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Cariniana preservation submission form

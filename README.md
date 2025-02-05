@@ -57,4 +57,4 @@ Caso algum dos dados necessários para a submissão não tenha sido preenchido n
 ## Licença
 __Esse plugin é licenciado através da Licença Pública Geral GNU v3.0__
 
-__Copyright (c) 2023 Lepidus Tecnologia__
+__Copyright (c) 2023-2025 Lepidus Tecnologia__

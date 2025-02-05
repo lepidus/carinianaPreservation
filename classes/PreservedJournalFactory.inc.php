@@ -14,7 +14,7 @@ class PreservedJournalFactory
         $availableYears = $this->getAvailableYears($journal);
         $issuesVolumes = $this->getIssuesVolumes($journal);
         $versionDao = DAORegistry::getDAO('VersionDAO'); /* @var $versionDao VersionDAO */
-		$ojsVersion = $versionDao->getCurrentVersion();
+        $ojsVersion = $versionDao->getCurrentVersion();
 
         return new PreservedJournal(
             $publisherOrInstitution,

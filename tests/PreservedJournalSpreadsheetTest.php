@@ -62,7 +62,7 @@ class PreservedJournalSpreadsheetTest extends TestCase
             __("plugins.generic.carinianaPreservation.headers.availableYears"),
             __("plugins.generic.carinianaPreservation.headers.issuesVolumes"),
             __("plugins.generic.carinianaPreservation.headers.notesAndComments"),
-            __("admin.version")
+            __("admin.systemVersion")
         ];
 
         $firstRow = $worksheet->toArray()[0];

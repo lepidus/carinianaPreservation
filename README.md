@@ -27,10 +27,6 @@ Este plugin é compatível com o OJS versão 3.3.0-x.
 3. Selecione o arquivo __carinianaPreservation.tar.gz__.
 4. Clique em __Salvar__ e o plugin estará instalado no seu websites.
 
-## Instalação de desenvolvimento
-
-Faça o clone do repositório e execute o comando `composer install' no diretório do plugin.
-
 ## Configuração
 
 Após a instalação do plugin, é necessário fazer a sua configuração. Na aba `Plugins instalados` em `Configurações do Website`, procure o plugin "Preservação Cariniana" e abra as suas configurações. Na janela que abrir, você deve anexar o Termo de Responsabilidade e Autorização preenchido e assinado pela pessoa responsável pelo periódico.
@@ -54,6 +50,22 @@ Caso algum dos dados necessários para a submissão não tenha sido preenchido n
 * Abreviatura do periódico
 * Resumo do periódico
 * Contato Principal e Técnico do periódico
+
+## Usando em ambiente de desenvolvimento ou para testes
+
+- **Instalação de desenvolvimento**
+
+Faça o clone do repositório e execute o comando `composer install' no diretório do plugin.
+
+- **Envio de e-mail de testes**
+
+Por padrão, o plugin envia e-mail para o IBICT. Para alterar o e-mail do destinatário em ambiente de testes, é necessário uma configuração adicional no OJS. Adicione as seguintes linhas no arquivo `config.inc.php`:
+
+```
+[carinianapreservation]
+
+email_for_tests = "seu e-mail de testes"
+```
 
 ## Licença
 __Esse plugin é licenciado através da Licença Pública Geral GNU v3.0__

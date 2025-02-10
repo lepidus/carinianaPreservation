@@ -70,16 +70,16 @@ class PreservationXmlBuilderTest extends PKPTestCase
     {
         $titleSet = $this->createXmlProperty($dom, 'org.lockss.titleSet');
 
-        $journalProperty = $this->createXmlProperty($dom, $this->title);
+        $journalProperty = $this->createXmlProperty($dom, $this->publisherOrInstitution);
         $titleSet->appendChild($journalProperty);
 
-        $nameProperty = $this->createXmlProperty($dom, 'name', 'All ' . $this->title);
+        $nameProperty = $this->createXmlProperty($dom, 'name', 'All ' . $this->publisherOrInstitution);
         $journalProperty->appendChild($nameProperty);
 
         $classProperty = $this->createXmlProperty($dom, 'class', 'xpath');
         $journalProperty->appendChild($classProperty);
 
-        $xpathProperty = $this->createXmlProperty($dom, 'xpath', '[attributes/publisher="' . $this->title . '"]');
+        $xpathProperty = $this->createXmlProperty($dom, 'xpath', '[attributes/publisher="' . $this->publisherOrInstitution . '"]');
         $journalProperty->appendChild($xpathProperty);
 
         return $titleSet;
@@ -102,7 +102,7 @@ class PreservationXmlBuilderTest extends PKPTestCase
     {
         $preservedYear = $this->createXmlProperty($dom, "OJS3PluginRBRB${volume}_${year}");
 
-        $publisherProperty = $this->createXmlProperty($dom, 'attributes.publisher', $this->title);
+        $publisherProperty = $this->createXmlProperty($dom, 'attributes.publisher', $this->publisherOrInstitution);
         $preservedYear->appendChild($publisherProperty);
 
         $journalTitleProperty = $this->createXmlProperty($dom, 'journalTitle', $this->journalAcronym);

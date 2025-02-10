@@ -94,17 +94,17 @@ class PreservationXmlBuilder
     {
         $titleSetProperty = $this->createXmlProperty($dom, 'org.lockss.titleSet');
 
-        $journalTitle = $this->journal->getData('name', $this->locale);
-        $journalProperty = $this->createXmlProperty($dom, $journalTitle);
+        $publisherInstitution = $this->journal->getData('publisherInstitution');
+        $journalProperty = $this->createXmlProperty($dom, $publisherInstitution);
         $titleSetProperty->appendChild($journalProperty);
 
-        $nameProperty = $this->createXmlProperty($dom, 'name', "All $journalTitle");
+        $nameProperty = $this->createXmlProperty($dom, 'name', "All $publisherInstitution");
         $journalProperty->appendChild($nameProperty);
 
         $classProperty = $this->createXmlProperty($dom, 'class', 'xpath');
         $journalProperty->appendChild($classProperty);
 
-        $xpathProperty = $this->createXmlProperty($dom, 'xpath', '[attributes/publisher="' . $journalTitle . '"]');
+        $xpathProperty = $this->createXmlProperty($dom, 'xpath', '[attributes/publisher="' . $publisherInstitution . '"]');
         $journalProperty->appendChild($xpathProperty);
 
         return $titleSetProperty;
@@ -130,7 +130,7 @@ class PreservationXmlBuilder
         $preservedYear = $this->createXmlProperty($dom, $preservedYearNodeName);
 
         $preservedYearProperties = [
-            'attributes.publisher' => $this->journal->getData('name', $this->locale),
+            'attributes.publisher' => $this->journal->getData('publisherInstitution'),
             'journalTitle' => $journalAcronym,
             'issn' => $this->journal->getData('printIssn'),
             'eissn' => $this->journal->getData('onlineIssn'),

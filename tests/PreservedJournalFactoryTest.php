@@ -31,7 +31,7 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
         $this->preservedJournalFactory = new PreservedJournalFactory();
         $this->createTestIssue($this->firstIssueYear, $this->firstIssueVolume);
         $this->createTestIssue($this->lastIssueYear, $this->secondIssueVolume);
-        $versionDao = DAORegistry::getDAO('VersionDAO'); /* @var $versionDao VersionDAO */
+        $versionDao = DAORegistry::getDAO('VersionDAO');
         $currentVersion = $versionDao->getCurrentVersion();
         $this->ojsVersion = $currentVersion->getVersionString();
     }

@@ -67,6 +67,12 @@ msgstr "Submissão da revista {$journalAcronym} para preservação digital"
 msgid "plugins.generic.carinianaPreservation.preservationEmail.body"
 msgstr "A identificação do conteúdo da revista {$journalAcronym} está anexada a este e-mail"
 
+msgid "plugins.generic.carinianaPreservation.preservationUpdateEmail.subject"
+msgstr "Atualização da revista {$journalAcronym} para preservação digital"
+
+msgid "plugins.generic.carinianaPreservation.preservationUpdateEmail.body"
+msgstr "A atualização do conteúdo da revista {$journalAcronym} está anexada a este e-mail"
+
 msgid "plugins.generic.carinianaPreservation.preservationSubmission"
 msgstr "Submissão para preservação"
 

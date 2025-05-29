@@ -121,9 +121,15 @@ class PreservationSubmissionForm extends Form
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
         $notesAndComments = $this->getData('notesAndComments');
 
-        import('plugins.generic.carinianaPreservation.classes.PreservationEmailBuilder');
-        $preservationEmailBuilder = new PreservationEmailBuilder();
-        $email = $preservationEmailBuilder->buildPreservationEmail($journal, $baseUrl, $notesAndComments, $locale);
+        if ($this->plugin->getSetting($this->contextId, 'lastPreservationTimestamp')) {
+            import('plugins.generic.carinianaPreservation.classes.PreservationUpdateEmailBuilder');
+            $emailBuilder = new PreservationUpdateEmailBuilder();
+            $email = $emailBuilder->buildPreservationUpdateEmail($journal, $baseUrl, $locale);
+        } else {
+            import('plugins.generic.carinianaPreservation.classes.PreservationEmailBuilder');
+            $emailBuilder = new PreservationEmailBuilder();
+            $email = $emailBuilder->buildPreservationEmail($journal, $baseUrl, $notesAndComments, $locale);
+        }
         $email->send();
     }
 }

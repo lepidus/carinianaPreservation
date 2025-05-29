@@ -19,7 +19,7 @@ class PreservationEmailBuilder extends BasePreservationEmailBuilder
         $statementData = $this->getResponsabilityStatementData($journal);
         $email->addAttachment($statementData['path'], $statementData['name'], $statementData['type']);
 
-        $xmlFilePath = $this->createXml($journal, $baseUrl, $locale);
+        $xmlFilePath = $this->createXml($journal, $baseUrl);
         $email->addAttachment($xmlFilePath);
 
         $this->updatePreservationSettings($journal, $xmlFilePath);

@@ -11,7 +11,7 @@ class PreservationUpdateEmailBuilder extends BasePreservationEmailBuilder
         $journalAcronym = $journal->getLocalizedData('acronym', $locale);
         $this->setEmailSubjectAndBody($email, $journalAcronym, $locale);
 
-        $xmlFilePath = $this->createXml($journal, $baseUrl, $locale);
+        $xmlFilePath = $this->createXml($journal, $baseUrl);
         $email->addAttachment($xmlFilePath);
 
         $this->updatePreservationSettings($journal, $xmlFilePath);

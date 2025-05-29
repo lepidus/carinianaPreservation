@@ -104,15 +104,10 @@ class PreservationUpdateChecker extends ScheduledTask
     {
         $this->plugin->import('classes.PreservationXmlBuilder');
 
-        $locale = $journal->getPrimaryLocale();
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
 
-        $issueDao = DAORegistry::getDAO('IssueDAO');
-        $issues = $issueDao->getPublishedIssues($journal->getId())->toArray();
-        $issues = array_reverse($issues);
-
-        $preservationXmlBuilder = new PreservationXmlBuilder($journal, $issues, $baseUrl, $locale);
-        $journalAcronym = $journal->getLocalizedData('acronym', $locale);
+        $preservationXmlBuilder = new PreservationXmlBuilder($journal, $baseUrl);
+        $journalAcronym = $journal->getLocalizedData('acronym', $journal->getPrimaryLocale());
         $xmlFilePath = "/tmp/temp_marcacoes_preservacao_{$journalAcronym}.xml";
         $preservationXmlBuilder->createPreservationXml($xmlFilePath);
 

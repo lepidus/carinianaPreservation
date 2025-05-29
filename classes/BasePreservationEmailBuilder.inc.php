@@ -36,16 +36,12 @@ abstract class BasePreservationEmailBuilder
         return $email;
     }
 
-    protected function createXml($journal, $baseUrl, $locale): string
+    protected function createXml($journal, $baseUrl): string
     {
-        $issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
-        $issues = $issueDao->getPublishedIssues($journal->getId())->toArray();
-        $issues = array_reverse($issues);
-
-        $journalAcronym = $journal->getLocalizedData('acronym', $locale);
+        $journalAcronym = $journal->getLocalizedData('acronym', $journal->getPrimaryLocale());
         $xmlFilePath = "/tmp/marcacoes_preservacao_{$journalAcronym}.xml";
 
-        $preservationXmlBuilder = new PreservationXmlBuilder($journal, $issues, $baseUrl, $locale);
+        $preservationXmlBuilder = new PreservationXmlBuilder($journal, $baseUrl);
         $preservationXmlBuilder->createPreservationXml($xmlFilePath);
 
         return $xmlFilePath;

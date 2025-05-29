@@ -49,6 +49,14 @@ class PreservationEmailBuilder
         $xmlFilePath = $this->createXml($journal, $baseUrl, $locale);
         $email->addAttachment($xmlFilePath);
 
+        $plugin = new CarinianaPreservationPlugin();
+        $plugin->updateSetting($journal->getId(), 'lastPreservationTimestamp', Core::getCurrentDate());
+
+        $xmlMd5 = md5_file($xmlFilePath);
+        if ($xmlMd5) {
+            $plugin->updateSetting($journal->getId(), 'preservedXMLmd5', $xmlMd5);
+        }
+
         return $email;
     }
 

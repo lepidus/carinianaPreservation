@@ -86,3 +86,6 @@ msgstr "A submissão do periódico para preservação não pôde ser realizada. 
 
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.missingResponsabilityStatement"
 msgstr "O arquivo dos termos de responsabilidade não foi enviado. Acesse as configurações do plugin para realizar o envio"
+
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.lastPreservation"
+msgstr "Última preservação realizada em:"

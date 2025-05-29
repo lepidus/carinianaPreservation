@@ -36,11 +36,13 @@ class PreservationSubmissionForm extends Form
     {
         $templateMgr = TemplateManager::getManager($request);
         $emailCopies = $this->getPreservationEmailCopies();
+        $lastPreservationTimestamp = $this->plugin->getSetting($this->contextId, 'lastPreservationTimestamp');
 
         $templateMgr->assign([
             'pluginName' => $this->plugin->getName(),
             'applicationName' => Application::get()->getName(),
-            'emailCopies' => $emailCopies
+            'emailCopies' => $emailCopies,
+            'lastPreservationTimestamp' => $lastPreservationTimestamp
         ]);
 
         return parent::fetch($request, $template, $display);

@@ -123,7 +123,7 @@ class PreservationUpdateChecker extends ScheduledTask
     {
         $this->plugin->import('classes.PreservationUpdateEmailBuilder');
 
-        $locale = $journal->getPrimaryLocale();
+        $locale = AppLocale::getLocale();
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
 
         $emailBuilder = new PreservationUpdateEmailBuilder();

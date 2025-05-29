@@ -33,9 +33,11 @@
 
         <p>{translate key="plugins.generic.carinianaPreservation.preservationSubmission.emailAddresses" emailCopies=$emailCopies}</p>
 
-        {fbvFormSection title="plugins.generic.carinianaPreservation.headers.notesAndComments"}
-            {fbvElement id="notesAndComments" class="notesAndComments" type="text" label="plugins.generic.carinianaPreservation.preservationSubmission.notesAndComments.description"}
-        {/fbvFormSection}
+        {if !$lastPreservationTimestamp}
+            {fbvFormSection title="plugins.generic.carinianaPreservation.headers.notesAndComments"}
+                {fbvElement id="notesAndComments" class="notesAndComments" type="text" label="plugins.generic.carinianaPreservation.preservationSubmission.notesAndComments.description"}
+            {/fbvFormSection}
+        {/if}
 
         <p>{translate key="plugins.generic.carinianaPreservation.preservationSubmission.instruction"}</p>
 

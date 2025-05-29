@@ -28,7 +28,13 @@ class PreservationSubmissionForm extends Form
 
     public function readInputData()
     {
-        $userVars = ['notesAndComments'];
+        $userVars = [];
+        $lastPreservationTimestamp = $this->plugin->getSetting($this->contextId, 'lastPreservationTimestamp');
+
+        if (!$lastPreservationTimestamp) {
+            $userVars[] = 'notesAndComments';
+        }
+
         $this->readUserVars($userVars);
     }
 
@@ -119,13 +125,13 @@ class PreservationSubmissionForm extends Form
         $locale = AppLocale::getLocale();
         $journal = $journalDao->getById($this->contextId);
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
-        $notesAndComments = $this->getData('notesAndComments');
 
         if ($this->plugin->getSetting($this->contextId, 'lastPreservationTimestamp')) {
             import('plugins.generic.carinianaPreservation.classes.PreservationUpdateEmailBuilder');
             $emailBuilder = new PreservationUpdateEmailBuilder();
             $email = $emailBuilder->buildPreservationUpdateEmail($journal, $baseUrl, $locale);
         } else {
+            $notesAndComments = $this->getData('notesAndComments');
             import('plugins.generic.carinianaPreservation.classes.PreservationEmailBuilder');
             $emailBuilder = new PreservationEmailBuilder();
             $email = $emailBuilder->buildPreservationEmail($journal, $baseUrl, $notesAndComments, $locale);

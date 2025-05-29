@@ -95,3 +95,18 @@ msgstr "O arquivo dos termos de responsabilidade não foi enviado. Acesse as con
 
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.lastPreservation"
 msgstr "Última preservação realizada em:"
+
+msgid "plugins.generic.carinianaPreservation.updateChecker"
+msgstr "Verificação de mudanças no periódico para atualização de preservação"
+
+msgid "plugins.generic.carinianaPreservation.updateChecker.notPreserved"
+msgstr "{$journalName} ainda não foi preservado."
+
+msgid "plugins.generic.carinianaPreservation.updateChecker.updateEmailSent"
+msgstr "{$journalName} teve alterações desde a última preservação. O e-mail de atualização foi enviado para a Rede Cariniana."
+
+msgid "plugins.generic.carinianaPreservation.updateChecker.updateEmailFailed"
+msgstr "{$journalName} teve alterações desde a última preservação. Mas ocorreu um erro ao enviar e-mail de atualização: {$error}"
+
+msgid "plugins.generic.carinianaPreservation.updateChecker.noChanges"
+msgstr "{$journalName} não teve alterações desde a última preservação."

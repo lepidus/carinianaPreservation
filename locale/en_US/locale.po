@@ -95,3 +95,18 @@ msgstr "Responsability statement file not sent. Access the plugin settings to se
 
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.lastPreservation"
 msgstr "Last preservation performed on:"
+
+msgid "plugins.generic.carinianaPreservation.updateChecker"
+msgstr "Journal changes verification for preservation update"
+
+msgid "plugins.generic.carinianaPreservation.updateChecker.notPreserved"
+msgstr "{$journalName} has not been preserved yet."
+
+msgid "plugins.generic.carinianaPreservation.updateChecker.updateEmailSent"
+msgstr "{$journalName} has changes since last preservation. Update email was sent to Cariniana Network."
+
+msgid "plugins.generic.carinianaPreservation.updateChecker.updateEmailFailed"
+msgstr "{$journalName} has changes since last preservation. But an error occurred while sending update email: {$error}"
+
+msgid "plugins.generic.carinianaPreservation.updateChecker.noChanges"
+msgstr "{$journalName} has no changes since last preservation."

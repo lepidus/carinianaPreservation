@@ -95,3 +95,18 @@ msgstr "Archivo de descargo de responsabilidad no enviado. Accede a la configura
 
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.lastPreservation"
 msgstr "Última preservación realizada el:"
+
+msgid "plugins.generic.carinianaPreservation.updateChecker"
+msgstr "Verificación de cambios en la revista para actualización de preservación"
+
+msgid "plugins.generic.carinianaPreservation.updateChecker.notPreserved"
+msgstr "{$journalName} aún no ha sido preservada."
+
+msgid "plugins.generic.carinianaPreservation.updateChecker.updateEmailSent"
+msgstr "{$journalName} tuvo cambios desde la última preservación. El correo electrónico de actualización fue enviado a la Red Cariniana."
+
+msgid "plugins.generic.carinianaPreservation.updateChecker.updateEmailFailed"
+msgstr "{$journalName} tuvo cambios desde la última preservación. Pero ocurrió un error al enviar el correo electrónico de actualización: {$error}"
+
+msgid "plugins.generic.carinianaPreservation.updateChecker.noChanges"
+msgstr "{$journalName} no tuvo cambios desde la última preservación."

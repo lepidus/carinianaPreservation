@@ -24,6 +24,10 @@ class CarinianaPreservationPlugin extends GenericPlugin
             return true;
         }
 
+        if ($success && $this->getEnabled($mainContextId)) {
+            HookRegistry::register('AcronPlugin::parseCronTab', array($this, 'addTasksToCronTab'));
+        }
+
         return $success;
     }
 
@@ -111,5 +115,12 @@ class CarinianaPreservationPlugin extends GenericPlugin
         } else {
             return new JSONMessage(false, __('common.uploadFailed'));
         }
+    }
+
+    public function addTasksToCronTab($hookName, $args)
+    {
+        $taskFilesPath = &$args[0];
+        $taskFilesPath[] = $this->getPluginPath() . DIRECTORY_SEPARATOR . 'scheduledTasks.xml';
+        return false;
     }
 }

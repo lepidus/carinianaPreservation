@@ -21,6 +21,6 @@
 <scheduled_tasks>
 	<task class="plugins.generic.carinianaPreservation.classes.tasks.PreservationUpdateChecker">
 		<descr>Check for XML changes and send preservation update emails to Cariniana.</descr>
-		<frequency hour="6"/>
+		<frequency hour="0"/>
 	</task>
 </scheduled_tasks>

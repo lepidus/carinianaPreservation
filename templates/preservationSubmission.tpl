@@ -26,7 +26,7 @@
                     notificationId=lastPreservationNotification
                     notificationStyleClass="notifyCommon"
                     notificationTitle="plugins.generic.carinianaPreservation.preservationSubmission.lastPreservation"|translate
-                    notificationContents="lastPreservationTimestamp"|date_format:"%d/%m/%Y %H:%M:%S"
+                    notificationContents="$lastPreservationTimestamp"|date_format:"%d/%m/%Y %H:%M:%S"
                 }
             </div>
         {/if}

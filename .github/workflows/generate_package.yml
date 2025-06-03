@@ -32,7 +32,7 @@ jobs:
           mkdir $PLUGIN_NAME
           ls -la
           shopt -s extglob
-          cp -r !($PLUGIN_NAME|.git*|.|..|tests) $PLUGIN_NAME
+          cp -r !($PLUGIN_NAME|.git*|.|..|tests|cypress) $PLUGIN_NAME
           wget -O composer.phar https://getcomposer.org/composer-stable.phar
           php composer.phar install -d ${PLUGIN_NAME}
           ls -la

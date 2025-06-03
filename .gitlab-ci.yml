@@ -22,7 +22,7 @@ include:
   before_script:
     - apt update && apt install php-gd php-zip php-xml php-mbstring -yqq
     - composer install
-    - sed -i '$a\[carinianapreservation]\nemail_for_tests = "teste@email.com"' config.inc.php
+    - sed -i '$a\[carinianapreservation]\nemail_for_tests = "teste@email.com"' /var/www/$CY_APPLICATION/config.inc.php
 
 code_formatting_check:
   <<: *php_dependencies

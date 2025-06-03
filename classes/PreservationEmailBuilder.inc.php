@@ -1,44 +1,17 @@
 <?php
 
-import('lib.pkp.classes.mail.Mail');
+import('plugins.generic.carinianaPreservation.classes.BasePreservationEmailBuilder');
 import('plugins.generic.carinianaPreservation.classes.PreservedJournalFactory');
 import('plugins.generic.carinianaPreservation.classes.PreservedJournalSpreadsheet');
-import('plugins.generic.carinianaPreservation.classes.PreservationXmlBuilder');
-import('plugins.generic.carinianaPreservation.CarinianaPreservationPlugin');
 
-define('CARINIANA_NAME', 'Rede Cariniana');
-define('CARINIANA_EMAIL', 'cariniana@ibict.br');
-
-class PreservationEmailBuilder
+class PreservationEmailBuilder extends BasePreservationEmailBuilder
 {
     public function buildPreservationEmail($journal, $baseUrl, $notesAndComments, $locale)
     {
-        $email = new Mail();
+        $email = $this->buildBaseEmail($journal, $locale);
 
-        $fromName = $journal->getLocalizedData('acronym', $locale);
-        $fromEmail = $journal->getData('contactEmail');
-        $email->setFrom($fromEmail, $fromName);
-
-        if (Config::getVar('carinianapreservation', 'email_for_tests')) {
-            $email->addRecipient(
-                Config::getVar('carinianapreservation', 'email_for_tests'),
-                $journal->getData('contactName')
-            );
-        } else {
-            $email->addRecipient(CARINIANA_EMAIL, CARINIANA_NAME);
-            $email->addCc($fromEmail, $fromName);
-        }
-
-        $plugin = new CarinianaPreservationPlugin();
-        $extraCopyEmail = $plugin->getSetting($journal->getId(), 'extraCopyEmail');
-        if (!empty($extraCopyEmail)) {
-            $email->addCc($extraCopyEmail);
-        }
-
-        $subject = __('plugins.generic.carinianaPreservation.preservationEmail.subject', ['journalAcronym' => $fromName], $locale);
-        $body = __('plugins.generic.carinianaPreservation.preservationEmail.body', ['journalAcronym' => $fromName], $locale);
-        $email->setSubject($subject);
-        $email->setBody($body);
+        $journalAcronym = $journal->getLocalizedData('acronym', $locale);
+        $this->setEmailSubjectAndBody($email, $journalAcronym, $locale);
 
         $spreadsheetFilePath = $this->createJournalSpreadsheet($journal, $baseUrl, $notesAndComments, $locale);
         $email->addAttachment($spreadsheetFilePath);
@@ -46,10 +19,20 @@ class PreservationEmailBuilder
         $statementData = $this->getResponsabilityStatementData($journal);
         $email->addAttachment($statementData['path'], $statementData['name'], $statementData['type']);
 
-        $xmlFilePath = $this->createXml($journal, $baseUrl, $locale);
+        $xmlFilePath = $this->createXml($journal, $baseUrl);
         $email->addAttachment($xmlFilePath);
 
+        $this->updatePreservationSettings($journal, $xmlFilePath);
+
         return $email;
+    }
+
+    protected function setEmailSubjectAndBody($email, $journalAcronym, $locale)
+    {
+        $subject = __('plugins.generic.carinianaPreservation.preservationEmail.subject', ['journalAcronym' => $journalAcronym], $locale);
+        $body = __('plugins.generic.carinianaPreservation.preservationEmail.body', ['journalAcronym' => $journalAcronym], $locale);
+        $email->setSubject($subject);
+        $email->setBody($body);
     }
 
     private function createJournalSpreadsheet($journal, $baseUrl, $notesAndComments, $locale): string
@@ -81,20 +64,5 @@ class PreservationEmailBuilder
             'name' => $statementFileData['originalFileName'],
             'type' => $statementFileData['fileType']
         ];
-    }
-
-    private function createXml($journal, $baseUrl, $locale): string
-    {
-        $issueDao = DAORegistry::getDAO('IssueDAO');
-        $issues = $issueDao->getIssues($journal->getId())->toArray();
-        $issues = array_reverse($issues);
-
-        $journalAcronym = $journal->getLocalizedData('acronym', $locale);
-        $xmlFilePath = "/tmp/marcacoes_preservacao_{$journalAcronym}.xml";
-
-        $preservationXmlBuilder = new PreservationXmlBuilder($journal, $issues, $baseUrl, $locale);
-        $preservationXmlBuilder->createPreservationXml($xmlFilePath);
-
-        return $xmlFilePath;
     }
 }

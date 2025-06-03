@@ -67,6 +67,12 @@ msgstr "Envío de revista {$journalAcronym} para preservación digital"
 msgid "plugins.generic.carinianaPreservation.preservationEmail.body"
 msgstr "La identificación de contenido de la revista {$journalAcronym} se adjunta a este correo electrónico"
 
+msgid "plugins.generic.carinianaPreservation.preservationUpdateEmail.subject"
+msgstr "Actualización de revista {$journalAcronym} para preservación digital"
+
+msgid "plugins.generic.carinianaPreservation.preservationUpdateEmail.body"
+msgstr "La actualización de contenido de la revista {$journalAcronym} se adjunta a este correo electrónico"
+
 msgid "plugins.generic.carinianaPreservation.preservationSubmission"
 msgstr "Envío para preservación"
 
@@ -86,3 +92,21 @@ msgstr "No se ha podido realizar el envío de la revista. Los siguientes datos d
 
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.missingResponsabilityStatement"
 msgstr "Archivo de descargo de responsabilidad no enviado. Accede a la configuración del plugin para enviar"
+
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.lastPreservation"
+msgstr "Última preservación realizada el:"
+
+msgid "plugins.generic.carinianaPreservation.updateChecker"
+msgstr "Verificación de cambios en la revista para actualización de preservación"
+
+msgid "plugins.generic.carinianaPreservation.updateChecker.notPreserved"
+msgstr "{$journalName} aún no ha sido preservada."
+
+msgid "plugins.generic.carinianaPreservation.updateChecker.updateEmailSent"
+msgstr "{$journalName} tuvo cambios desde la última preservación. El correo electrónico de actualización fue enviado a la Red Cariniana."
+
+msgid "plugins.generic.carinianaPreservation.updateChecker.updateEmailFailed"
+msgstr "{$journalName} tuvo cambios desde la última preservación. Pero ocurrió un error al enviar el correo electrónico de actualización: {$error}"
+
+msgid "plugins.generic.carinianaPreservation.updateChecker.noChanges"
+msgstr "{$journalName} no tuvo cambios desde la última preservación."

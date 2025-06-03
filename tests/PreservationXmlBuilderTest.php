@@ -7,6 +7,14 @@ import('classes.journal.Journal');
 import('classes.issue.Issue');
 import('plugins.generic.carinianaPreservation.classes.PreservationXmlBuilder');
 
+class TestablePreservationXmlBuilder extends PreservationXmlBuilder
+{
+    public function setTestIssues(array $issues)
+    {
+        $this->issues = $issues;
+    }
+}
+
 class PreservationXmlBuilderTest extends PKPTestCase
 {
     private $preservationXmlBuilder;
@@ -42,6 +50,7 @@ class PreservationXmlBuilderTest extends PKPTestCase
         $this->journal->setData('urlPath', $this->journalPath);
         $this->journal->setData('acronym', $this->journalAcronym, $this->locale);
         $this->journal->setData('contactEmail', $this->journalContactEmail);
+        $this->journal->setData('primaryLocale', $this->locale);
     }
 
     private function createTestIssue(int $year, string $title, ?int $volume, int $number): Issue
@@ -175,9 +184,10 @@ class PreservationXmlBuilderTest extends PKPTestCase
         ];
         $this->xml = $this->createExpectedXml([['2018', '1', '1'], ['2019', '2', '2']]);
 
-        $preservationXmlBuilder = new PreservationXmlBuilder($this->journal, $this->issues, $this->baseUrl, $this->locale);
-        $preservationXmlBuilder->createPreservationXml($this->xmlPath);
+        $preservationXmlBuilder = new TestablePreservationXmlBuilder($this->journal, $this->baseUrl);
+        $preservationXmlBuilder->setTestIssues($this->issues);
 
+        $preservationXmlBuilder->createPreservationXml($this->xmlPath);
         $writtenXml = new DOMDocument();
         $writtenXml->load($this->xmlPath);
 
@@ -194,7 +204,9 @@ class PreservationXmlBuilderTest extends PKPTestCase
         ];
         $this->xml = $this->createExpectedXml([['2018', '1', '1-2'], ['2019', '3', '3-4']]);
 
-        $preservationXmlBuilder = new PreservationXmlBuilder($this->journal, $this->issues, $this->baseUrl, $this->locale);
+        $preservationXmlBuilder = new TestablePreservationXmlBuilder($this->journal, $this->baseUrl);
+        $preservationXmlBuilder->setTestIssues($this->issues);
+
         $preservationXmlBuilder->createPreservationXml($this->xmlPath);
 
         $writtenXml = new DOMDocument();

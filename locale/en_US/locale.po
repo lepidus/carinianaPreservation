@@ -67,6 +67,12 @@ msgstr "Submission of {$journalAcronym} journal to digital preservation"
 msgid "plugins.generic.carinianaPreservation.preservationEmail.body"
 msgstr "The {$journalAcronym} journal's content identification is attached to this e-mail"
 
+msgid "plugins.generic.carinianaPreservation.preservationUpdateEmail.subject"
+msgstr "Update of {$journalAcronym} journal for digital preservation"
+
+msgid "plugins.generic.carinianaPreservation.preservationUpdateEmail.body"
+msgstr "The {$journalAcronym} journal's content update is attached to this e-mail"
+
 msgid "plugins.generic.carinianaPreservation.preservationSubmission"
 msgstr "Submission for preservation"
 
@@ -86,3 +92,21 @@ msgstr "The submission of the journal could not be carried out. The following da
 
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.missingResponsabilityStatement"
 msgstr "Responsability statement file not sent. Access the plugin settings to send it"
+
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.lastPreservation"
+msgstr "Last preservation performed on:"
+
+msgid "plugins.generic.carinianaPreservation.updateChecker"
+msgstr "Journal changes verification for preservation update"
+
+msgid "plugins.generic.carinianaPreservation.updateChecker.notPreserved"
+msgstr "{$journalName} has not been preserved yet."
+
+msgid "plugins.generic.carinianaPreservation.updateChecker.updateEmailSent"
+msgstr "{$journalName} has changes since last preservation. Update email was sent to Cariniana Network."
+
+msgid "plugins.generic.carinianaPreservation.updateChecker.updateEmailFailed"
+msgstr "{$journalName} has changes since last preservation. But an error occurred while sending update email: {$error}"
+
+msgid "plugins.generic.carinianaPreservation.updateChecker.noChanges"
+msgstr "{$journalName} has no changes since last preservation."

@@ -5,16 +5,16 @@ import('classes.journal.Journal');
 class PreservationXmlBuilder
 {
     private $journal;
-    private $issues;
+    protected $issues;
     private $baseUrl;
     private $locale;
 
-    public function __construct(Journal $journal, array $issues, string $baseUrl, string $locale)
+    public function __construct(Journal $journal, string $baseUrl)
     {
         $this->journal = $journal;
-        $this->issues = $issues;
         $this->baseUrl = $baseUrl;
-        $this->locale = $locale;
+        $this->locale = $journal->getPrimaryLocale();
+        $this->issues = $this->getPublishedIssues($journal);
     }
 
     public function createPreservationXml(string $filePath)
@@ -173,5 +173,12 @@ class PreservationXmlBuilder
         $string = str_replace('&', 'E', $string);
         $string = iconv("utf-8", "ascii//TRANSLIT", $string);
         return $string;
+    }
+
+    private function getPublishedIssues($journal)
+    {
+        $issueDao = DAORegistry::getDAO('IssueDAO');
+        $issues = $issueDao->getPublishedIssues($journal->getId())->toArray();
+        return array_reverse($issues);
     }
 }

@@ -19,11 +19,25 @@
         {csrf}
         {include file="controllers/notification/inPlaceNotification.tpl" notificationId="preservationSubmissionFormNotification"}
 
+        {if $lastPreservationTimestamp}
+            <div class="pkp_notification">
+                {include
+                    file="controllers/notification/inPlaceNotificationContent.tpl"
+                    notificationId=lastPreservationNotification
+                    notificationStyleClass="notifyCommon"
+                    notificationTitle="plugins.generic.carinianaPreservation.preservationSubmission.lastPreservation"|translate
+                    notificationContents="$lastPreservationTimestamp"|date_format:"%d/%m/%Y %H:%M:%S"
+                }
+            </div>
+        {/if}
+
         <p>{translate key="plugins.generic.carinianaPreservation.preservationSubmission.emailAddresses" emailCopies=$emailCopies}</p>
 
-        {fbvFormSection title="plugins.generic.carinianaPreservation.headers.notesAndComments"}
-            {fbvElement id="notesAndComments" class="notesAndComments" type="text" label="plugins.generic.carinianaPreservation.preservationSubmission.notesAndComments.description"}
-        {/fbvFormSection}
+        {if !$lastPreservationTimestamp}
+            {fbvFormSection title="plugins.generic.carinianaPreservation.headers.notesAndComments"}
+                {fbvElement id="notesAndComments" class="notesAndComments" type="text" label="plugins.generic.carinianaPreservation.preservationSubmission.notesAndComments.description"}
+            {/fbvFormSection}
+        {/if}
 
         <p>{translate key="plugins.generic.carinianaPreservation.preservationSubmission.instruction"}</p>
 

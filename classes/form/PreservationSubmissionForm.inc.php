@@ -28,7 +28,13 @@ class PreservationSubmissionForm extends Form
 
     public function readInputData()
     {
-        $userVars = ['notesAndComments'];
+        $userVars = [];
+        $lastPreservationTimestamp = $this->plugin->getSetting($this->contextId, 'lastPreservationTimestamp');
+
+        if (!$lastPreservationTimestamp) {
+            $userVars[] = 'notesAndComments';
+        }
+
         $this->readUserVars($userVars);
     }
 
@@ -36,11 +42,13 @@ class PreservationSubmissionForm extends Form
     {
         $templateMgr = TemplateManager::getManager($request);
         $emailCopies = $this->getPreservationEmailCopies();
+        $lastPreservationTimestamp = $this->plugin->getSetting($this->contextId, 'lastPreservationTimestamp');
 
         $templateMgr->assign([
             'pluginName' => $this->plugin->getName(),
             'applicationName' => Application::get()->getName(),
-            'emailCopies' => $emailCopies
+            'emailCopies' => $emailCopies,
+            'lastPreservationTimestamp' => $lastPreservationTimestamp
         ]);
 
         return parent::fetch($request, $template, $display);
@@ -117,11 +125,17 @@ class PreservationSubmissionForm extends Form
         $locale = AppLocale::getLocale();
         $journal = $journalDao->getById($this->contextId);
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
-        $notesAndComments = $this->getData('notesAndComments');
 
-        import('plugins.generic.carinianaPreservation.classes.PreservationEmailBuilder');
-        $preservationEmailBuilder = new PreservationEmailBuilder();
-        $email = $preservationEmailBuilder->buildPreservationEmail($journal, $baseUrl, $notesAndComments, $locale);
+        if ($this->plugin->getSetting($this->contextId, 'lastPreservationTimestamp')) {
+            import('plugins.generic.carinianaPreservation.classes.PreservationUpdateEmailBuilder');
+            $emailBuilder = new PreservationUpdateEmailBuilder();
+            $email = $emailBuilder->buildPreservationUpdateEmail($journal, $baseUrl, $locale);
+        } else {
+            $notesAndComments = $this->getData('notesAndComments');
+            import('plugins.generic.carinianaPreservation.classes.PreservationEmailBuilder');
+            $emailBuilder = new PreservationEmailBuilder();
+            $email = $emailBuilder->buildPreservationEmail($journal, $baseUrl, $notesAndComments, $locale);
+        }
         $email->send();
     }
 }

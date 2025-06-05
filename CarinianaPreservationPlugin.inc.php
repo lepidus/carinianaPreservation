@@ -20,12 +20,10 @@ class CarinianaPreservationPlugin extends GenericPlugin
     {
         $success = parent::register($category, $path, $mainContextId);
 
+        HookRegistry::register('AcronPlugin::parseCronTab', array($this, 'addTasksToCronTab'));
+
         if (!Config::getVar('general', 'installed') || defined('RUNNING_UPGRADE')) {
             return true;
-        }
-
-        if ($success && $this->getEnabled($mainContextId)) {
-            HookRegistry::register('AcronPlugin::parseCronTab', array($this, 'addTasksToCronTab'));
         }
 
         return $success;

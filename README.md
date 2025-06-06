@@ -13,9 +13,12 @@ O plugin Preservação Cariniana tem o intuito de facilitar o processo de preser
 * Notas e Comentários
 * Versão do OJS
 
-Além destas informações, também é enviado o Termo de Responsabilidade e Autorização para preservação na rede Cariniana, preenchido pelos responsáveis pelo periódico.
+Além destas informações, no primeiro envio também é enviado o *Termo de Responsabilidade e Autorização para preservação na rede Cariniana*, preenchido pelos responsáveis pelo periódico.
 
-<div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1089677111?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Plugin de Preservação na Rede Cariniana"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
+## Vídeo de Apresentação
+
+[![Assista ao vídeo de apresentação no Vimeo](https://img.shields.io/badge/Assista%20ao%20vídeo%20de%20apresentação%20-Clique%20aqui-blue?logo=vimeo)](https://vimeo.com/997938301/c62617794b)
+
 
 ## Compatibilidade
 

@@ -62,13 +62,13 @@ msgid "plugins.generic.carinianaPreservation.headers.notesAndComments"
 msgstr "Notas e comentários"
 
 msgid "plugins.generic.carinianaPreservation.preservationEmail.subject"
-msgstr "Submissão da revista {$journalAcronym} para preservação digital"
+msgstr "{$journalAcronym}: pedido de inclusão no Cariniana."
 
 msgid "plugins.generic.carinianaPreservation.preservationEmail.body"
 msgstr "A identificação do conteúdo da revista {$journalAcronym} está anexada a este e-mail"
 
 msgid "plugins.generic.carinianaPreservation.preservationUpdateEmail.subject"
-msgstr "Atualização da revista {$journalAcronym} para preservação digital"
+msgstr "{$journalAcronym}: atualização de dados."
 
 msgid "plugins.generic.carinianaPreservation.preservationUpdateEmail.body"
 msgstr "A atualização do conteúdo da revista {$journalAcronym} está anexada a este e-mail"

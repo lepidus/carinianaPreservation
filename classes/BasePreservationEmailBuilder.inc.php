@@ -5,7 +5,7 @@ import('plugins.generic.carinianaPreservation.classes.PreservationXmlBuilder');
 import('plugins.generic.carinianaPreservation.CarinianaPreservationPlugin');
 
 define('CARINIANA_NAME', 'Rede Cariniana');
-define('CARINIANA_EMAIL', 'cariniana@ibict.br');
+define('CARINIANA_EMAIL', 'cariniana-periodicos@ibict.br');
 
 abstract class BasePreservationEmailBuilder
 {

@@ -7,13 +7,14 @@ use PHPUnit\Framework\TestCase;
 
 import('classes.submission.Submission');
 import('plugins.generic.carinianaPreservation.classes.PreservedJournalSpreadsheet');
+import('plugins.generic.carinianaPreservation.classes.PreservedJournal');
 
 class PreservedJournalSpreadsheetTest extends TestCase
 {
     private $spreadsheet;
     private $filePath = '/tmp/test_spreadsheet.xlsx';
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $journals = [
             new PreservedJournal(
@@ -33,9 +34,9 @@ class PreservedJournalSpreadsheetTest extends TestCase
         $this->spreadsheet = new PreservedJournalSpreadsheet($journals);
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
-        if (file_exists(($this->filePath))) {
+        if (file_exists($this->filePath)) {
             unlink($this->filePath);
         }
     }
@@ -75,7 +76,7 @@ class PreservedJournalSpreadsheetTest extends TestCase
         $this->spreadsheet->createSpreadsheet($this->filePath);
         $worksheet = $this->getWorksheet();
 
-    $expectedJournalData = ['PKP', 'PKP Journal n18', '1234-1234', '0101-1010', 'https://pkp-journal-18.test/', 'pkpjournal18', '2018; 2022', '1; 2; 12; 18', 'We are the 18th PKP journal', '3.3.0.20'];
+        $expectedJournalData = ['PKP', 'PKP Journal n18', '1234-1234', '0101-1010', 'https://pkp-journal-18.test/', 'pkpjournal18', '2018; 2022', '1; 2; 12; 18', 'We are the 18th PKP journal', '3.3.0.20'];
         $secondRow = $worksheet->toArray()[1];
 
         $this->assertEquals($expectedJournalData, $secondRow);

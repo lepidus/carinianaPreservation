@@ -3,6 +3,7 @@
 import('lib.pkp.classes.mail.Mail');
 import('plugins.generic.carinianaPreservation.classes.PreservationXmlBuilder');
 import('plugins.generic.carinianaPreservation.CarinianaPreservationPlugin');
+import('plugins.generic.carinianaPreservation.classes.PreservationXmlStatePersister');
 
 define('CARINIANA_NAME', 'Rede Cariniana');
 define('CARINIANA_EMAIL', 'cariniana-periodicos@ibict.br');
@@ -45,24 +46,6 @@ abstract class BasePreservationEmailBuilder
         $preservationXmlBuilder->createPreservationXml($xmlFilePath);
 
         return $xmlFilePath;
-    }
-
-    protected function updatePreservationSettings($journal, $xmlFilePath)
-    {
-        $plugin = new CarinianaPreservationPlugin();
-        $plugin->updateSetting($journal->getId(), 'lastPreservationTimestamp', Core::getCurrentDate());
-
-        $xmlMd5 = md5_file($xmlFilePath);
-        if ($xmlMd5) {
-            $plugin->updateSetting($journal->getId(), 'preservedXMLmd5', $xmlMd5);
-        }
-
-        if (is_readable($xmlFilePath)) {
-            $xmlContent = file_get_contents($xmlFilePath);
-            if ($xmlContent !== false && trim($xmlContent) !== '') {
-                $plugin->updateSetting($journal->getId(), 'preservedXMLcontent', $xmlContent);
-            }
-        }
     }
 
     abstract protected function setEmailSubjectAndBody($email, $journalAcronym, $locale);

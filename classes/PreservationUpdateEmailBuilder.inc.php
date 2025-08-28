@@ -1,6 +1,7 @@
 <?php
 
 import('plugins.generic.carinianaPreservation.classes.BasePreservationEmailBuilder');
+import('plugins.generic.carinianaPreservation.classes.PreservationXmlStatePersister');
 
 class PreservationUpdateEmailBuilder extends BasePreservationEmailBuilder
 {
@@ -14,7 +15,7 @@ class PreservationUpdateEmailBuilder extends BasePreservationEmailBuilder
         $xmlFilePath = $this->createXml($journal, $baseUrl);
         $email->addAttachment($xmlFilePath);
 
-        $this->updatePreservationSettings($journal, $xmlFilePath);
+        (new PreservationXmlStatePersister())->persist($journal->getId(), $xmlFilePath);
 
         return $email;
     }

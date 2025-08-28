@@ -13,6 +13,7 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
     private $preservationUpdateEmailBuilder;
     private $email;
     private $journal;
+    private const ATTACHMENT_INDEX_XML = 0;
     private $journalId = 3;
     private $locale = 'pt_BR';
     private $journalAcronym = 'RBRU';
@@ -119,7 +120,7 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
         $expectedFilePath = "/tmp/$expectedFileName";
         $xmlContentType = 'text/xml';
         $expectedAttachment = ['path' => $expectedFilePath, 'filename' => $expectedFileName, 'content-type' => $xmlContentType];
-        $this->assertEquals($expectedAttachment, $this->email->getData('attachments')[0]);
+        $this->assertEquals($expectedAttachment, $this->email->getData('attachments')[self::ATTACHMENT_INDEX_XML]);
     }
 
     public function testPreservationSettingsAreUpdated(): void
@@ -130,5 +131,16 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
 
         $this->assertNotEmpty($lastPreservationTimestamp);
         $this->assertNotEmpty($preservedXMLmd5);
+    }
+
+    public function testXmlContentIsPersistedOnUpdate(): void
+    {
+        $plugin = new CarinianaPreservationPlugin();
+        $xmlSettingContent = $plugin->getSetting($this->journalId, 'preservedXMLcontent');
+        $this->assertNotEmpty($xmlSettingContent, 'Expected persisted XML content in preservedXMLcontent');
+        $xmlAttachment = $this->email->getData('attachments')[self::ATTACHMENT_INDEX_XML];
+        $this->assertFileExists($xmlAttachment['path']);
+        $expectedContent = file_get_contents($xmlAttachment['path']);
+        $this->assertEquals($expectedContent, $xmlSettingContent, 'Persisted XML content differs from sent XML');
     }
 }

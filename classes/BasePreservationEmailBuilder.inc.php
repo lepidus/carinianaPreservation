@@ -56,6 +56,13 @@ abstract class BasePreservationEmailBuilder
         if ($xmlMd5) {
             $plugin->updateSetting($journal->getId(), 'preservedXMLmd5', $xmlMd5);
         }
+
+        if (is_readable($xmlFilePath)) {
+            $xmlContent = file_get_contents($xmlFilePath);
+            if ($xmlContent !== false && trim($xmlContent) !== '') {
+                $plugin->updateSetting($journal->getId(), 'preservedXMLcontent', $xmlContent);
+            }
+        }
     }
 
     abstract protected function setEmailSubjectAndBody($email, $journalAcronym, $locale);

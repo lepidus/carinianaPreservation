@@ -11,17 +11,17 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
     private $preservedJournalFactory;
     private $journalId = 2;
     private $locale = 'pt_BR';
-    private $publisherOrInstitution = 'SciELO';
-    private $title = 'SciELO Journal n18';
+    private $publisherOrInstitution = 'PKP';
+    private $title = 'PKP Journal n18';
     private $issn = '1234-1234';
     private $eIssn = '0101-1010';
-    private $baseUrl = 'https://scielo-journal-18.com.br/';
-    private $journalPath = 'scielojournal18';
+    private $baseUrl = 'https://pkp-journal-18.test/';
+    private $journalPath = 'pkpjournal18';
     private $firstIssueYear = '2018';
     private $lastIssueYear = '2022';
     private $firstIssueVolume = 1;
     private $secondIssueVolume = 2;
-    private $notesAndComments = 'We are the 18th SciELO journal';
+    private $notesAndComments = 'We are the 18th PKP journal';
     private $ojsVersion;
 
     public function setUp(): void
@@ -71,15 +71,15 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
         $preservedJournal = $this->preservedJournalFactory->buildPreservedJournal($this->journal, $this->baseUrl, $this->notesAndComments, $this->locale);
 
         $expectedRecord = [
-            'SciELO',
-            'SciELO Journal n18',
+            'PKP',
+            'PKP Journal n18',
             '1234-1234',
             '0101-1010',
-            'https://scielo-journal-18.com.br/',
-            'scielojournal18',
+            'https://pkp-journal-18.test/',
+            'pkpjournal18',
             '2018; 2022',
             '1; 2',
-            'We are the 18th SciELO journal',
+            'We are the 18th PKP journal',
             $this->ojsVersion
         ];
         $this->assertEquals($expectedRecord, $preservedJournal->asRecord());
@@ -90,12 +90,12 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
         $preservedJournal = $this->preservedJournalFactory->buildPreservedJournal($this->journal, $this->baseUrl, "", $this->locale);
 
         $expectedRecord = [
-            'SciELO',
-            'SciELO Journal n18',
+            'PKP',
+            'PKP Journal n18',
             '1234-1234',
             '0101-1010',
-            'https://scielo-journal-18.com.br/',
-            'scielojournal18',
+            'https://pkp-journal-18.test/',
+            'pkpjournal18',
             '2018; 2022',
             '1; 2',
             '',

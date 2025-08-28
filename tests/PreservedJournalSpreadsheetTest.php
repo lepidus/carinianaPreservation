@@ -17,15 +17,15 @@ class PreservedJournalSpreadsheetTest extends TestCase
     {
         $journals = [
             new PreservedJournal(
-                'SciELO',
-                'SciELO Journal n18',
+                'PKP',
+                'PKP Journal n18',
                 '1234-1234',
                 '0101-1010',
-                'https://scielo-journal-18.com.br/',
-                'scielojournal18',
+                'https://pkp-journal-18.test/',
+                'pkpjournal18',
                 '2018; 2022',
                 '1; 2; 12; 18',
-                'We are the 18th SciELO journal',
+                'We are the 18th PKP journal',
                 '3.3.0.20'
             )
         ];
@@ -75,7 +75,7 @@ class PreservedJournalSpreadsheetTest extends TestCase
         $this->spreadsheet->createSpreadsheet($this->filePath);
         $worksheet = $this->getWorksheet();
 
-        $expectedJournalData = ['SciELO', 'SciELO Journal n18', '1234-1234', '0101-1010', 'https://scielo-journal-18.com.br/', 'scielojournal18', '2018; 2022', '1; 2; 12; 18', 'We are the 18th SciELO journal', '3.3.0.20'];
+    $expectedJournalData = ['PKP', 'PKP Journal n18', '1234-1234', '0101-1010', 'https://pkp-journal-18.test/', 'pkpjournal18', '2018; 2022', '1; 2; 12; 18', 'We are the 18th PKP journal', '3.3.0.20'];
         $secondRow = $worksheet->toArray()[1];
 
         $this->assertEquals($expectedJournalData, $secondRow);

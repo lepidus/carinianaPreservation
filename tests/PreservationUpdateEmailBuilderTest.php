@@ -19,12 +19,12 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
     private $journalAcronym = 'RBRU';
     private $journalContactEmail = 'contact@rbru.com.br';
     private $extraCopyEmail = 'extra.contact@rbru.com.br';
-    private $publisherOrInstitution = 'SciELO';
-    private $title = 'SciELO Journal n19';
+    private $publisherOrInstitution = 'PKP';
+    private $title = 'PKP Journal n19';
     private $issn = '1234-5678';
     private $eIssn = '0101-1010';
-    private $baseUrl = 'https://scielo-journal-19.com.br/';
-    private $journalPath = 'scielojournal19';
+    private $baseUrl = 'https://pkp-journal-19.test/';
+    private $journalPath = 'pkpjournal19';
     private $firstIssueYear = '2019';
     private $lastIssueYear = '2023';
 

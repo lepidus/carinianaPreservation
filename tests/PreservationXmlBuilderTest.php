@@ -25,12 +25,12 @@ class PreservationXmlBuilderTest extends PKPTestCase
     private $locale = 'pt_BR';
     private $journalAcronym = 'RBRB';
     private $journalContactEmail = 'contact@rbrb.com.br';
-    private $publisherOrInstitution = 'SciELO';
-    private $title = 'SciELO Journal n18';
+    private $publisherOrInstitution = 'PKP';
+    private $title = 'PKP Journal n18';
     private $issn = '1234-1234';
     private $eIssn = '0101-1010';
-    private $baseUrl = 'https://scielo-journal-18.com.br/';
-    private $journalPath = 'scielojournal18';
+    private $baseUrl = 'https://pkp-journal-18.test/';
+    private $journalPath = 'pkpjournal18';
     private $xmlPath = '/tmp/test_preservation_xml.xml';
 
     public function setUp(): void

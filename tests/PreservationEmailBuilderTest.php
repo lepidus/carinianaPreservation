@@ -21,15 +21,15 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
     private $journalAcronym = 'RBRB';
     private $journalContactEmail = 'contact@rbrb.com.br';
     private $extraCopyEmail = 'extra.contact@rbrb.com.br';
-    private $publisherOrInstitution = 'SciELO';
-    private $title = 'SciELO Journal n18';
+    private $publisherOrInstitution = 'PKP';
+    private $title = 'PKP Journal n18';
     private $issn = '1234-1234';
     private $eIssn = '0101-1010';
-    private $baseUrl = 'https://scielo-journal-18.com.br/';
-    private $journalPath = 'scielojournal18';
+    private $baseUrl = 'https://pkp-journal-18.test/';
+    private $journalPath = 'pkpjournal18';
     private $firstIssueYear = '2018';
     private $lastIssueYear = '2022';
-    private $notesAndComments = 'We are the 18th SciELO journal';
+    private $notesAndComments = 'We are the 18th PKP journal';
     private $statementOriginalFileName = 'Termos_responsabilidade_cariniana.pdf';
     private $statementFileName = 'carinianapreservationplugin_responsabilityStatement.pdf';
 

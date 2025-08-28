@@ -69,6 +69,8 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
         $issue = new Issue();
         $issue->setData('journalId', $this->journalId);
         $issue->setData('datePublished', $issueDatePublished);
+        $issue->setData('year', $issueYear);
+        $issue->setData('published', 1);
 
         $issueDao = DAORegistry::getDAO('IssueDAO');
         $issueDao->insertObject($issue);
@@ -166,5 +168,18 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
         $this->assertFileExists($xmlAttachment['path']);
         $expectedContent = file_get_contents($xmlAttachment['path']);
         $this->assertEquals($expectedContent, $xmlSettingContent, 'Persisted XML content differs from sent XML');
+    }
+
+    public function testNoDiffAttachmentOnFirstPreservation(): void
+    {
+        $attachments = $this->email->getData('attachments');
+        $diffFound = false;
+        foreach ($attachments as $attachment) {
+            if (substr($attachment['filename'], -5) === '.diff') {
+                $diffFound = true;
+                break;
+            }
+        }
+        $this->assertFalse($diffFound, 'Diff attachment should not be present on first preservation email');
     }
 }

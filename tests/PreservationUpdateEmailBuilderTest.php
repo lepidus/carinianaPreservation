@@ -64,6 +64,7 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
         $issue->setData('year', $issueYear);
         $issue->setData('journalId', $this->journalId);
         $issue->setData('datePublished', $issueDatePublished);
+        $issue->setData('published', 1);
 
         $issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
         $issueDao->insertObject($issue);
@@ -142,5 +143,38 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
         $this->assertFileExists($xmlAttachment['path']);
         $expectedContent = file_get_contents($xmlAttachment['path']);
         $this->assertEquals($expectedContent, $xmlSettingContent, 'Persisted XML content differs from sent XML');
+    }
+
+    public function testNoDiffAttachmentWhenNoDataChanges(): void
+    {
+        $attachments = $this->email->getData('attachments');
+        foreach ($attachments as $attachment) {
+            $this->assertStringEndsNotWith('.diff', $attachment['filename'], 'Diff should not appear when there are no data changes');
+        }
+    }
+
+    public function testDiffAttachmentPresentAfterDataChange(): void
+    {
+        $newYear = (string)(((int)$this->lastIssueYear) + 1);
+        $this->createTestIssue($newYear);
+
+        // Build email again after change
+        $this->email = $this->preservationUpdateEmailBuilder->buildPreservationUpdateEmail($this->journal, $this->baseUrl, $this->locale);
+
+        $attachments = $this->email->getData('attachments');
+        $diffAttachment = null;
+        foreach ($attachments as $attachment) {
+            if (substr($attachment['filename'], -5) === '.diff') {
+                $diffAttachment = $attachment;
+                break;
+            }
+        }
+
+        $this->assertNotNull($diffAttachment, 'Expected a diff attachment after data change');
+        $this->assertFileExists($diffAttachment['path']);
+        $diffContent = file_get_contents($diffAttachment['path']);
+        $this->assertNotEmpty($diffContent, 'Diff file should not be empty');
+        $this->assertStringContainsString($newYear, $diffContent, 'Diff should reference the newly added issue year');
+        $this->assertStringContainsString('+', $diffContent, 'Diff should contain additions marked with +');
     }
 }

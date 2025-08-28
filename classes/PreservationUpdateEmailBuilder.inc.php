@@ -47,5 +47,4 @@ class PreservationUpdateEmailBuilder extends BasePreservationEmailBuilder
         $email->setSubject($subject);
         $email->setBody($body);
     }
-
 }

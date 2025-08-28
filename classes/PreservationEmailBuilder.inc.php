@@ -3,6 +3,7 @@
 import('plugins.generic.carinianaPreservation.classes.BasePreservationEmailBuilder');
 import('plugins.generic.carinianaPreservation.classes.PreservedJournalFactory');
 import('plugins.generic.carinianaPreservation.classes.PreservedJournalSpreadsheet');
+import('plugins.generic.carinianaPreservation.classes.PreservationXmlStatePersister');
 
 class PreservationEmailBuilder extends BasePreservationEmailBuilder
 {
@@ -22,7 +23,7 @@ class PreservationEmailBuilder extends BasePreservationEmailBuilder
         $xmlFilePath = $this->createXml($journal, $baseUrl);
         $email->addAttachment($xmlFilePath);
 
-        $this->updatePreservationSettings($journal, $xmlFilePath);
+        (new PreservationXmlStatePersister())->persist($journal->getId(), $xmlFilePath);
 
         return $email;
     }

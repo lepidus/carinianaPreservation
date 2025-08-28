@@ -13,17 +13,18 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
     private $preservationUpdateEmailBuilder;
     private $email;
     private $journal;
+    private const ATTACHMENT_INDEX_XML = 0;
     private $journalId = 3;
     private $locale = 'pt_BR';
     private $journalAcronym = 'RBRU';
     private $journalContactEmail = 'contact@rbru.com.br';
     private $extraCopyEmail = 'extra.contact@rbru.com.br';
-    private $publisherOrInstitution = 'SciELO';
-    private $title = 'SciELO Journal n19';
+    private $publisherOrInstitution = 'PKP';
+    private $title = 'PKP Journal n19';
     private $issn = '1234-5678';
     private $eIssn = '0101-1010';
-    private $baseUrl = 'https://scielo-journal-19.com.br/';
-    private $journalPath = 'scielojournal19';
+    private $baseUrl = 'https://pkp-journal-19.test/';
+    private $journalPath = 'pkpjournal19';
     private $firstIssueYear = '2019';
     private $lastIssueYear = '2023';
 
@@ -63,6 +64,7 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
         $issue->setData('year', $issueYear);
         $issue->setData('journalId', $this->journalId);
         $issue->setData('datePublished', $issueDatePublished);
+        $issue->setData('published', 1);
 
         $issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
         $issueDao->insertObject($issue);
@@ -119,7 +121,7 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
         $expectedFilePath = "/tmp/$expectedFileName";
         $xmlContentType = 'text/xml';
         $expectedAttachment = ['path' => $expectedFilePath, 'filename' => $expectedFileName, 'content-type' => $xmlContentType];
-        $this->assertEquals($expectedAttachment, $this->email->getData('attachments')[0]);
+        $this->assertEquals($expectedAttachment, $this->email->getData('attachments')[self::ATTACHMENT_INDEX_XML]);
     }
 
     public function testPreservationSettingsAreUpdated(): void
@@ -130,5 +132,49 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
 
         $this->assertNotEmpty($lastPreservationTimestamp);
         $this->assertNotEmpty($preservedXMLmd5);
+    }
+
+    public function testXmlContentIsPersistedOnUpdate(): void
+    {
+        $plugin = new CarinianaPreservationPlugin();
+        $xmlSettingContent = $plugin->getSetting($this->journalId, 'preservedXMLcontent');
+        $this->assertNotEmpty($xmlSettingContent, 'Expected persisted XML content in preservedXMLcontent');
+        $xmlAttachment = $this->email->getData('attachments')[self::ATTACHMENT_INDEX_XML];
+        $this->assertFileExists($xmlAttachment['path']);
+        $expectedContent = file_get_contents($xmlAttachment['path']);
+        $this->assertEquals($expectedContent, $xmlSettingContent, 'Persisted XML content differs from sent XML');
+    }
+
+    public function testNoDiffAttachmentWhenNoDataChanges(): void
+    {
+        $attachments = $this->email->getData('attachments');
+        foreach ($attachments as $attachment) {
+            $this->assertStringEndsNotWith('.diff', $attachment['filename'], 'Diff should not appear when there are no data changes');
+        }
+    }
+
+    public function testDiffAttachmentPresentAfterDataChange(): void
+    {
+        $newYear = (string)(((int)$this->lastIssueYear) + 1);
+        $this->createTestIssue($newYear);
+
+        // Build email again after change
+        $this->email = $this->preservationUpdateEmailBuilder->buildPreservationUpdateEmail($this->journal, $this->baseUrl, $this->locale);
+
+        $attachments = $this->email->getData('attachments');
+        $diffAttachment = null;
+        foreach ($attachments as $attachment) {
+            if (substr($attachment['filename'], -5) === '.diff') {
+                $diffAttachment = $attachment;
+                break;
+            }
+        }
+
+        $this->assertNotNull($diffAttachment, 'Expected a diff attachment after data change');
+        $this->assertFileExists($diffAttachment['path']);
+        $diffContent = file_get_contents($diffAttachment['path']);
+        $this->assertNotEmpty($diffContent, 'Diff file should not be empty');
+        $this->assertStringContainsString($newYear, $diffContent, 'Diff should reference the newly added issue year');
+        $this->assertStringContainsString('+', $diffContent, 'Diff should contain additions marked with +');
     }
 }

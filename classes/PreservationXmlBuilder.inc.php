@@ -47,8 +47,18 @@ class PreservationXmlBuilder
         $issuesByYear = [];
         foreach ($this->issues as $issue) {
             $issueYear = $issue->getData('year');
+            if (!$issueYear) {
+                $datePublished = $issue->getData('datePublished');
+                if ($datePublished) {
+                    $issueYear = substr($datePublished, 0, 4);
+                }
+            }
+            if (!$issueYear) {
+                // Skip issues we cannot determine year for
+                continue;
+            }
             if (array_key_exists($issueYear, $issuesByYear)) {
-                $issuesByYear[$issueYear] = array_merge($issuesByYear[$issueYear], [$issue]);
+                $issuesByYear[$issueYear][] = $issue;
             } else {
                 $issuesByYear[$issueYear] = [$issue];
             }
@@ -125,7 +135,7 @@ class PreservationXmlBuilder
 
     private function createPreservedYearProperty($dom, $year, $title, $volume, $volumeText)
     {
-        $journalAcronym = $this->journal->getData('acronym', $this->locale);
+        $journalAcronym = $this->journal->getLocalizedData('acronym', $this->locale);
         $preservedYearNodeName = 'OJS3Plugin' . $journalAcronym . $volume . '_' . $year;
         $preservedYear = $this->createXmlProperty($dom, $preservedYearNodeName);
 

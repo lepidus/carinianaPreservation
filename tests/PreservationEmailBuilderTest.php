@@ -13,20 +13,23 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
     private $preservationEmailBuilder;
     private $email;
     private $journal;
+    private const ATTACHMENT_INDEX_SPREADSHEET = 0;
+    private const ATTACHMENT_INDEX_STATEMENT = 1;
+    private const ATTACHMENT_INDEX_XML = 2;
     private $journalId = 2;
     private $locale = 'pt_BR';
     private $journalAcronym = 'RBRB';
     private $journalContactEmail = 'contact@rbrb.com.br';
     private $extraCopyEmail = 'extra.contact@rbrb.com.br';
-    private $publisherOrInstitution = 'SciELO';
-    private $title = 'SciELO Journal n18';
+    private $publisherOrInstitution = 'PKP';
+    private $title = 'PKP Journal n18';
     private $issn = '1234-1234';
     private $eIssn = '0101-1010';
-    private $baseUrl = 'https://scielo-journal-18.com.br/';
-    private $journalPath = 'scielojournal18';
+    private $baseUrl = 'https://pkp-journal-18.test/';
+    private $journalPath = 'pkpjournal18';
     private $firstIssueYear = '2018';
     private $lastIssueYear = '2022';
-    private $notesAndComments = 'We are the 18th SciELO journal';
+    private $notesAndComments = 'We are the 18th PKP journal';
     private $statementOriginalFileName = 'Termos_responsabilidade_cariniana.pdf';
     private $statementFileName = 'carinianapreservationplugin_responsabilityStatement.pdf';
 
@@ -66,6 +69,8 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
         $issue = new Issue();
         $issue->setData('journalId', $this->journalId);
         $issue->setData('datePublished', $issueDatePublished);
+        $issue->setData('year', $issueYear);
+        $issue->setData('published', 1);
 
         $issueDao = DAORegistry::getDAO('IssueDAO');
         $issueDao->insertObject($issue);
@@ -134,7 +139,7 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
         $expectedFilePath = "/tmp/$expectedFileName";
         $xlsxContentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
         $expectedAttachment = ['path' => $expectedFilePath, 'filename' => $expectedFileName, 'content-type' => $xlsxContentType];
-        $this->assertEquals($expectedAttachment, $this->email->getData('attachments')[0]);
+        $this->assertEquals($expectedAttachment, $this->email->getData('attachments')[self::ATTACHMENT_INDEX_SPREADSHEET]);
     }
 
     public function testBuiltPreservationEmailStatement(): void
@@ -142,7 +147,7 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
         $expectedFilePath = "public/journals/{$this->journalId}/{$this->statementFileName}";
         $pdfContentType = 'application/pdf';
         $expectedAttachment = ['path' => $expectedFilePath, 'filename' => $this->statementOriginalFileName, 'content-type' => $pdfContentType];
-        $this->assertEquals($expectedAttachment, $this->email->getData('attachments')[1]);
+        $this->assertEquals($expectedAttachment, $this->email->getData('attachments')[self::ATTACHMENT_INDEX_STATEMENT]);
     }
 
     public function testBuiltPreservationEmailXml(): void
@@ -151,6 +156,30 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
         $expectedFilePath = "/tmp/$expectedFileName";
         $xmlContentType = 'text/xml';
         $expectedAttachment = ['path' => $expectedFilePath, 'filename' => $expectedFileName, 'content-type' => $xmlContentType];
-        $this->assertEquals($expectedAttachment, $this->email->getData('attachments')[2]);
+        $this->assertEquals($expectedAttachment, $this->email->getData('attachments')[self::ATTACHMENT_INDEX_XML]);
+    }
+
+    public function testXmlContentIsPersistedOnFirstPreservation(): void
+    {
+        $plugin = new CarinianaPreservationPlugin();
+        $xmlSettingContent = $plugin->getSetting($this->journalId, 'preservedXMLcontent');
+        $this->assertNotEmpty($xmlSettingContent, 'Expected persisted XML content in preservedXMLcontent');
+        $xmlAttachment = $this->email->getData('attachments')[self::ATTACHMENT_INDEX_XML];
+        $this->assertFileExists($xmlAttachment['path']);
+        $expectedContent = file_get_contents($xmlAttachment['path']);
+        $this->assertEquals($expectedContent, $xmlSettingContent, 'Persisted XML content differs from sent XML');
+    }
+
+    public function testNoDiffAttachmentOnFirstPreservation(): void
+    {
+        $attachments = $this->email->getData('attachments');
+        $diffFound = false;
+        foreach ($attachments as $attachment) {
+            if (substr($attachment['filename'], -5) === '.diff') {
+                $diffFound = true;
+                break;
+            }
+        }
+        $this->assertFalse($diffFound, 'Diff attachment should not be present on first preservation email');
     }
 }

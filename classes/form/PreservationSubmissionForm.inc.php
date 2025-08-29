@@ -48,10 +48,16 @@ class PreservationSubmissionForm extends Form
             'pluginName' => $this->plugin->getName(),
             'applicationName' => Application::get()->getName(),
             'emailCopies' => $emailCopies,
-            'lastPreservationTimestamp' => $lastPreservationTimestamp
+            'lastPreservationTimestamp' => $lastPreservationTimestamp,
+            'isFirstPreservation' => $this->isFirstPreservation()
         ]);
 
         return parent::fetch($request, $template, $display);
+    }
+
+    public function isFirstPreservation(): bool
+    {
+        return empty($this->plugin->getSetting($this->contextId, 'lastPreservationTimestamp'));
     }
 
     private function getPreservationEmailCopies()

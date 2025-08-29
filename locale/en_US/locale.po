@@ -84,8 +84,11 @@ msgstr ""
 "The e-mail with the journal data will be sent to the e-mail address of Cariniana Network (cariniana-periodicos@ibict.br), "
 "with copy to the address(es): {$emailCopies}"
 
-msgid "plugins.generic.carinianaPreservation.preservationSubmission.instruction"
-msgstr "Click on \"Submit\" to submit this journal for digital preservation by Cariniana"
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.first.instruction"
+msgstr "Click \"Submit\" to make the first submission of this journal for digital preservation by the Cariniana Network."
+
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.update.instruction"
+msgstr "Click \"Submit\" to send an update with the changes since the last preservation."
 
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.missingRequirements"
 msgstr "The submission of the journal could not be carried out. The following data need to be filled: {$missingRequirements}"

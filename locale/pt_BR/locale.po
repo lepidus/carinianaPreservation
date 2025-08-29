@@ -84,8 +84,11 @@ msgstr ""
 "O e-mail com os dados do periódico será enviado para endereço de e-mail da Rede Cariniana (cariniana-periodicos@ibict.br), "
 "com cópia para o(s) endereço(s) de e-mail: {$emailCopies}"
 
-msgid "plugins.generic.carinianaPreservation.preservationSubmission.instruction"
-msgstr "Clique em \"Submeter\" para realizar a submissão deste periódico para preservação digital pela Cariniana"
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.first.instruction"
+msgstr "Clique em \"Submeter\" para realizar a primeira submissão deste periódico para preservação digital pela Rede Cariniana."
+
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.update.instruction"
+msgstr "Clique em \"Submeter\" para enviar uma atualização com as mudanças desde a última preservação."
 
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.missingRequirements"
 msgstr "A submissão do periódico para preservação não pôde ser realizada. Os seguintes dados precisam ser preenchidos: {$missingRequirements}"

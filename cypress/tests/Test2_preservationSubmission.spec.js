@@ -17,7 +17,7 @@ describe("Cariniana Preservation Plugin - Submission to preservation fails", fun
         cy.get('a[id^=' + pluginRowId + '-preservationSubmission-button]').click();
         cy.wait(200);
 
-        cy.contains("The e-mail with the journal data will be sent to the e-mail address of Cariniana Network (cariniana@ibict.br), with copy to the address(es): rvaca@mailinator.com, copia.extra.cariniana@gmail.com");
+        cy.contains("The e-mail with the journal data will be sent to the e-mail address of Cariniana Network (cariniana-periodicos@ibict.br), with copy to the address(es): rvaca@mailinator.com, copia.extra.cariniana@gmail.com");
 
         cy.contains("Notes and comments");
         cy.contains("If you are interested, insert here some relevant information about the publication");
@@ -47,7 +47,7 @@ describe("Cariniana Preservation Plugin - Successful submission to preservation"
         cy.get('a[id^=' + pluginRowId + '-preservationSubmission-button]').click();
         cy.wait(200);
 
-        cy.contains("The e-mail with the journal data will be sent to the e-mail address of Cariniana Network (cariniana@ibict.br), with copy to the address(es): rvaca@mailinator.com, copia.extra.cariniana@gmail.com");
+        cy.contains("The e-mail with the journal data will be sent to the e-mail address of Cariniana Network (cariniana-periodicos@ibict.br), with copy to the address(es): rvaca@mailinator.com, copia.extra.cariniana@gmail.com");
 
         cy.contains("Notes and comments");
         cy.contains("If you are interested, insert here some relevant information about the publication");

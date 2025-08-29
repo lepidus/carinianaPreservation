@@ -81,7 +81,7 @@ msgstr "Si está interesado, inserte aquí alguna información relevante sobre l
 
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.emailAddresses"
 msgstr ""
-"El correo electrónico con los datos de la revista será enviado a la dirección de correo electrónico de la Rede Cariniana (cariniana@ibict.br), "
+"El correo electrónico con los datos de la revista será enviado a la dirección de correo electrónico de la Rede Cariniana (cariniana-periodicos@ibict.br), "
 "con copia a la(s) dirección(es) de correo electrónico: {$emailCopies}"
 
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.instruction"

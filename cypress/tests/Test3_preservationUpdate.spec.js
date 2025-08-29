@@ -12,7 +12,7 @@ describe("Cariniana Preservation Plugin - Preservation update", function () {
 
         cy.contains("Last preservation performed on:");
 
-        cy.contains("The e-mail with the journal data will be sent to the e-mail address of Cariniana Network (cariniana@ibict.br), with copy to the address(es): rvaca@mailinator.com, copia.extra.cariniana@gmail.com");
+        cy.contains("The e-mail with the journal data will be sent to the e-mail address of Cariniana Network (cariniana-periodicos@ibict.br), with copy to the address(es): rvaca@mailinator.com, copia.extra.cariniana@gmail.com");
 
         cy.get('body').should('not.contain', 'Notes and comments');
         cy.get('body').should('not.contain', 'If you are interested, insert here some relevant information about the publication');
@@ -45,7 +45,7 @@ describe("Cariniana Preservation Plugin - Preservation update fails", function (
 
         cy.contains("Last preservation performed on:");
         cy.contains(
-            "The e-mail with the journal data will be sent to the e-mail address of Cariniana Network (cariniana@ibict.br), with copy to the address(es): rvaca@mailinator.com, copia.extra.cariniana@gmail.com"
+            "The e-mail with the journal data will be sent to the e-mail address of Cariniana Network (cariniana-periodicos@ibict.br), with copy to the address(es): rvaca@mailinator.com, copia.extra.cariniana@gmail.com"
         );
         cy.get('body').should('not.contain', 'Notes and comments');
         cy.get('body').should('not.contain', 'If you are interested, insert here some relevant information about the publication');

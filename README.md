@@ -27,8 +27,8 @@ Este plugin é compatível com o **OJS** versão **3.3.0**.
 ## Instalação e Configuração
 
 1. Acesse *Configurações -> Website -> Plugins -> Galeria de plugins*. Clique em **Preservação Cariniana** e, em seguida, clique em *Instalar*.
-
-2. Na aba `Plugins instalados` em `Configurações do Website`, procure o plugin "Preservação Cariniana" e abra as suas configurações. Na nova janela, você deve anexar o Termo de Responsabilidade e Autorização preenchido e assinado pela pessoa responsável pelo periódico.
+2. Acesse *Distribuição -> Arquivamento*. Habilite a opção para o LOCKSS poder armazenar e distribuir o conteúdo do periódico. Salve.
+3. Na aba `Plugins instalados` em `Configurações do Website`, procure o plugin "Preservação Cariniana" e abra as suas configurações. Na nova janela, você deve anexar o Termo de Responsabilidade e Autorização preenchido e assinado pela pessoa responsável pelo periódico.
 
 Opcionalmente você poderá informar um e-mail para o qual serão copiadas as informações enviadas para a rede Cariniana, quando o periódico for submetido para preservação.
 

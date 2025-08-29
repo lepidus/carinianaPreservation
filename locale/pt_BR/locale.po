@@ -26,9 +26,12 @@ msgstr "Este endereço será colocado como cópia no e-mail de submissão do per
 msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement"
 msgstr "Termos de responsabilidade"
 
-msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.alreadySent"
+msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.alreadySent.notice"
+msgstr "O arquivo preenchido dos termos de responsabilidade <strong>já foi enviado anteriormente</strong> e está salvo no sistema."
+
+msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.alreadySent.instructions"
 msgstr ""
-"O arquivo preenchido dos termos de responsabilidade <strong>já foi enviado anteriormente</strong> e está salvo no sistema. Caso deseje substituir o arquivo enviado anteriormente, "
+"Caso deseje substituir o arquivo enviado anteriormente, "
 "faça o download, preencha e assine o documento dos <a href=\"{$downloadStatementUrl}\">termos de responsabilidade</a> e em seguida anexe o arquivo no campo abaixo."
 
 msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.description"

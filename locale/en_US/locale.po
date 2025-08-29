@@ -26,10 +26,13 @@ msgstr "This address will be placed as a copy in the journal submission e-mail f
 msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement"
 msgstr "Responsability statement"
 
-msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.alreadySent"
+msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.alreadySent.notice"
+msgstr "The completed responsibility terms file <strong>has already been submitted previously</strong> and is saved in the system."
+
+msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.alreadySent.instructions"
 msgstr ""
-"The completed file of the terms of responsibility has <strong>already been sent</strong> previously and is saved in the system. "
-"If you wish to replace the previously sent file, download, complete and sign the <a href=\"{$downloadStatementUrl}\">disclaimer document</a> and then attach the file in the field below."
+"If you wish to replace the previously submitted file, "
+"download, complete, and sign the <a href=\"{$downloadStatementUrl}\">responsibility terms</a> document and then attach the file in the field below."
 
 msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.description"
 msgstr "Download, complete and sign the <a href=\"{$downloadStatementUrl}\">disclaimer document</a> and then attach the file in the field below."

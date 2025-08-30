@@ -23,6 +23,18 @@ describe("Cariniana Preservation Plugin - Preservation update", function () {
 
         cy.get('body').should('not.contain', 'The submission of the journal could not be carried out. The following data need to be filled');
     });
+    it("Blocks second update when no changes", function () {
+        const pluginRowId = 'component-grid-settings-plugins-settingsplugingrid-category-generic-row-carinianapreservationplugin';
+        cy.login('dbarnes', null, 'publicknowledge');
+        cy.get('a:contains("Website")').click();
+        cy.waitJQuery();
+        cy.get('button#plugins-button').click();
+        cy.get('#' + pluginRowId + ' > .first_column > .show_extras').click();
+        cy.get('a[id^=' + pluginRowId + '-preservationSubmission-button]').click();
+        cy.wait(200);
+        cy.get('.submitFormButton').contains('Submit').click();
+        cy.contains('No changes detected since last preservation. Nothing to update.');
+    });
 });
 describe("Cariniana Preservation Plugin - Preservation update fails", function () {
     it("Removes ISSN and eISSN from the journal settings", function () {

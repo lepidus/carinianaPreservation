@@ -91,6 +91,12 @@ class PreservationSubmissionForm extends Form
             ));
         }
 
+        if (!$this->isFirstPreservation()) {
+            if (!$this->shouldSendUpdate($journal, Application::get()->getRequest()->getBaseUrl())) {
+                $this->addError('preservationSubmission', __('plugins.generic.carinianaPreservation.preservationSubmission.noChanges'));
+            }
+        }
+
         return parent::validate($callHooks);
     }
 
@@ -133,9 +139,6 @@ class PreservationSubmissionForm extends Form
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
 
         if ($this->plugin->getSetting($this->contextId, 'lastPreservationTimestamp')) {
-            if (!$this->shouldSendUpdate($journal, $baseUrl)) {
-                return;
-            }
             import('plugins.generic.carinianaPreservation.classes.PreservationUpdateEmailBuilder');
             $emailBuilder = new PreservationUpdateEmailBuilder();
             $email = $emailBuilder->buildPreservationUpdateEmail($journal, $baseUrl, $locale);
@@ -148,7 +151,7 @@ class PreservationSubmissionForm extends Form
         $email->send();
     }
 
-    private function shouldSendUpdate($journal, $baseUrl): bool
+    protected function shouldSendUpdate($journal, $baseUrl): bool
     {
         import('plugins.generic.carinianaPreservation.classes.PreservationChangeDetector');
         import('plugins.generic.carinianaPreservation.classes.PreservationXmlBuilder');

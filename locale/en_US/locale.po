@@ -99,6 +99,9 @@ msgstr "The submission of the journal could not be carried out. The following da
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.missingResponsabilityStatement"
 msgstr "Responsability statement file not sent. Access the plugin settings to send it"
 
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.noChanges"
+msgstr "No changes detected since last preservation. Nothing to update."
+
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.lastPreservation"
 msgstr "Last preservation performed on:"
 

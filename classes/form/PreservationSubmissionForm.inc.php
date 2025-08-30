@@ -149,6 +149,8 @@ class PreservationSubmissionForm extends Form
             $email = $emailBuilder->buildPreservationEmail($journal, $baseUrl, $notesAndComments, $locale);
         }
         $email->send();
+
+        parent::execute(...$functionArgs);
     }
 
     protected function shouldSendUpdate($journal, $baseUrl): bool

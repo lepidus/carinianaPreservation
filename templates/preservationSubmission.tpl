@@ -14,22 +14,13 @@
     {rdelim});
 </script>
 
+<style>
+    #preservationSubmissionFormNotification .title { display: none; }
+</style>
+
 <div id="carinianaPreservationSubmission">
     <form class="pkp_form" id="preservationSubmissionForm" method="post" action="{url router=$smarty.const.ROUTE_COMPONENT op="manage" category="generic" plugin=$pluginName verb="preservationSubmission" save=true}">
         {csrf}
-        {if $isError}
-            {foreach from=$errors key=field item=message}
-                <div class="pkp_notification notifyError">
-                    {include
-                        file="controllers/notification/inPlaceNotificationContent.tpl"
-                        notificationId="preservationSubmissionError_`$field`"
-                        notificationStyleClass="notifyError"
-                        notificationTitle=""
-                        notificationContents=$message
-                    }
-                </div>
-            {/foreach}
-        {/if}
         {include file="controllers/notification/inPlaceNotification.tpl" notificationId="preservationSubmissionFormNotification"}
 
         {if !$isFirstPreservation && $lastPreservationTimestamp}

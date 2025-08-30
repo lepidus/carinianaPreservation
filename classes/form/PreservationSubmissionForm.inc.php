@@ -133,6 +133,9 @@ class PreservationSubmissionForm extends Form
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
 
         if ($this->plugin->getSetting($this->contextId, 'lastPreservationTimestamp')) {
+            if (!$this->shouldSendUpdate($journal, $baseUrl)) {
+                return;
+            }
             import('plugins.generic.carinianaPreservation.classes.PreservationUpdateEmailBuilder');
             $emailBuilder = new PreservationUpdateEmailBuilder();
             $email = $emailBuilder->buildPreservationUpdateEmail($journal, $baseUrl, $locale);
@@ -143,5 +146,20 @@ class PreservationSubmissionForm extends Form
             $email = $emailBuilder->buildPreservationEmail($journal, $baseUrl, $notesAndComments, $locale);
         }
         $email->send();
+    }
+
+    private function shouldSendUpdate($journal, $baseUrl): bool
+    {
+        import('plugins.generic.carinianaPreservation.classes.PreservationChangeDetector');
+        import('plugins.generic.carinianaPreservation.classes.PreservationXmlBuilder');
+
+        $builder = new PreservationXmlBuilder($journal, $baseUrl);
+        $journalAcronym = $journal->getLocalizedData('acronym', $journal->getPrimaryLocale());
+        $tempPath = "/tmp/marcacoes_preservacao_{$journalAcronym}_check.xml";
+        $builder->createPreservationXml($tempPath);
+        $currentXml = is_readable($tempPath) ? file_get_contents($tempPath) : '';
+
+        $detector = new PreservationChangeDetector($journal->getId());
+        return $detector->hasChanges($currentXml);
     }
 }

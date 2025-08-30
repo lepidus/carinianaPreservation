@@ -22,6 +22,8 @@ describe("Cariniana Preservation Plugin - Submission to preservation fails", fun
         cy.contains("Notes and comments");
         cy.contains("If you are interested, insert here some relevant information about the publication");
 
+        cy.contains('make the first submission of this journal for digital preservation');
+
         cy.contains("Click on \"Submit\" to submit this journal for digital preservation by Cariniana");
 
         cy.get('.submitFormButton').contains('Submit').click();
@@ -51,6 +53,8 @@ describe("Cariniana Preservation Plugin - Successful submission to preservation"
 
         cy.contains("Notes and comments");
         cy.contains("If you are interested, insert here some relevant information about the publication");
+
+        cy.contains('make the first submission of this journal for digital preservation');
 
         cy.contains("Click on \"Submit\" to submit this journal for digital preservation by Cariniana");
 

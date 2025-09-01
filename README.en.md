@@ -63,7 +63,7 @@ To avoid errors, the following data must be filled in:
 
 ### Updating preserved data
 
-For journals that have already been submitted for preservation in the Cariniana Network using the plugin, there is also data updating.
+For journals already submitted for preservation using the plugin, you can also send updates when data changes.
 
 * In the submission window, a message will show the date and time of the last submission or update for preservation.
 * When manually submitting the form, an email will be sent to the Cariniana Network with the updated XML containing the most recent data of the journal.
@@ -71,7 +71,7 @@ For journals that have already been submitted for preservation in the Cariniana 
 
 ### Automatic update detection
 
-When the plugin is **active** for the journal, it will automatically monitor daily for differences in the preserved data of the journal. If differences exist, the plugin will send an email to the Cariniana Network with the updated data.
+When the plugin is **active** for the journal, it will automatically perform a weekly check for differences in the preserved data. If differences exist, the plugin will send an email to the Cariniana Network with the updated data.
 
 ## Automatic monitoring configuration
 

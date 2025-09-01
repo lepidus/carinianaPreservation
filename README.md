@@ -61,7 +61,7 @@ Para que não haja erros, os seguintes dados devem ser preenchidos:
 
 ### Atualização de dados em preservação
 
-Para periódicos que já foram submetidos para preservação na Rede Cariniana, utilizando o plugin, também há atualização dos dados.
+Para periódicos já submetidos para preservação na Rede Cariniana utilizando o plugin, também é possível enviar atualizações quando houver mudanças nos dados.
 
 * Na janela de submissão, será exibida uma mensagem informando a data e hora da última submissão ou aualização para preservação.
 * Ao submeter manualmente o formulario, será enviado um e-mail para a rede Cariniana com o XML atualizado com os dados mais recentes do periódico.
@@ -69,7 +69,7 @@ Para periódicos que já foram submetidos para preservação na Rede Cariniana, 
 
 ### Detecção automática de atualizações
 
-Quando o plugin estiver **ativo** no periódico, ele irá monitorar diariamente de forma automatica, por diferencas nos dados preservados do periodico.
+Quando o plugin estiver **ativo** no periódico, ele fará uma verificação semanal de forma automática por diferenças nos dados preservados do periódico.
 Caso hajam diferencas, o plugin irá enviar um e-mail para a rede Cariniana com os dados atualizados.
 
 ## Configuração de monitoramento automático

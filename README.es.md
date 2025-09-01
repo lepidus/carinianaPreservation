@@ -61,9 +61,9 @@ Para evitar errores, se deben completar los siguientes datos:
 * Resumen de la revista
 * Contactos Principal y Técnico de la revista
 
-### Actualización de datos preservados
+### Actualización de datos en preservación
 
-Para revistas que ya fueron enviadas para preservación en la Red Cariniana utilizando el plugin, también hay actualización de datos.
+Para revistas ya enviadas para preservación en la Red Cariniana utilizando el plugin, también es posible enviar actualizaciones cuando cambian los datos.
 
 * En la ventana de envío se mostrará un mensaje con la fecha y hora del último envío o actualización para preservación.
 * Al enviar manualmente el formulario se enviará un correo a la Red Cariniana con el XML actualizado con los datos más recientes de la revista.
@@ -71,7 +71,7 @@ Para revistas que ya fueron enviadas para preservación en la Red Cariniana util
 
 ### Detección automática de actualizaciones
 
-Cuando el plugin está **activo** en la revista, monitorea diariamente de forma automática diferencias en los datos preservados. Si hay diferencias el plugin enviará un correo a la Red Cariniana con los datos actualizados.
+Cuando el plugin está **activo** en la revista, realiza una verificación semanal automática de diferencias en los datos preservados. Si existen diferencias el plugin enviará un correo a la Red Cariniana con los datos actualizados.
 
 ## Configuración de monitoreo automático
 

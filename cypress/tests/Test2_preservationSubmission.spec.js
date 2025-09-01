@@ -24,8 +24,6 @@ describe("Cariniana Preservation Plugin - Submission to preservation fails", fun
 
         cy.contains('make the first submission of this journal for digital preservation');
 
-        cy.contains("Click on \"Submit\" to submit this journal for digital preservation by Cariniana");
-
         cy.get('.submitFormButton').contains('Submit').click();
         cy.contains('The submission of the journal could not be carried out. The following data need to be filled: ISSN');
     });

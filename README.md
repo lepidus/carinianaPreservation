@@ -1,5 +1,7 @@
 # Preservação Cariniana
 
+[Português (BR)](./README.md) | [English](./README.en.md) | [Español](./README.es.md)
+
 O plugin Preservação Cariniana tem o intuito de facilitar o processo de preservação digital de periódicos OJS por meio da Rede Cariniana. Sua principal funcionalidade é o envio de um e-mail para rede Carianiana com as seguintes informações do periódico a ser preservado:
 
 * Editora/Instituição
@@ -18,7 +20,6 @@ Além destas informações, no primeiro envio também é enviado o *Termo de Res
 ## Vídeo de Apresentação
 
 [![Assista ao vídeo de apresentação no Vimeo](https://img.shields.io/badge/Assista%20ao%20vídeo%20de%20apresentação%20-Clique%20aqui-blue?logo=vimeo)](https://vimeo.com/997938301/c62617794b)
-
 
 ## Compatibilidade
 
@@ -89,9 +90,8 @@ Faça o clone do repositório e execute o comando `composer install' no diretór
 
 Por padrão, o plugin envia e-mail para o IBICT. Para alterar o e-mail do destinatário em ambiente de testes, é necessário uma configuração adicional no OJS. Adicione as seguintes linhas no arquivo `config.inc.php`:
 
-```
+```ini
 [carinianapreservation]
-
 email_for_tests = "seu e-mail de testes"
 ```
 

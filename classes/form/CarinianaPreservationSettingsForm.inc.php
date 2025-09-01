@@ -103,21 +103,20 @@ class CarinianaPreservationSettingsForm extends Form
         import('lib.pkp.classes.file.PrivateFileManager');
         $temporaryFileManager = new TemporaryFileManager();
         $privateFileManager = new PrivateFileManager();
-
         $extension = pathinfo($statementTempFile->getOriginalFileName(), PATHINFO_EXTENSION) ?: 'pdf';
         $basePath = rtrim($privateFileManager->getBasePath(), '/');
         $dir = $basePath . '/carinianaPreservation/' . (int)$contextId;
         if (!$privateFileManager->fileExists($dir, 'dir')) {
             $privateFileManager->mkdirtree($dir);
         }
-        $statementFileName = 'statement-' . $contextId . '-' . date('YmdHis') . '-' . bin2hex(random_bytes(4)) . '.' . $extension;
+        $statementFileName = 'responsabilityStatement.' . $extension;
         $targetPath = $dir . '/' . $statementFileName;
-        $copied = copy($statementTempFile->getFilePath(), $targetPath);
-        if (!$copied) {
-            return false;
+        copy($statementTempFile->getFilePath(), $targetPath);
+        if (is_file($targetPath)) {
+            $privateFileManager->setMode($targetPath, FILE_MODE_MASK);
+            $temporaryFileManager->deleteById($statementTempFile->getId(), $userId);
+            return $statementFileName;
         }
-        $privateFileManager->setMode($targetPath, FILE_MODE_MASK);
-        $temporaryFileManager->deleteById($statementTempFile->getId(), $userId);
-        return $statementFileName;
+        return false;
     }
 }

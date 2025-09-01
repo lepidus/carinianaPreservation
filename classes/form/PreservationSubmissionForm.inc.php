@@ -84,11 +84,13 @@ class PreservationSubmissionForm extends Form
             ));
         }
 
-        $statementFile = $this->plugin->getSetting($this->contextId, 'statementFile');
-        if (empty($statementFile)) {
-            $this->addError('preservationSubmission', __(
-                "plugins.generic.carinianaPreservation.preservationSubmission.missingResponsabilityStatement"
-            ));
+        if ($this->isFirstPreservation()) {
+            $statementFile = $this->plugin->getSetting($this->contextId, 'statementFile');
+            if (empty($statementFile)) {
+                $this->addError('preservationSubmission', __(
+                    "plugins.generic.carinianaPreservation.preservationSubmission.missingResponsabilityStatement"
+                ));
+            }
         }
 
         if (!$this->isFirstPreservation()) {

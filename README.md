@@ -1,5 +1,7 @@
 # Preservação Cariniana
 
+[![Latest Release](https://img.shields.io/github/v/release/lepidus/carinianaPreservation)](https://github.com/lepidus/carinianaPreservation/releases)
+
 [Português (BR)](./README.md) | [English](./README.en.md) | [Español](./README.es.md)
 
 O plugin Preservação Cariniana tem o intuito de facilitar o processo de preservação digital de periódicos OJS por meio da Rede Cariniana. Sua principal funcionalidade é o envio de um e-mail para rede Carianiana com as seguintes informações do periódico a ser preservado:

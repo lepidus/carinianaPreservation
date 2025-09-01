@@ -7,6 +7,7 @@ import('classes.journal.Journal');
 import('classes.issue.Issue');
 import('plugins.generic.carinianaPreservation.classes.PreservationEmailBuilder');
 import('plugins.generic.carinianaPreservation.CarinianaPreservationPlugin');
+import('lib.pkp.classes.file.PrivateFileManager');
 
 class PreservationEmailBuilderTest extends DatabaseTestCase
 {
@@ -78,13 +79,21 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
 
     private function createStatementFileSetting(): void
     {
+        $plugin = new CarinianaPreservationPlugin();
+        $fileMgr = new PrivateFileManager();
+        $base = rtrim($fileMgr->getBasePath(), '/');
+        $dir = $base . '/carinianaPreservation/' . $this->journalId;
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
+        $generatedName = 'statement-' . $this->journalId . '-' . date('YmdHis') . '-deadbeef.pdf';
+        $fullPath = $dir . '/' . $generatedName;
+        file_put_contents($fullPath, 'PDF');
         $statementFileData = json_encode([
             'originalFileName' => $this->statementOriginalFileName,
-            'fileName' => $this->statementFileName,
+            'fileName' => $generatedName,
             'fileType' => 'application/pdf',
         ]);
-
-        $plugin = new CarinianaPreservationPlugin();
         $plugin->updateSetting($this->journalId, 'statementFile', $statementFileData);
     }
 
@@ -144,10 +153,20 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
 
     public function testBuiltPreservationEmailStatement(): void
     {
-        $expectedFilePath = "public/journals/{$this->journalId}/{$this->statementFileName}";
-        $pdfContentType = 'application/pdf';
-        $expectedAttachment = ['path' => $expectedFilePath, 'filename' => $this->statementOriginalFileName, 'content-type' => $pdfContentType];
-        $this->assertEquals($expectedAttachment, $this->email->getData('attachments')[self::ATTACHMENT_INDEX_STATEMENT]);
+        $attachment = $this->email->getData('attachments')[self::ATTACHMENT_INDEX_STATEMENT];
+
+        $this->assertEquals($this->statementOriginalFileName, $attachment['filename']);
+        $this->assertEquals('application/pdf', $attachment['content-type']);
+
+        $this->assertFalse(str_starts_with($attachment['path'], 'public/'), 'Statement path should not be in public directory');
+
+        $expectedDirPrefix = 'files/carinianaPreservation/' . $this->journalId . '/';
+        $this->assertTrue(str_starts_with($attachment['path'], $expectedDirPrefix), 'Statement path should start with private dir prefix');
+
+        $fileName = basename($attachment['path']);
+        $this->assertTrue(str_starts_with($fileName, 'statement-'), 'Statement filename should start with statement-');
+        $this->assertStringEndsWith('.pdf', $fileName, 'Statement filename should end with .pdf');
+        $this->assertFileExists($attachment['path']);
     }
 
     public function testBuiltPreservationEmailXml(): void

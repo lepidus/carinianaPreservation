@@ -54,16 +54,30 @@ class PreservationEmailBuilder extends BasePreservationEmailBuilder
     {
         $plugin = new CarinianaPreservationPlugin();
         $statementFileData = json_decode($plugin->getSetting($journal->getId(), 'statementFile'), true);
+        $originalName = $statementFileData['originalFileName'];
+        $type = $statementFileData['fileType'];
+        $fileName = $statementFileData['fileName'];
 
-        import('classes.file.PublicFileManager');
-        $publicFileManager = new PublicFileManager();
-        $publicFilesPath = $publicFileManager->getContextFilesPath($journal->getId());
-        $statementFilePath = $publicFilesPath . '/' . $statementFileData['fileName'];
+        import('lib.pkp.classes.file.PrivateFileManager');
+        $privateFileManager = new PrivateFileManager();
+        $privateBase = rtrim($privateFileManager->getBasePath(), '/');
+        $privatePath = $privateBase . '/carinianaPreservation/' . (int)$journal->getId() . '/' . $fileName;
+
+        $statementFilePath = $privatePath;
+        if (!is_readable($privatePath)) {
+            import('classes.file.PublicFileManager');
+            $publicFileManager = new PublicFileManager();
+            $publicFilesPath = $publicFileManager->getContextFilesPath($journal->getId());
+            $publicCandidate = $publicFilesPath . '/' . $fileName;
+            if (is_readable($publicCandidate)) {
+                $statementFilePath = $publicCandidate;
+            }
+        }
 
         return [
             'path' => $statementFilePath,
-            'name' => $statementFileData['originalFileName'],
-            'type' => $statementFileData['fileType']
+            'name' => $originalName,
+            'type' => $type
         ];
     }
 }

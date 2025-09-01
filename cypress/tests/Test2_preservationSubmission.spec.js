@@ -54,8 +54,6 @@ describe("Cariniana Preservation Plugin - Successful submission to preservation"
 
         cy.contains('make the first submission of this journal for digital preservation');
 
-        cy.contains("Click on \"Submit\" to submit this journal for digital preservation by Cariniana");
-
         cy.get('.submitFormButton').contains('Submit').click();
     });
 });

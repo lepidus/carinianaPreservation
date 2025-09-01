@@ -9,7 +9,7 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
 {
     private $journal;
     private $preservedJournalFactory;
-    private $journalId = 2;
+    private $journalId = 77777;
     private $locale = 'pt_BR';
     private $publisherOrInstitution = 'PKP';
     private $title = 'PKP Journal n18';

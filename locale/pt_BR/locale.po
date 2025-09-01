@@ -26,9 +26,12 @@ msgstr "Este endereço será colocado como cópia no e-mail de submissão do per
 msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement"
 msgstr "Termos de responsabilidade"
 
-msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.alreadySent"
+msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.alreadySent.notice"
+msgstr "O arquivo preenchido dos termos de responsabilidade <strong>já foi enviado anteriormente</strong> e está salvo no sistema."
+
+msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.alreadySent.instructions"
 msgstr ""
-"O arquivo preenchido dos termos de responsabilidade <strong>já foi enviado anteriormente</strong> e está salvo no sistema. Caso deseje substituir o arquivo enviado anteriormente, "
+"Caso deseje substituir o arquivo enviado anteriormente, "
 "faça o download, preencha e assine o documento dos <a href=\"{$downloadStatementUrl}\">termos de responsabilidade</a> e em seguida anexe o arquivo no campo abaixo."
 
 msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.description"
@@ -84,14 +87,20 @@ msgstr ""
 "O e-mail com os dados do periódico será enviado para endereço de e-mail da Rede Cariniana (cariniana-periodicos@ibict.br), "
 "com cópia para o(s) endereço(s) de e-mail: {$emailCopies}"
 
-msgid "plugins.generic.carinianaPreservation.preservationSubmission.instruction"
-msgstr "Clique em \"Submeter\" para realizar a submissão deste periódico para preservação digital pela Cariniana"
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.first.instruction"
+msgstr "Clique em \"Submeter\" para realizar a primeira submissão deste periódico para preservação digital pela Rede Cariniana."
+
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.update.instruction"
+msgstr "Clique em \"Submeter\" para enviar uma atualização com as mudanças desde a última preservação."
 
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.missingRequirements"
 msgstr "A submissão do periódico para preservação não pôde ser realizada. Os seguintes dados precisam ser preenchidos: {$missingRequirements}"
 
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.missingResponsabilityStatement"
 msgstr "O arquivo dos termos de responsabilidade não foi enviado. Acesse as configurações do plugin para realizar o envio"
+
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.noChanges"
+msgstr "Nenhuma mudança detectada desde a última preservação. Nada para atualizar."
 
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.lastPreservation"
 msgstr "Última preservação realizada em:"

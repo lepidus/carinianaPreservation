@@ -22,7 +22,7 @@ describe("Cariniana Preservation Plugin - Submission to preservation fails", fun
         cy.contains("Notes and comments");
         cy.contains("If you are interested, insert here some relevant information about the publication");
 
-        cy.contains("Click on \"Submit\" to submit this journal for digital preservation by Cariniana");
+        cy.contains('make the first submission of this journal for digital preservation');
 
         cy.get('.submitFormButton').contains('Submit').click();
         cy.contains('The submission of the journal could not be carried out. The following data need to be filled: ISSN');
@@ -52,7 +52,7 @@ describe("Cariniana Preservation Plugin - Successful submission to preservation"
         cy.contains("Notes and comments");
         cy.contains("If you are interested, insert here some relevant information about the publication");
 
-        cy.contains("Click on \"Submit\" to submit this journal for digital preservation by Cariniana");
+        cy.contains('make the first submission of this journal for digital preservation');
 
         cy.get('.submitFormButton').contains('Submit').click();
     });

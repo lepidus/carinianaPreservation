@@ -48,10 +48,16 @@ class PreservationSubmissionForm extends Form
             'pluginName' => $this->plugin->getName(),
             'applicationName' => Application::get()->getName(),
             'emailCopies' => $emailCopies,
-            'lastPreservationTimestamp' => $lastPreservationTimestamp
+            'lastPreservationTimestamp' => $lastPreservationTimestamp,
+            'isFirstPreservation' => $this->isFirstPreservation()
         ]);
 
         return parent::fetch($request, $template, $display);
+    }
+
+    public function isFirstPreservation(): bool
+    {
+        return empty($this->plugin->getSetting($this->contextId, 'lastPreservationTimestamp'));
     }
 
     private function getPreservationEmailCopies()
@@ -83,6 +89,12 @@ class PreservationSubmissionForm extends Form
             $this->addError('preservationSubmission', __(
                 "plugins.generic.carinianaPreservation.preservationSubmission.missingResponsabilityStatement"
             ));
+        }
+
+        if (!$this->isFirstPreservation()) {
+            if (!$this->shouldSendUpdate($journal, Application::get()->getRequest()->getBaseUrl())) {
+                $this->addError('preservationSubmission', __('plugins.generic.carinianaPreservation.preservationSubmission.noChanges'));
+            }
         }
 
         return parent::validate($callHooks);
@@ -137,5 +149,22 @@ class PreservationSubmissionForm extends Form
             $email = $emailBuilder->buildPreservationEmail($journal, $baseUrl, $notesAndComments, $locale);
         }
         $email->send();
+
+        parent::execute(...$functionArgs);
+    }
+
+    protected function shouldSendUpdate($journal, $baseUrl): bool
+    {
+        import('plugins.generic.carinianaPreservation.classes.PreservationChangeDetector');
+        import('plugins.generic.carinianaPreservation.classes.PreservationXmlBuilder');
+
+        $builder = new PreservationXmlBuilder($journal, $baseUrl);
+        $journalAcronym = $journal->getLocalizedData('acronym', $journal->getPrimaryLocale());
+        $tempPath = "/tmp/marcacoes_preservacao_{$journalAcronym}_check.xml";
+        $builder->createPreservationXml($tempPath);
+        $currentXml = is_readable($tempPath) ? file_get_contents($tempPath) : '';
+
+        $detector = new PreservationChangeDetector($journal->getId());
+        return $detector->hasChanges($currentXml);
     }
 }

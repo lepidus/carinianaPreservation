@@ -14,12 +14,16 @@
     {rdelim});
 </script>
 
+<style>
+    #preservationSubmissionFormNotification .title { display: none; }
+</style>
+
 <div id="carinianaPreservationSubmission">
     <form class="pkp_form" id="preservationSubmissionForm" method="post" action="{url router=$smarty.const.ROUTE_COMPONENT op="manage" category="generic" plugin=$pluginName verb="preservationSubmission" save=true}">
         {csrf}
         {include file="controllers/notification/inPlaceNotification.tpl" notificationId="preservationSubmissionFormNotification"}
 
-        {if $lastPreservationTimestamp}
+        {if !$isFirstPreservation && $lastPreservationTimestamp}
             <div class="pkp_notification">
                 {include
                     file="controllers/notification/inPlaceNotificationContent.tpl"
@@ -33,14 +37,17 @@
 
         <p>{translate key="plugins.generic.carinianaPreservation.preservationSubmission.emailAddresses" emailCopies=$emailCopies}</p>
 
-        {if !$lastPreservationTimestamp}
+        {if $isFirstPreservation}
             {fbvFormSection title="plugins.generic.carinianaPreservation.headers.notesAndComments"}
                 {fbvElement id="notesAndComments" class="notesAndComments" type="text" label="plugins.generic.carinianaPreservation.preservationSubmission.notesAndComments.description"}
             {/fbvFormSection}
+
+            <p>{translate key="plugins.generic.carinianaPreservation.preservationSubmission.first.instruction"}</p>
+        {else}
+            <p>{translate key="plugins.generic.carinianaPreservation.preservationSubmission.update.instruction"}</p>
         {/if}
 
-        <p>{translate key="plugins.generic.carinianaPreservation.preservationSubmission.instruction"}</p>
-
-        {fbvFormButtons submitText="form.submit" hideCancel=true}
+    <div id="preservationSubmission"><!-- anchor for form error link --></div>
+    {fbvFormButtons submitText="form.submit" hideCancel=true}
     </form>
 </div>

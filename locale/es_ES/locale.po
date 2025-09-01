@@ -26,10 +26,13 @@ msgstr "Esta dirección se colocará como copia en el correo electrónico de env
 msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement"
 msgstr "Condiciones de responsabilidad"
 
-msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.alreadySent"
+msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.alreadySent.notice"
+msgstr "El archivo completo de los términos de responsabilidad <strong>ya fue enviado anteriormente</strong> y está guardado en el sistema."
+
+msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.alreadySent.instructions"
 msgstr ""
-"El archivo completo de las condiciones de responsabilidad <strong>ya ha sido enviado previamente</strong> y está guardado en el sistema. Sí desea reemplazar el archivo cargado anteriormente, "
-"descargue, complete y firme el documento de <a href=\"{$downloadStatementUrl}\">descargo de responsabilidad</a> y luego adjunte el archivo en el campo a continuación."
+"Si desea reemplazar el archivo enviado anteriormente, "
+"descargue, complete y firme el documento de los <a href=\"{$downloadStatementUrl}\">términos de responsabilidad</a> y luego adjunte el archivo en el campo a continuación."
 
 msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.description"
 msgstr "Descargue, complete y firme el documento de <a href=\"{$downloadStatementUrl}\">descargo de responsabilidad</a> y luego adjunte el archivo en el campo a continuación."
@@ -84,14 +87,20 @@ msgstr ""
 "El correo electrónico con los datos de la revista será enviado a la dirección de correo electrónico de la Rede Cariniana (cariniana-periodicos@ibict.br), "
 "con copia a la(s) dirección(es) de correo electrónico: {$emailCopies}"
 
-msgid "plugins.generic.carinianaPreservation.preservationSubmission.instruction"
-msgstr "Haga cliq en \"Enviar\" para enviar esta revista para su preservación digital por Cariniana"
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.first.instruction"
+msgstr "Haga clic en \"Enviar\" para realizar la primera presentación de esta revista para la preservación digital por la Red Cariniana."
+
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.update.instruction"
+msgstr "Haga clic en \"Enviar\" para enviar una actualización con los cambios desde la última preservación."
 
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.missingRequirements"
 msgstr "No se ha podido realizar el envío de la revista. Los siguientes datos deben ser llenados: {$missingRequirements}"
 
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.missingResponsabilityStatement"
 msgstr "Archivo de descargo de responsabilidad no enviado. Accede a la configuración del plugin para enviar"
+
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.noChanges"
+msgstr "No se detectaron cambios desde la última preservación. Nada que actualizar."
 
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.lastPreservation"
 msgstr "Última preservación realizada el:"

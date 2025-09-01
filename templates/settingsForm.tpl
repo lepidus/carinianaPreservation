@@ -37,11 +37,19 @@
 			{fbvFormSection title="plugins.generic.carinianaPreservation.settings.responsabilityStatement"}
 				{capture assign="downloadStatementUrl"}{url router=$smarty.const.ROUTE_COMPONENT op="manage" category="generic" plugin=$pluginName verb="downloadStatement" save=true}{/capture}
 				{if $statementFile}
-					<p>{translate key="plugins.generic.carinianaPreservation.settings.responsabilityStatement.alreadySent" downloadStatementUrl=$downloadStatementUrl}</p>
+					<div class="pkp_notification">
+						{include
+							file="controllers/notification/inPlaceNotificationContent.tpl"
+							notificationId=responsabilityStatementAlreadySent
+							notificationStyleClass="notifyInfo"
+							notificationContents="plugins.generic.carinianaPreservation.settings.responsabilityStatement.alreadySent.notice"|translate
+						}
+					</div>
+					<p>{translate key="plugins.generic.carinianaPreservation.settings.responsabilityStatement.alreadySent.instructions" downloadStatementUrl=$downloadStatementUrl}</p>
 				{else}
 					<p>{translate key="plugins.generic.carinianaPreservation.settings.responsabilityStatement.description" downloadStatementUrl=$downloadStatementUrl}</p>
 				{/if}
-				
+
 				<input type="hidden" name="temporaryFileId" id="temporaryFileId" value="" />
 				{include file="controllers/fileUploadContainer.tpl" id="statementUpload"}
 			{/fbvFormSection}

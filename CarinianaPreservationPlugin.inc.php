@@ -121,4 +121,24 @@ class CarinianaPreservationPlugin extends GenericPlugin
         $taskFilesPath[] = $this->getPluginPath() . DIRECTORY_SEPARATOR . 'scheduledTasks.xml';
         return false;
     }
+
+    public function removeStatementFile(int $journalId): void
+    {
+        $statementDataJson = $this->getSetting($journalId, 'statementFile');
+        if (!$statementDataJson) {
+            return;
+        }
+        $statementData = json_decode($statementDataJson, true);
+        if (empty($statementData['fileName'])) {
+            return;
+        }
+        import('lib.pkp.classes.file.PrivateFileManager');
+        $privateFileManager = new PrivateFileManager();
+        $base = rtrim($privateFileManager->getBasePath(), '/');
+        $path = $base . '/carinianaPreservation/' . (int)$journalId . '/' . $statementData['fileName'];
+        if (is_file($path)) {
+            @unlink($path);
+        }
+        $this->updateSetting($journalId, 'statementFile', null);
+    }
 }

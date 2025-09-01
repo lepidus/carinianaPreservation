@@ -138,7 +138,8 @@ class PreservationSubmissionForm extends Form
         $journal = $journalDao->getById($this->contextId);
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
 
-        if ($this->plugin->getSetting($this->contextId, 'lastPreservationTimestamp')) {
+        $isFirst = $this->isFirstPreservation();
+        if (!$isFirst) {
             import('plugins.generic.carinianaPreservation.classes.PreservationUpdateEmailBuilder');
             $emailBuilder = new PreservationUpdateEmailBuilder();
             $email = $emailBuilder->buildPreservationUpdateEmail($journal, $baseUrl, $locale);
@@ -149,6 +150,10 @@ class PreservationSubmissionForm extends Form
             $email = $emailBuilder->buildPreservationEmail($journal, $baseUrl, $notesAndComments, $locale);
         }
         $email->send();
+
+        if ($isFirst) {
+            $this->plugin->removeStatementFile($this->contextId);
+        }
 
         parent::execute(...$functionArgs);
     }

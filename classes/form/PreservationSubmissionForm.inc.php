@@ -136,8 +136,8 @@ class PreservationSubmissionForm extends Form
     {
         $journalDao = DAORegistry::getDAO('JournalDAO');
 
-        $locale = AppLocale::getLocale();
         $journal = $journalDao->getById($this->contextId);
+        $locale = $journal->getPrimaryLocale();
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
 
         $isFirst = $this->isFirstPreservation();

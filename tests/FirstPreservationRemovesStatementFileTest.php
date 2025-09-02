@@ -7,6 +7,29 @@ import('classes.journal.Journal');
 import('classes.issue.Issue');
 import('lib.pkp.classes.file.PrivateFileManager');
 
+class TestJournalDaoStub
+{
+    private $journal;
+
+    public function __construct(Journal $journal)
+    {
+        $this->journal = $journal;
+    }
+
+    public function getById($id)
+    {
+        return $id == $this->journal->getId() ? $this->journal : null;
+    }
+}
+
+class NullRouterStub
+{
+    public function __call($name, $arguments)
+    {
+        return null;
+    }
+}
+
 class FirstPreservationRemovesStatementFileTest extends DatabaseTestCase
 {
     private $journalId = 880022;
@@ -47,17 +70,7 @@ class FirstPreservationRemovesStatementFileTest extends DatabaseTestCase
         $issueDao = DAORegistry::getDAO('IssueDAO');
         $issueDao->insertObject($issue);
 
-        $stub = new class ($journal) {
-            private $journal;
-            public function __construct($journal)
-            {
-                $this->journal = $journal;
-            }
-            public function getById($id)
-            {
-                return $id == $this->journal->getId() ? $this->journal : null;
-            }
-        };
+        $stub = new TestJournalDaoStub($journal);
         DAORegistry::registerDAO('JournalDAO', $stub);
     }
 
@@ -82,12 +95,7 @@ class FirstPreservationRemovesStatementFileTest extends DatabaseTestCase
     public function testFirstPreservationRemovesStatementFile(): void
     {
         $request = Application::get()->getRequest();
-        $routerStub = new class () {
-            public function __call($n, $a)
-            {
-                return null;
-            }
-        };
+        $routerStub = new NullRouterStub();
         $request->setRouter($routerStub);
 
         $form = new PreservationSubmissionForm($this->plugin, $this->journalId);
@@ -100,7 +108,9 @@ class FirstPreservationRemovesStatementFileTest extends DatabaseTestCase
         $this->assertNotEmpty($this->plugin->getSetting($this->journalId, 'statementFile'));
         $this->assertEmpty($this->plugin->getSetting($this->journalId, 'lastPreservationTimestamp'));
 
-        HookRegistry::register('Mail::send', function () { return true; });
+        HookRegistry::register('Mail::send', function () {
+            return true;
+        });
         $form->execute();
 
         $this->assertFileDoesNotExist($path);

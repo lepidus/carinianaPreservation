@@ -56,6 +56,8 @@ class CarinianaPreservationSettingsForm extends Form
         $templateMgr = TemplateManager::getManager($request);
         $templateMgr->assign('pluginName', $this->plugin->getName());
         $templateMgr->assign('applicationName', Application::get()->getName());
+        $alreadyPreserved = (bool)$this->plugin->getSetting($this->contextId, 'lastPreservationTimestamp');
+        $templateMgr->assign('alreadyPreserved', $alreadyPreserved);
         return parent::fetch($request, $template, $display);
     }
 
@@ -68,7 +70,8 @@ class CarinianaPreservationSettingsForm extends Form
         }
 
         $temporaryFileId = $this->getData('temporaryFileId');
-        if ($temporaryFileId) {
+        $alreadyPreserved = (bool)$plugin->getSetting($contextId, 'lastPreservationTimestamp');
+        if ($temporaryFileId && !$alreadyPreserved) {
             $this->saveResponsabilityStatementFile($contextId, $plugin, $temporaryFileId);
         }
 
@@ -78,7 +81,7 @@ class CarinianaPreservationSettingsForm extends Form
     private function saveResponsabilityStatementFile($contextId, $plugin, $temporaryFileId)
     {
         $user = Application::get()->getRequest()->getUser();
-        $temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO');
+        $temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO'); /** @var TemporaryFileDAO $temporaryFileDao */
         $statementTempFile = $temporaryFileDao->getTemporaryFile(
             $temporaryFileId,
             $user->getId()
@@ -99,26 +102,24 @@ class CarinianaPreservationSettingsForm extends Form
 
     private function moveStatementTempFile($contextId, $statementTempFile, $userId)
     {
-        import('classes.file.PublicFileManager');
-        $publicFileManager = new PublicFileManager();
         import('lib.pkp.classes.file.TemporaryFileManager');
+        import('lib.pkp.classes.file.PrivateFileManager');
         $temporaryFileManager = new TemporaryFileManager();
-
-        $extension = $publicFileManager->getExtension($statementTempFile->getOriginalFileName());
-        $statementFileName = $this->plugin->getName() . '_responsabilityStatement.' . $extension;
-
-        $result = $publicFileManager->copyContextFile(
-            $contextId,
-            $statementTempFile->getFilePath(),
-            $statementFileName
-        );
-
-        if (!$result) {
-            return false;
+        $privateFileManager = new PrivateFileManager();
+        $extension = pathinfo($statementTempFile->getOriginalFileName(), PATHINFO_EXTENSION) ?: 'pdf';
+        $basePath = rtrim($privateFileManager->getBasePath(), '/');
+        $dir = $basePath . '/carinianaPreservation/' . (int)$contextId;
+        if (!$privateFileManager->fileExists($dir, 'dir')) {
+            $privateFileManager->mkdirtree($dir);
         }
-
-        $temporaryFileManager->deleteById($statementTempFile->getId(), $userId);
-
-        return $statementFileName;
+        $statementFileName = 'responsabilityStatement.' . $extension;
+        $targetPath = $dir . '/' . $statementFileName;
+        copy($statementTempFile->getFilePath(), $targetPath);
+        if (is_file($targetPath)) {
+            $privateFileManager->setMode($targetPath, FILE_MODE_MASK);
+            $temporaryFileManager->deleteById($statementTempFile->getId(), $userId);
+            return $statementFileName;
+        }
+        return false;
     }
 }

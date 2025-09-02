@@ -36,7 +36,16 @@
 		{fbvFormArea id="carinianaSettingsFormArea"}
 			{fbvFormSection title="plugins.generic.carinianaPreservation.settings.responsabilityStatement"}
 				{capture assign="downloadStatementUrl"}{url router=$smarty.const.ROUTE_COMPONENT op="manage" category="generic" plugin=$pluginName verb="downloadStatement" save=true}{/capture}
-				{if $statementFile}
+				{if $alreadyPreserved}
+					<div class="pkp_notification">
+						{include
+							file="controllers/notification/inPlaceNotificationContent.tpl"
+							notificationId=responsabilityStatementAlreadySent
+							notificationStyleClass="notifyInfo"
+							notificationContents="plugins.generic.carinianaPreservation.settings.responsabilityStatement.preserved.notice"|translate
+						}
+					</div>
+				{elseif $statementFile}
 					<div class="pkp_notification">
 						{include
 							file="controllers/notification/inPlaceNotificationContent.tpl"
@@ -50,8 +59,10 @@
 					<p>{translate key="plugins.generic.carinianaPreservation.settings.responsabilityStatement.description" downloadStatementUrl=$downloadStatementUrl}</p>
 				{/if}
 
-				<input type="hidden" name="temporaryFileId" id="temporaryFileId" value="" />
-				{include file="controllers/fileUploadContainer.tpl" id="statementUpload"}
+				{if not $alreadyPreserved}
+					<input type="hidden" name="temporaryFileId" id="temporaryFileId" value="" />
+					{include file="controllers/fileUploadContainer.tpl" id="statementUpload"}
+				{/if}
 			{/fbvFormSection}
 			{fbvFormSection title="plugins.generic.carinianaPreservation.settings.extraCopyEmail"}
 				{fbvElement id="extraCopyEmail" class="extraCopyEmail" type="email" value="{$extraCopyEmail|escape}" label="plugins.generic.carinianaPreservation.settings.extraCopyEmail.description" size=$fbvStyles.size.MEDIUM}

@@ -7,6 +7,7 @@ import('classes.journal.Journal');
 import('classes.issue.Issue');
 import('plugins.generic.carinianaPreservation.classes.PreservationEmailBuilder');
 import('plugins.generic.carinianaPreservation.CarinianaPreservationPlugin');
+import('lib.pkp.classes.file.PrivateFileManager');
 
 class PreservationEmailBuilderTest extends DatabaseTestCase
 {
@@ -16,7 +17,7 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
     private const ATTACHMENT_INDEX_SPREADSHEET = 0;
     private const ATTACHMENT_INDEX_STATEMENT = 1;
     private const ATTACHMENT_INDEX_XML = 2;
-    private $journalId = 2;
+    private $journalId = 9999;
     private $locale = 'pt_BR';
     private $journalAcronym = 'RBRB';
     private $journalContactEmail = 'contact@rbrb.com.br';
@@ -31,7 +32,7 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
     private $lastIssueYear = '2022';
     private $notesAndComments = 'We are the 18th PKP journal';
     private $statementOriginalFileName = 'Termos_responsabilidade_cariniana.pdf';
-    private $statementFileName = 'carinianapreservationplugin_responsabilityStatement.pdf';
+    private $statementFileName = 'responsabilityStatement.pdf';
 
     public function setUp(): void
     {
@@ -76,15 +77,38 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
         $issueDao->insertObject($issue);
     }
 
+    protected function tearDown(): void
+    {
+        $fileMgr = new PrivateFileManager();
+        $base = rtrim($fileMgr->getBasePath(), '/');
+        $dir = $base . '/carinianaPreservation/' . $this->journalId;
+        $path = $dir . '/' . $this->statementFileName;
+        if (is_file($path)) {
+            unlink($path);
+        }
+        if (is_dir($dir)) {
+            @rmdir($dir);
+        }
+        parent::tearDown();
+    }
+
     private function createStatementFileSetting(): void
     {
+        $plugin = new CarinianaPreservationPlugin();
+        $fileMgr = new PrivateFileManager();
+        $base = rtrim($fileMgr->getBasePath(), '/');
+        $dir = $base . '/carinianaPreservation/' . $this->journalId;
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
+        $generatedName = $this->statementFileName;
+        $fullPath = $dir . '/' . $generatedName;
+        file_put_contents($fullPath, 'PDF');
         $statementFileData = json_encode([
             'originalFileName' => $this->statementOriginalFileName,
-            'fileName' => $this->statementFileName,
+            'fileName' => $generatedName,
             'fileType' => 'application/pdf',
         ]);
-
-        $plugin = new CarinianaPreservationPlugin();
         $plugin->updateSetting($this->journalId, 'statementFile', $statementFileData);
     }
 
@@ -144,10 +168,15 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
 
     public function testBuiltPreservationEmailStatement(): void
     {
-        $expectedFilePath = "public/journals/{$this->journalId}/{$this->statementFileName}";
-        $pdfContentType = 'application/pdf';
-        $expectedAttachment = ['path' => $expectedFilePath, 'filename' => $this->statementOriginalFileName, 'content-type' => $pdfContentType];
-        $this->assertEquals($expectedAttachment, $this->email->getData('attachments')[self::ATTACHMENT_INDEX_STATEMENT]);
+        $attachment = $this->email->getData('attachments')[self::ATTACHMENT_INDEX_STATEMENT];
+        $this->assertEquals($this->statementOriginalFileName, $attachment['filename']);
+        $this->assertEquals('application/pdf', $attachment['content-type']);
+        $this->assertFalse(str_starts_with($attachment['path'], 'public/'));
+        $expectedDirPrefix = 'files/carinianaPreservation/' . $this->journalId . '/';
+        $this->assertTrue(str_starts_with($attachment['path'], $expectedDirPrefix));
+        $fileName = basename($attachment['path']);
+        $this->assertEquals($this->statementFileName, $fileName);
+        $this->assertFileExists($attachment['path']);
     }
 
     public function testBuiltPreservationEmailXml(): void

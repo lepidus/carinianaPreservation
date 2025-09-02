@@ -13,7 +13,7 @@ class PreservedJournalFactory
         $journalPath = $journal->getData('urlPath');
         $availableYears = $this->getAvailableYears($journal);
         $issuesVolumes = $this->getIssuesVolumes($journal);
-        $versionDao = DAORegistry::getDAO('VersionDAO');
+        $versionDao = DAORegistry::getDAO('VersionDAO'); /** @var VersionDAO $versionDao */
         $ojsVersion = $versionDao->getCurrentVersion();
 
         return new PreservedJournal(
@@ -32,7 +32,7 @@ class PreservedJournalFactory
 
     private function getAvailableYears($journal): string
     {
-        $issueDao = DAORegistry::getDAO('IssueDAO');
+        $issueDao = DAORegistry::getDAO('IssueDAO'); /** @var IssueDAO $issueDao */
         $issues = array_reverse($issueDao->getPublishedIssues($journal->getId())->toArray());
         $issuesYearList = [];
         $availableYears = "";
@@ -56,7 +56,7 @@ class PreservedJournalFactory
 
     private function getIssuesVolumes($journal): string
     {
-        $issueDao = DAORegistry::getDAO('IssueDAO');
+        $issueDao = DAORegistry::getDAO('IssueDAO'); /** @var IssueDAO $issueDao */
         $issues = array_reverse($issueDao->getPublishedIssues($journal->getId())->toArray());
         $lastIssue = end($issues);
         $volumes = "";

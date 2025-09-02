@@ -54,16 +54,18 @@ class PreservationEmailBuilder extends BasePreservationEmailBuilder
     {
         $plugin = new CarinianaPreservationPlugin();
         $statementFileData = json_decode($plugin->getSetting($journal->getId(), 'statementFile'), true);
+        $originalName = $statementFileData['originalFileName'];
+        $type = $statementFileData['fileType'];
+        $fileName = $statementFileData['fileName'];
 
-        import('classes.file.PublicFileManager');
-        $publicFileManager = new PublicFileManager();
-        $publicFilesPath = $publicFileManager->getContextFilesPath($journal->getId());
-        $statementFilePath = $publicFilesPath . '/' . $statementFileData['fileName'];
-
+        import('lib.pkp.classes.file.PrivateFileManager');
+        $privateFileManager = new PrivateFileManager();
+        $basePath = rtrim($privateFileManager->getBasePath(), '/');
+        $statementFilePath = $basePath . '/carinianaPreservation/' . (int)$journal->getId() . '/' . $fileName;
         return [
             'path' => $statementFilePath,
-            'name' => $statementFileData['originalFileName'],
-            'type' => $statementFileData['fileType']
+            'name' => $originalName,
+            'type' => $type
         ];
     }
 }

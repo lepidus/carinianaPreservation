@@ -35,7 +35,7 @@ class PreservationUpdateChecker extends ScheduledTask
     public function executeActions()
     {
         $success = true;
-        $journalDao = DAORegistry::getDAO('JournalDAO');
+        $journalDao = DAORegistry::getDAO('JournalDAO'); /** @var JournalDAO $journalDao */
         $journals = $journalDao->getAll(true);
 
         while ($journal = $journals->next()) {

@@ -187,7 +187,7 @@ class PreservationXmlBuilder
 
     private function getPublishedIssues($journal)
     {
-        $issueDao = DAORegistry::getDAO('IssueDAO');
+        $issueDao = DAORegistry::getDAO('IssueDAO'); /** @var IssueDAO $issueDao */
         $issues = $issueDao->getPublishedIssues($journal->getId())->toArray();
         return array_reverse($issues);
     }

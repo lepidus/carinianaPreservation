@@ -14,7 +14,7 @@ class LegacyStatementMigration
 
     public function run(): void
     {
-        $journalDao = DAORegistry::getDAO('JournalDAO');
+        $journalDao = DAORegistry::getDAO('JournalDAO'); /** @var JournalDAO $journalDao */
         $names = $journalDao->getNames();
         foreach (array_keys($names) as $journalId) {
             $this->migrateStatementFile((int)$journalId);

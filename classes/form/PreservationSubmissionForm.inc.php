@@ -62,7 +62,7 @@ class PreservationSubmissionForm extends Form
 
     private function getPreservationEmailCopies()
     {
-        $journalDao = DAORegistry::getDAO('JournalDAO');
+        $journalDao = DAORegistry::getDAO('JournalDAO'); /** @var JournalDAO $journalDao */
         $journal = $journalDao->getById($this->contextId);
         $contactEmail = $journal->getData('contactEmail');
         $extraCopyEmail = $this->plugin->getSetting($journal->getId(), 'extraCopyEmail');
@@ -72,7 +72,7 @@ class PreservationSubmissionForm extends Form
 
     public function validate($callHooks = true)
     {
-        $journalDao = DAORegistry::getDAO('JournalDAO');
+        $journalDao = DAORegistry::getDAO('JournalDAO'); /** @var JournalDAO $journalDao */
         $journal = $journalDao->getById($this->contextId);
 
         $missingRequirements = $this->getMissingRequirements($journal);
@@ -109,7 +109,7 @@ class PreservationSubmissionForm extends Form
             LOCALE_COMPONENT_APP_EDITOR
         );
 
-        $issueDao = DAORegistry::getDAO('IssueDAO');
+        $issueDao = DAORegistry::getDAO('IssueDAO'); /** @var IssueDAO $issueDao */
         $issues = $issueDao->getPublishedIssues($journal->getId())->toArray();
 
         $requirements = [
@@ -134,9 +134,9 @@ class PreservationSubmissionForm extends Form
 
     public function execute(...$functionArgs)
     {
-        $journalDao = DAORegistry::getDAO('JournalDAO');
+        $journalDao = DAORegistry::getDAO('JournalDAO'); /** @var JournalDAO $journalDao */
 
-        $journal = $journalDao->getById($this->contextId);
+        $journal = $journalDao->getById($this->contextId); /** @var Journal $journal */
         $locale = $journal->getPrimaryLocale();
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
 

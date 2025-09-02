@@ -81,7 +81,7 @@ class CarinianaPreservationSettingsForm extends Form
     private function saveResponsabilityStatementFile($contextId, $plugin, $temporaryFileId)
     {
         $user = Application::get()->getRequest()->getUser();
-        $temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO');
+        $temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO'); /** @var TemporaryFileDAO $temporaryFileDao */
         $statementTempFile = $temporaryFileDao->getTemporaryFile(
             $temporaryFileId,
             $user->getId()

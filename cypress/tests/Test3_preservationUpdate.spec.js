@@ -69,3 +69,17 @@ describe("Cariniana Preservation Plugin - Preservation update fails", function (
         cy.contains('The submission of the journal could not be carried out. The following data need to be filled: ISSN');
     });
 });
+    describe("Cariniana Preservation Plugin - Settings hides upload after first preservation", function () {
+        it("Hides upload area", function () {
+            const pluginRowId = 'component-grid-settings-plugins-settingsplugingrid-category-generic-row-carinianapreservationplugin';
+            cy.login('dbarnes', null, 'publicknowledge');
+            cy.get('a:contains("Website")').click();
+            cy.waitJQuery();
+            cy.get('button#plugins-button').click();
+            cy.get('#' + pluginRowId + ' > .first_column > .show_extras').click();
+            cy.get('a[id^=' + pluginRowId + '-settings-button]').click();
+            cy.get('div.pkp_modal_panel').within(() => {
+                cy.get('#statementUpload').should('not.exist');
+            });
+        });
+    });

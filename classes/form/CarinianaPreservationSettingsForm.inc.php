@@ -56,6 +56,8 @@ class CarinianaPreservationSettingsForm extends Form
         $templateMgr = TemplateManager::getManager($request);
         $templateMgr->assign('pluginName', $this->plugin->getName());
         $templateMgr->assign('applicationName', Application::get()->getName());
+        $alreadyPreserved = (bool)$this->plugin->getSetting($this->contextId, 'lastPreservationTimestamp');
+        $templateMgr->assign('alreadyPreserved', $alreadyPreserved);
         return parent::fetch($request, $template, $display);
     }
 
@@ -68,7 +70,8 @@ class CarinianaPreservationSettingsForm extends Form
         }
 
         $temporaryFileId = $this->getData('temporaryFileId');
-        if ($temporaryFileId) {
+        $alreadyPreserved = (bool)$plugin->getSetting($contextId, 'lastPreservationTimestamp');
+        if ($temporaryFileId && !$alreadyPreserved) {
             $this->saveResponsabilityStatementFile($contextId, $plugin, $temporaryFileId);
         }
 

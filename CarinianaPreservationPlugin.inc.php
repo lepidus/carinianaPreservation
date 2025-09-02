@@ -26,6 +26,12 @@ class CarinianaPreservationPlugin extends GenericPlugin
             return true;
         }
 
+        if (!$this->getSetting(0, 'legacyStatementMigrationDone')) {
+            $this->import('classes.migration.LegacyStatementMigration');
+            (new LegacyStatementMigration($this))->run();
+            $this->updateSetting(0, 'legacyStatementMigrationDone', 1, 'bool');
+        }
+
         return $success;
     }
 

@@ -42,10 +42,9 @@
 							file="controllers/notification/inPlaceNotificationContent.tpl"
 							notificationId=responsabilityStatementAlreadySent
 							notificationStyleClass="notifyInfo"
-							notificationContents="plugins.generic.carinianaPreservation.settings.responsabilityStatement.alreadySent.notice"|translate
+							notificationContents="plugins.generic.carinianaPreservation.settings.responsabilityStatement.preserved.notice"|translate
 						}
 					</div>
-					<p>{translate key="plugins.generic.carinianaPreservation.settings.responsabilityStatement.alreadySent.instructions" downloadStatementUrl=$downloadStatementUrl}</p>
 				{elseif $statementFile}
 					<div class="pkp_notification">
 						{include

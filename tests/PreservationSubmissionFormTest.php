@@ -16,6 +16,7 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
     private $statementFileName = 'responsabilityStatement.pdf';
     private $statementOriginalFileName = 'TermoResponsabilidade.pdf';
     private $originalJournalDao;
+    private $journalsById = [];
 
     protected function getAffectedTables()
     {
@@ -26,31 +27,36 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
     {
         parent::setUp();
         $this->plugin = new CarinianaPreservationPlugin();
-        $this->originalJournalDao = DAORegistry::getDAO('JournalDAO');
-        $journals = $this->buildJournals();
-        $journalsById = [];
-        foreach ($journals as $j) {
-            $journalsById[$j->getId()] = $j;
-        }
-        $mockJournalDao = $this->getMockBuilder('JournalDAO')
-            ->onlyMethods(['getById'])
-            ->getMock();
-        $mockJournalDao->method('getById')
-            ->willReturnCallback(function ($id) use ($journalsById) {
-                return $journalsById[$id] ?? null;
-            });
-        DAORegistry::registerDAO('JournalDAO', $mockJournalDao);
-
-        $request = Application::get()->getRequest();
-        if (!$request->getRouter()) {
-            import('lib.pkp.classes.core.PKPRouter');
-            $request->setRouter(new PKPRouter());
-        }
-
-        $this->insertPublishedIssue(self::JOURNAL_WITH_LOCKSS_ID);
-        $this->insertPublishedIssue(self::JOURNAL_WITHOUT_LOCKSS_ID);
-        $this->createStatementFileForFirstPreservation();
+        $this->mockJournalDao();
+        $this->ensureRouter();
+        $this->seedPublishedIssues();
+        $this->seedStatementFile();
         $this->plugin->updateSetting(self::JOURNAL_WITHOUT_LOCKSS_ID, 'statementFile', json_encode(['fileName' => 'dummy.pdf']));
+    }
+
+    protected function tearDown(): void
+    {
+        HookRegistry::clear('Mail::send');
+        foreach ([self::JOURNAL_WITH_LOCKSS_ID, self::JOURNAL_WITHOUT_LOCKSS_ID] as $jid) {
+            $this->plugin->updateSetting($jid, 'statementFile', null);
+            $this->plugin->updateSetting($jid, 'lastPreservationTimestamp', null);
+            $this->plugin->updateSetting($jid, 'preservedXMLcontent', null);
+            $this->plugin->updateSetting($jid, 'preservedXMLmd5', null);
+        }
+        $fileMgr = new PrivateFileManager();
+        $base = rtrim($fileMgr->getBasePath(), '/');
+        $dir = $base . '/carinianaPreservation/' . self::JOURNAL_WITH_LOCKSS_ID;
+        $path = $dir . '/' . $this->statementFileName;
+        if (is_file($path)) {
+            @unlink($path);
+        }
+        if (is_dir($dir)) {
+            @rmdir($dir);
+        }
+        if ($this->originalJournalDao) {
+            DAORegistry::registerDAO('JournalDAO', $this->originalJournalDao);
+        }
+        parent::tearDown();
     }
 
     private function buildJournals(): array
@@ -78,6 +84,48 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
         $without->setData('enableLockss', false);
 
         return [$with, $without];
+    }
+
+    private function mockJournalDao(): void
+    {
+        $this->originalJournalDao = DAORegistry::getDAO('JournalDAO');
+        $journals = $this->buildJournals();
+        foreach ($journals as $j) {
+            $this->journalsById[$j->getId()] = $j;
+        }
+        $mockJournalDao = $this->getMockBuilder('JournalDAO')
+            ->onlyMethods(['getById'])
+            ->getMock();
+        $mockJournalDao->method('getById')
+            ->willReturnCallback(function ($id) {
+                return $this->journalsById[$id] ?? null;
+            });
+        DAORegistry::registerDAO('JournalDAO', $mockJournalDao);
+    }
+
+    private function ensureRouter(): void
+    {
+        $request = Application::get()->getRequest();
+        if (!$request->getRouter()) {
+            import('lib.pkp.classes.core.PKPRouter');
+            $request->setRouter(new PKPRouter());
+        }
+    }
+
+    private function getJournal(int $id): ?Journal
+    {
+        return $this->journalsById[$id] ?? null;
+    }
+
+    private function seedPublishedIssues(): void
+    {
+        $this->insertPublishedIssue(self::JOURNAL_WITH_LOCKSS_ID);
+        $this->insertPublishedIssue(self::JOURNAL_WITHOUT_LOCKSS_ID);
+    }
+
+    private function seedStatementFile(): void
+    {
+        $this->createStatementFileForFirstPreservation();
     }
 
     private function insertPublishedIssue(int $journalId): void
@@ -153,27 +201,62 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
         $this->assertMatchesRegularExpression('/lockss/i', $errors['preservationSubmission']);
     }
 
-    protected function tearDown(): void
+    public function testFirstPreservationMissingStatementFile(): void
     {
-        HookRegistry::clear('Mail::send');
-        foreach ([self::JOURNAL_WITH_LOCKSS_ID, self::JOURNAL_WITHOUT_LOCKSS_ID] as $jid) {
-            $this->plugin->updateSetting($jid, 'statementFile', null);
-            $this->plugin->updateSetting($jid, 'lastPreservationTimestamp', null);
-            $this->plugin->updateSetting($jid, 'preservedXMLcontent', null);
+        $this->plugin->updateSetting(self::JOURNAL_WITH_LOCKSS_ID, 'statementFile', null);
+        $form = new PreservationSubmissionForm($this->plugin, self::JOURNAL_WITH_LOCKSS_ID);
+        $form->setData('notesAndComments', 'Notas');
+        $valid = $form->validate();
+        $this->assertFalse($valid);
+        $errors = $form->getErrorsArray();
+        $this->assertStringContainsString('missingResponsabilityStatement', implode(' ', $errors));
+    }
+
+    public function testUpdateWithNoChangesLockssEnabled(): void
+    {
+        $this->createBaselineNoChanges(self::JOURNAL_WITH_LOCKSS_ID);
+        $form = new PreservationSubmissionForm($this->plugin, self::JOURNAL_WITH_LOCKSS_ID);
+        $valid = $form->validate();
+        $this->assertFalse($valid);
+        $this->assertMatchesRegularExpression('/noChanges/i', implode(' ', $form->getErrorsArray()));
+    }
+
+    public function testMissingRequirementsBlocksFirstPreservation(): void
+    {
+        $journalIncomplete = new Journal();
+        $journalIncomplete->setId(self::JOURNAL_WITH_LOCKSS_ID);
+        $journalIncomplete->setData('enableLockss', true);
+        $mockDao = $this->getMockBuilder('JournalDAO')
+            ->onlyMethods(['getById'])
+            ->getMock();
+        $mockDao->method('getById')->willReturn($journalIncomplete);
+        DAORegistry::registerDAO('JournalDAO', $mockDao);
+
+        $this->plugin->updateSetting(self::JOURNAL_WITH_LOCKSS_ID, 'statementFile', json_encode(['fileName' => 'dummy.pdf']));
+        $form = new PreservationSubmissionForm($this->plugin, self::JOURNAL_WITH_LOCKSS_ID);
+        $form->setData('notesAndComments', 'Notas');
+        $valid = $form->validate();
+        $this->assertFalse($valid);
+        $errors = $form->getErrorsArray();
+        $this->assertMatchesRegularExpression('/missingRequirements/i', implode(' ', $errors));
+    }
+
+    private function createBaselineNoChanges(int $journalId): void
+    {
+        $this->plugin->updateSetting($journalId, 'lastPreservationTimestamp', time() - 3600);
+        $journal = $this->getJournal($journalId);
+        $this->assertNotNull($journal, 'Baseline journal not available');
+        $baseUrl = Application::get()->getRequest()->getBaseUrl();
+        import('plugins.generic.carinianaPreservation.classes.PreservationXmlBuilder');
+        $builder = new PreservationXmlBuilder($journal, $baseUrl);
+        $acronym = $journal->getLocalizedData('acronym', $journal->getPrimaryLocale());
+        $tempPath = "/tmp/marcacoes_preservacao_{$acronym}_check.xml";
+        if (file_exists($tempPath)) {
+            @unlink($tempPath);
         }
-        $fileMgr = new PrivateFileManager();
-        $base = rtrim($fileMgr->getBasePath(), '/');
-        $dir = $base . '/carinianaPreservation/' . self::JOURNAL_WITH_LOCKSS_ID;
-        $path = $dir . '/' . $this->statementFileName;
-        if (is_file($path)) {
-            @unlink($path);
-        }
-        if (is_dir($dir)) {
-            @rmdir($dir);
-        }
-        if ($this->originalJournalDao) {
-            DAORegistry::registerDAO('JournalDAO', $this->originalJournalDao);
-        }
-        parent::tearDown();
+        $builder->createPreservationXml($tempPath);
+        $xmlContent = file_get_contents($tempPath);
+        $this->plugin->updateSetting($journalId, 'preservedXMLcontent', $xmlContent);
+        $this->plugin->updateSetting($journalId, 'preservedXMLmd5', md5($xmlContent));
     }
 }

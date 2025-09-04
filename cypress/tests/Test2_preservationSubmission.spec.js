@@ -18,16 +18,17 @@ function enableLockss() {
     cy.contains('Saved');
 }
 
-describe("Cariniana Preservation Plugin - Submission negative path (LOCKSS disabled, then missing ISSN)", () => {
-    it("Shows lockssDisabled notice after submit attempt, then enables LOCKSS; clears ISSNs and attempts submission expecting ISSN requirement", () => {
+describe("Cariniana Preservation Plugin - Submission negative paths", () => {
+    it("Blocks submission when LOCKSS is disabled", () => {
         cy.login('dbarnes', null, 'publicknowledge');
         openPreservationModal();
-
         cy.get('.submitFormButton').contains('Submit').click();
         cy.contains('LOCKSS is not enabled in Distribution > Archiving');
-        cy.get('a:contains("Website")').click();
-        enableLockss();
+    });
 
+    it("Blocks submission when ISSNs are missing after enabling LOCKSS", () => {
+        cy.login('dbarnes', null, 'publicknowledge');
+        enableLockss();
         cy.get('li a:contains("Journal")').click();
         cy.get('input[name="onlineIssn"]').clear();
         cy.get('input[name="printIssn"]').clear();
@@ -37,7 +38,6 @@ describe("Cariniana Preservation Plugin - Submission negative path (LOCKSS disab
         cy.contains('The e-mail with the journal data will be sent');
         cy.contains('Notes and comments');
         cy.contains('make the first submission');
-
         cy.get('.submitFormButton').contains('Submit').click();
         cy.contains('The submission of the journal could not be carried out');
         cy.contains('ISSN');

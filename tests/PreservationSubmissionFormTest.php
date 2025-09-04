@@ -53,6 +53,9 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
         if (is_dir($dir)) {
             @rmdir($dir);
         }
+        foreach (glob('/tmp/marcacoes_preservacao_*_check.xml') ?: [] as $tmp) {
+            @unlink($tmp);
+        }
         parent::tearDown();
     }
 
@@ -274,5 +277,6 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
         $xmlContent = file_get_contents($tempPath);
         $this->plugin->updateSetting($journalId, 'preservedXMLcontent', $xmlContent);
         $this->plugin->updateSetting($journalId, 'preservedXMLmd5', md5($xmlContent));
+        @unlink($tempPath);
     }
 }

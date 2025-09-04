@@ -207,6 +207,17 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
         $this->assertStringContainsString('missingResponsabilityStatement', implode(' ', $errors));
     }
 
+    public function testFirstPreservationHappyPathValidate(): void
+    {
+        $this->assertEmpty($this->plugin->getSetting(self::JOURNAL_WITH_LOCKSS_ID, 'lastPreservationTimestamp'));
+        $this->assertNotEmpty($this->plugin->getSetting(self::JOURNAL_WITH_LOCKSS_ID, 'statementFile'));
+        $form = new PreservationSubmissionForm($this->plugin, self::JOURNAL_WITH_LOCKSS_ID, $this->journalDaoMock);
+        $form->setData('notesAndComments', 'Notas iniciais');
+        $valid = $form->validate();
+        $this->assertTrue($valid);
+        $this->assertEmpty($form->getErrorsArray());
+    }
+
     public function testUpdateWithNoChangesLockssEnabled(): void
     {
         $this->createBaselineNoChanges(self::JOURNAL_WITH_LOCKSS_ID);
@@ -214,6 +225,17 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
         $valid = $form->validate();
         $this->assertFalse($valid);
         $this->assertMatchesRegularExpression('/noChanges/i', implode(' ', $form->getErrorsArray()));
+    }
+
+    public function testUpdateWithChangesLockssEnabled(): void
+    {
+        $this->createBaselineNoChanges(self::JOURNAL_WITH_LOCKSS_ID);
+        $this->journalsById[self::JOURNAL_WITH_LOCKSS_ID]->setData('publisherInstitution', 'PKP Alterado');
+        $form = new PreservationSubmissionForm($this->plugin, self::JOURNAL_WITH_LOCKSS_ID, $this->journalDaoMock);
+        $valid = $form->validate();
+        $this->assertTrue($valid);
+        $errorsText = implode(' ', $form->getErrorsArray());
+        $this->assertDoesNotMatchRegularExpression('/noChanges/i', $errorsText);
     }
 
     public function testMissingRequirementsBlocksFirstPreservation(): void

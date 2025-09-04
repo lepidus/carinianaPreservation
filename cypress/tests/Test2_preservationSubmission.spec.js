@@ -13,20 +13,19 @@ function enableLockss() {
     cy.get('a:contains("Distribution")').click();
     cy.contains('Archiving').click();
     cy.contains('LOCKSS and CLOCKSS').click();
-    cy.get('input[name="enableLockss"]').check({ force: true });
-    cy.contains('Save').click();
+    cy.get('input[name="enableLockss"]').check();
+    cy.get('.pkpButton:visible').contains('Save').click();
     cy.contains('Saved');
 }
 
-describe("Cariniana Preservation Plugin - Submission negative paths", () => {
-    it("Blocks submission when LOCKSS is disabled", () => {
+describe("Preservation attempt is not successfull", () => {
+    it("LOCKSS Archiving option is disabled", () => {
         cy.login('dbarnes', null, 'publicknowledge');
         openPreservationModal();
         cy.get('.submitFormButton').contains('Submit').click();
         cy.contains('LOCKSS is not enabled in Distribution > Archiving');
     });
-
-    it("Blocks submission when ISSNs are missing after enabling LOCKSS", () => {
+    it("LOCKSS enabled, but ISSNs are missing", () => {
         cy.login('dbarnes', null, 'publicknowledge');
         enableLockss();
         cy.get('li a:contains("Journal")').click();
@@ -44,8 +43,8 @@ describe("Cariniana Preservation Plugin - Submission negative paths", () => {
     });
 });
 
-describe("Cariniana Preservation Plugin - Successful submission to preservation", () => {
-    it("Sets ISSNs and performs first submission", () => {
+describe("Successful submission to preservation", () => {
+    it("LOCKSS enabled, ISSNs in place and performs first submission on preservation Form", () => {
         cy.login('dbarnes', null, 'publicknowledge');
         cy.get('li a:contains("Journal")').click();
         cy.get('input[name="onlineIssn"]').clear().type('0000-0000');

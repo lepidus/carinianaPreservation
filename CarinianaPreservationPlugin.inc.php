@@ -147,4 +147,9 @@ class CarinianaPreservationPlugin extends GenericPlugin
         }
         $this->updateSetting($journalId, 'statementFile', null);
     }
+
+    public function getLockssSettingsUrl($journal, $baseUrl)
+    {
+        return $baseUrl . '/index.php/' . $journal->getPath() . '/management/settings/distribution#archive/lockss';
+    }
 }

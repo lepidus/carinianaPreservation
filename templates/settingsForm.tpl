@@ -33,6 +33,18 @@
 		{csrf}
 		{include file="controllers/notification/inPlaceNotification.tpl" notificationId="carinianaSettingsFormNotification"}
 
+		{if !$lockssEnabled}
+			{capture assign="lockssDisabledNotice"}{translate key="plugins.generic.carinianaPreservation.preservationSubmission.lockssDisabled" lockssSettingsUrl=$lockssSettingsUrl}{/capture}
+			<div class="pkp_notification">
+				{include
+					file="controllers/notification/inPlaceNotificationContent.tpl"
+					notificationId=lockssDisabledNotice
+					notificationStyleClass="notifyWarning"
+					notificationContents=$lockssDisabledNotice
+				}
+			</div>
+		{/if}
+
 		{fbvFormArea id="carinianaSettingsFormArea"}
 			{fbvFormSection title="plugins.generic.carinianaPreservation.settings.responsabilityStatement"}
 				{capture assign="downloadStatementUrl"}{url router=$smarty.const.ROUTE_COMPONENT op="manage" category="generic" plugin=$pluginName verb="downloadStatement" save=true}{/capture}

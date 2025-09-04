@@ -106,6 +106,9 @@ msgstr "No se detectaron cambios desde la última preservación. Nada que actual
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.lastPreservation"
 msgstr "Última preservación realizada el:"
 
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.lockssDisabled"
+msgstr "LOCKSS no está habilitado en Distribución > Archivo. <a href=\"{$lockssSettingsUrl}\" target=\"_blank\">Abra la configuración</a> para habilitarlo y permitir el envío."
+
 msgid "plugins.generic.carinianaPreservation.updateChecker"
 msgstr "Verificación de cambios en la revista para actualización de preservación"
 
@@ -120,3 +123,6 @@ msgstr "{$journalName} tuvo cambios desde la última preservación. Pero ocurri�
 
 msgid "plugins.generic.carinianaPreservation.updateChecker.noChanges"
 msgstr "{$journalName} no tuvo cambios desde la última preservación."
+
+msgid "plugins.generic.carinianaPreservation.updateChecker.lockssDisabled"
+msgstr "{$journalName}: verificación ignorada porque LOCKSS está deshabilitado."

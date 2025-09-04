@@ -74,6 +74,13 @@ class PreservationSubmissionForm extends Form
     {
         $journalDao = DAORegistry::getDAO('JournalDAO'); /** @var JournalDAO $journalDao */
         $journal = $journalDao->getById($this->contextId);
+        $baseUrl = Application::get()->getRequest()->getBaseUrl();
+        if (!$journal->getData('enableLockss')) {
+            $this->addError('preservationSubmission', __(
+                'plugins.generic.carinianaPreservation.preservationSubmission.lockssDisabled',
+                ['lockssSettingsUrl' => $this->plugin->getLockssSettingsUrl($journal, $baseUrl)]
+            ));
+        }
 
         $missingRequirements = $this->getMissingRequirements($journal);
         if (!empty($missingRequirements)) {

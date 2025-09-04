@@ -106,6 +106,9 @@ msgstr "No changes detected since last preservation. Nothing to update."
 msgid "plugins.generic.carinianaPreservation.preservationSubmission.lastPreservation"
 msgstr "Last preservation performed on:"
 
+msgid "plugins.generic.carinianaPreservation.preservationSubmission.lockssDisabled"
+msgstr "LOCKSS is not enabled in Distribution > Archiving. <a href=\"{$lockssSettingsUrl}\" target=\"_blank\">Open the settings</a> to enable it and allow the submission."
+
 msgid "plugins.generic.carinianaPreservation.updateChecker"
 msgstr "Journal changes verification for preservation update"
 
@@ -120,3 +123,6 @@ msgstr "{$journalName} has changes since last preservation. But an error occurre
 
 msgid "plugins.generic.carinianaPreservation.updateChecker.noChanges"
 msgstr "{$journalName} has no changes since last preservation."
+
+msgid "plugins.generic.carinianaPreservation.updateChecker.lockssDisabled"
+msgstr "{$journalName}: check skipped because LOCKSS is disabled."

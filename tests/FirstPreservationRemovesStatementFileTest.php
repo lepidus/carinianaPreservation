@@ -61,13 +61,14 @@ class FirstPreservationRemovesStatementFileTest extends DatabaseTestCase
         $journal->setData('urlPath', 'revistateste');
         $journal->setData('acronym', 'RT', 'pt_BR');
         $journal->setData('contactEmail', 'contato@revistateste.org');
+        $journal->setData('enableLockss', true);
 
         $issue = new Issue();
         $issue->setData('journalId', $this->journalId);
         $issue->setData('datePublished', '2024-01-01');
         $issue->setData('year', '2024');
         $issue->setData('published', 1);
-        $issueDao = DAORegistry::getDAO('IssueDAO');
+        $issueDao = DAORegistry::getDAO('IssueDAO'); /** @var IssueDAO $issueDao */
         $issueDao->insertObject($issue);
 
         $stub = new TestJournalDaoStub($journal);

@@ -53,6 +53,17 @@ class PreservationUpdateChecker extends ScheduledTask
             return true;
         }
 
+        if (!$journal->getData('enableLockss')) {
+            $this->addExecutionLogEntry(
+                __(
+                    'plugins.generic.carinianaPreservation.updateChecker.lockssDisabled',
+                    array('journalName' => $journal->getLocalizedName())
+                ),
+                SCHEDULED_TASK_MESSAGE_TYPE_NOTICE
+            );
+            return true;
+        }
+
         if (!$this->plugin->getSetting($journal->getId(), 'lastPreservationTimestamp')) {
             $this->addExecutionLogEntry(
                 __(

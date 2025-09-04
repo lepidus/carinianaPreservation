@@ -15,8 +15,8 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
     private $plugin;
     private $statementFileName = 'responsabilityStatement.pdf';
     private $statementOriginalFileName = 'TermoResponsabilidade.pdf';
-    private $originalJournalDao;
     private $journalsById = [];
+    private $journalDaoMock;
 
     protected function getAffectedTables()
     {
@@ -53,9 +53,6 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
         if (is_dir($dir)) {
             @rmdir($dir);
         }
-        if ($this->originalJournalDao) {
-            DAORegistry::registerDAO('JournalDAO', $this->originalJournalDao);
-        }
         parent::tearDown();
     }
 
@@ -88,19 +85,17 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
 
     private function mockJournalDao(): void
     {
-        $this->originalJournalDao = DAORegistry::getDAO('JournalDAO');
         $journals = $this->buildJournals();
         foreach ($journals as $j) {
             $this->journalsById[$j->getId()] = $j;
         }
-        $mockJournalDao = $this->getMockBuilder('JournalDAO')
+        $this->journalDaoMock = $this->getMockBuilder('JournalDAO')
             ->onlyMethods(['getById'])
             ->getMock();
-        $mockJournalDao->method('getById')
+        $this->journalDaoMock->method('getById')
             ->willReturnCallback(function ($id) {
                 return $this->journalsById[$id] ?? null;
             });
-        DAORegistry::registerDAO('JournalDAO', $mockJournalDao);
     }
 
     private function ensureRouter(): void
@@ -161,7 +156,7 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
             return true;
         });
 
-        $form = new PreservationSubmissionForm($this->plugin, self::JOURNAL_WITH_LOCKSS_ID);
+        $form = new PreservationSubmissionForm($this->plugin, self::JOURNAL_WITH_LOCKSS_ID, $this->journalDaoMock);
         $form->setData('notesAndComments', 'Notas iniciais');
 
         $fileMgr = new PrivateFileManager();
@@ -180,7 +175,7 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
 
     public function testValidationFailsWhenLockssDisabledOnFirstPreservation(): void
     {
-        $form = new PreservationSubmissionForm($this->plugin, self::JOURNAL_WITHOUT_LOCKSS_ID);
+        $form = new PreservationSubmissionForm($this->plugin, self::JOURNAL_WITHOUT_LOCKSS_ID, $this->journalDaoMock);
         $form->setData('notesAndComments', 'Notas');
         $valid = $form->validate();
         $this->assertFalse($valid);
@@ -192,7 +187,7 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
         $this->plugin->updateSetting(self::JOURNAL_WITHOUT_LOCKSS_ID, 'lastPreservationTimestamp', time() - 3600);
         $this->plugin->updateSetting(self::JOURNAL_WITHOUT_LOCKSS_ID, 'preservedXMLcontent', '<xml>anterior</xml>');
 
-        $form = new PreservationSubmissionForm($this->plugin, self::JOURNAL_WITHOUT_LOCKSS_ID);
+        $form = new PreservationSubmissionForm($this->plugin, self::JOURNAL_WITHOUT_LOCKSS_ID, $this->journalDaoMock);
 
         $valid = $form->validate();
         $this->assertFalse($valid);
@@ -204,7 +199,7 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
     public function testFirstPreservationMissingStatementFile(): void
     {
         $this->plugin->updateSetting(self::JOURNAL_WITH_LOCKSS_ID, 'statementFile', null);
-        $form = new PreservationSubmissionForm($this->plugin, self::JOURNAL_WITH_LOCKSS_ID);
+        $form = new PreservationSubmissionForm($this->plugin, self::JOURNAL_WITH_LOCKSS_ID, $this->journalDaoMock);
         $form->setData('notesAndComments', 'Notas');
         $valid = $form->validate();
         $this->assertFalse($valid);
@@ -215,7 +210,7 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
     public function testUpdateWithNoChangesLockssEnabled(): void
     {
         $this->createBaselineNoChanges(self::JOURNAL_WITH_LOCKSS_ID);
-        $form = new PreservationSubmissionForm($this->plugin, self::JOURNAL_WITH_LOCKSS_ID);
+        $form = new PreservationSubmissionForm($this->plugin, self::JOURNAL_WITH_LOCKSS_ID, $this->journalDaoMock);
         $valid = $form->validate();
         $this->assertFalse($valid);
         $this->assertMatchesRegularExpression('/noChanges/i', implode(' ', $form->getErrorsArray()));
@@ -227,13 +222,12 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
         $journalIncomplete->setId(self::JOURNAL_WITH_LOCKSS_ID);
         $journalIncomplete->setData('enableLockss', true);
         $mockDao = $this->getMockBuilder('JournalDAO')
-            ->onlyMethods(['getById'])
-            ->getMock();
+                ->onlyMethods(['getById'])
+                ->getMock();
         $mockDao->method('getById')->willReturn($journalIncomplete);
-        DAORegistry::registerDAO('JournalDAO', $mockDao);
 
         $this->plugin->updateSetting(self::JOURNAL_WITH_LOCKSS_ID, 'statementFile', json_encode(['fileName' => 'dummy.pdf']));
-        $form = new PreservationSubmissionForm($this->plugin, self::JOURNAL_WITH_LOCKSS_ID);
+        $form = new PreservationSubmissionForm($this->plugin, self::JOURNAL_WITH_LOCKSS_ID, $mockDao);
         $form->setData('notesAndComments', 'Notas');
         $valid = $form->validate();
         $this->assertFalse($valid);

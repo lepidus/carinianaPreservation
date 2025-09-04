@@ -41,7 +41,7 @@ describe("Cariniana Preservation Plugin - Preservation update", function () {
         openUpdateModal(pluginRowId);
         cy.get('.submitFormButton').contains('Submit').click();
         cy.waitJQuery();
-        cy.contains('No changes detected since last preservation. Nothing to update.', {timeout:10000});
+        cy.contains('No changes detected since last preservation. Nothing to update.');
     });
 });
 describe("Cariniana Preservation Plugin - Preservation update fails", function () {
@@ -64,7 +64,7 @@ describe("Cariniana Preservation Plugin - Preservation update fails", function (
         cy.wait(200);
 
         cy.contains("Last preservation performed on:");
-        cy.contains("The e-mail with the journal data will be sent to the e-mail address of Cariniana Network (cariniana-periodicos@ibict.br)", {timeout:10000});
+        cy.contains("The e-mail with the journal data will be sent to the e-mail address of Cariniana Network (cariniana-periodicos@ibict.br)");
         cy.contains('send an update with the changes since the last preservation');
         cy.get('body').should('not.contain', 'Notes and comments');
         cy.get('body').should('not.contain', 'If you are interested, insert here some relevant information about the publication');

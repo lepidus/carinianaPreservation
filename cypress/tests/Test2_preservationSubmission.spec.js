@@ -6,7 +6,7 @@ function openPreservationModal() {
     cy.get('button#plugins-button').click();
     cy.get('#' + pluginRowId + ' > .first_column > .show_extras').click();
     cy.get('a[id^=' + pluginRowId + '-preservationSubmission-button]').click();
-    cy.wait(250);
+    cy.wait(200);
 }
 
 function enableLockss() {
@@ -15,14 +15,15 @@ function enableLockss() {
     cy.contains('LOCKSS and CLOCKSS').click();
     cy.get('input[name="enableLockss"]').check({ force: true });
     cy.contains('Save').click();
-    cy.contains('Saved', { timeout: 10000 });
+    cy.contains('Saved');
 }
 
 describe("Cariniana Preservation Plugin - Submission negative path (LOCKSS disabled, then missing ISSN)", () => {
-    it("Shows lockssDisabled notice, enables LOCKSS, clears ISSNs and attempts submission expecting ISSN requirement", () => {
+    it("Shows lockssDisabled notice after submit attempt, then enables LOCKSS; clears ISSNs and attempts submission expecting ISSN requirement", () => {
         cy.login('dbarnes', null, 'publicknowledge');
         openPreservationModal();
 
+        cy.get('.submitFormButton').contains('Submit').click();
         cy.contains('LOCKSS is not enabled in Distribution > Archiving');
         cy.get('a:contains("Website")').click();
         enableLockss();

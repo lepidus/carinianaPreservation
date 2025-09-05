@@ -18,11 +18,13 @@ class PreservationSubmissionForm extends Form
 {
     public $plugin;
     public $contextId;
+    private $journalDao;
 
-    public function __construct($plugin, $contextId)
+    public function __construct($plugin, $contextId, $journalDao = null)
     {
         $this->contextId = $contextId;
         $this->plugin = $plugin;
+        $this->journalDao = $journalDao ?: DAORegistry::getDAO('JournalDAO'); /** @var JournalDAO $journalDao */
         parent::__construct($plugin->getTemplateResource('preservationSubmission.tpl'));
     }
 
@@ -62,8 +64,7 @@ class PreservationSubmissionForm extends Form
 
     private function getPreservationEmailCopies()
     {
-        $journalDao = DAORegistry::getDAO('JournalDAO'); /** @var JournalDAO $journalDao */
-        $journal = $journalDao->getById($this->contextId);
+        $journal = $this->journalDao->getById($this->contextId);
         $contactEmail = $journal->getData('contactEmail');
         $extraCopyEmail = $this->plugin->getSetting($journal->getId(), 'extraCopyEmail');
 
@@ -72,8 +73,14 @@ class PreservationSubmissionForm extends Form
 
     public function validate($callHooks = true)
     {
-        $journalDao = DAORegistry::getDAO('JournalDAO'); /** @var JournalDAO $journalDao */
-        $journal = $journalDao->getById($this->contextId);
+        $journal = $this->journalDao->getById($this->contextId);
+        $baseUrl = Application::get()->getRequest()->getBaseUrl();
+        if (!$journal->getData('enableLockss')) {
+            $this->addError('preservationSubmission', __(
+                'plugins.generic.carinianaPreservation.preservationSubmission.lockssDisabled',
+                ['lockssSettingsUrl' => $this->plugin->getLockssSettingsUrl($journal, $baseUrl)]
+            ));
+        }
 
         $missingRequirements = $this->getMissingRequirements($journal);
         if (!empty($missingRequirements)) {
@@ -134,9 +141,7 @@ class PreservationSubmissionForm extends Form
 
     public function execute(...$functionArgs)
     {
-        $journalDao = DAORegistry::getDAO('JournalDAO'); /** @var JournalDAO $journalDao */
-
-        $journal = $journalDao->getById($this->contextId); /** @var Journal $journal */
+        $journal = $this->journalDao->getById($this->contextId); /** @var Journal $journal */
         $locale = $journal->getPrimaryLocale();
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
 

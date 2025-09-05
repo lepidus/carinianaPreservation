@@ -58,6 +58,11 @@ class CarinianaPreservationSettingsForm extends Form
         $templateMgr->assign('applicationName', Application::get()->getName());
         $alreadyPreserved = (bool)$this->plugin->getSetting($this->contextId, 'lastPreservationTimestamp');
         $templateMgr->assign('alreadyPreserved', $alreadyPreserved);
+
+        $journal = $request->getContext();
+        $templateMgr->assign('lockssEnabled', $journal->getData('enableLockss'));
+        $templateMgr->assign('lockssSettingsUrl', $this->plugin->getLockssSettingsUrl($journal, $request->getBaseUrl()));
+
         return parent::fetch($request, $template, $display);
     }
 

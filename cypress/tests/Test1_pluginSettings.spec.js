@@ -26,6 +26,9 @@ describe("Cariniana Preservation Plugin - Checking of plugin's settings", functi
         cy.get('button[id^=submitFormButton]').contains('Save').click();
 
         cy.get('a[id^=' + pluginRowId + '-settings-button]').click();
+
+        cy.contains('LOCKSS is not enabled in Distribution > Archiving');
+
         cy.get('input[id^=extraCopyEmail]').should('have.value', extraCopyEmail);
         cy.contains('has already been submitted previously');
     });

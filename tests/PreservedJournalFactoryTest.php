@@ -62,7 +62,7 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
         $issue->setVolume($issueVolume);
         $issue->setPublished(true);
 
-    $issueDao = DAORegistry::getDAO('IssueDAO'); /** @var IssueDAO $issueDao */
+        $issueDao = DAORegistry::getDAO('IssueDAO'); /** @var IssueDAO $issueDao */
         $issueDao->insertObject($issue);
     }
 
@@ -122,7 +122,7 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
         $this->createIssueForJournal($journalId, '2022-01-01', 19);
         $this->createIssueForJournal($journalId, '2022-06-01', 19);
         $this->createIssueForJournal($journalId, '2023-01-01', 37);
-    $this->createIssueForJournal($journalId, '2023-06-01', 0);
+        $this->createIssueForJournal($journalId, '2023-06-01', 0);
 
         $factory = new PreservedJournalFactory();
         $preservedJournal = $factory->buildPreservedJournal($journal, $this->baseUrl, $this->notesAndComments, $this->locale);
@@ -174,7 +174,7 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
         $issue->setData('journalId', $journalId);
         $issue->setData('year', '2025');
         $issue->setPublished(true);
-    $issueDao = DAORegistry::getDAO('IssueDAO'); /** @var IssueDAO $issueDao */
+        $issueDao = DAORegistry::getDAO('IssueDAO'); /** @var IssueDAO $issueDao */
         $issueDao->insertObject($issue);
 
         $factory = new PreservedJournalFactory();
@@ -192,7 +192,7 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
         $issue->setVolume($volume);
         $issue->setPublished(true);
 
-        $issueDao = DAORegistry::getDAO('IssueDAO');
+        $issueDao = DAORegistry::getDAO('IssueDAO'); /** @var IssueDAO $issueDao */
         $issueDao->insertObject($issue);
     }
 }

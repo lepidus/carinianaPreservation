@@ -33,41 +33,56 @@ class PreservedJournalFactory
     private function getAvailableYears($journal): string
     {
         $issueDao = DAORegistry::getDAO('IssueDAO'); /** @var IssueDAO $issueDao */
-        $issues = array_reverse($issueDao->getPublishedIssues($journal->getId())->toArray());
-        $issuesYearList = [];
-        $availableYears = "";
+        $issues = $issueDao->getPublishedIssues($journal->getId())->toArray();
 
+        $years = [];
         foreach ($issues as $issue) {
-            $issuesYearList[] = (new DateTime($issue->getData('datePublished')))->format('Y');
-        }
-
-        $issuesYearList = array_unique($issuesYearList);
-        $lastIssueYear = end($issuesYearList);
-
-        foreach ($issuesYearList as $issueYear) {
-            $availableYears .= $issueYear;
-            if ($issueYear != $lastIssueYear) {
-                $availableYears .= "; ";
+            $year = $issue->getData('year');
+            if (!$year) {
+                $datePublished = $issue->getData('datePublished');
+                if ($datePublished) {
+                    $year = substr($datePublished, 0, 4);
+                }
             }
+            if (!$year) {
+                continue;
+            }
+            $year = (string)intval($year);
+            $years[] = $year;
         }
 
-        return $availableYears;
+        $years = array_values(array_unique($years));
+        sort($years, SORT_NUMERIC);
+
+        return implode('; ', $years);
     }
 
     private function getIssuesVolumes($journal): string
     {
         $issueDao = DAORegistry::getDAO('IssueDAO'); /** @var IssueDAO $issueDao */
         $issues = array_reverse($issueDao->getPublishedIssues($journal->getId())->toArray());
-        $lastIssue = end($issues);
-        $volumes = "";
 
+        $normalized = [];
         foreach ($issues as $issue) {
-            $volumes .= $issue->getVolume();
-            if ($issue != $lastIssue && !empty($issue->getVolume())) {
-                $volumes .= "; ";
+            $volume = $issue->getVolume();
+            if ($volume === null) {
+                continue;
+            }
+            $volStr = trim((string)$volume);
+            if ($volStr === '' || $volStr === '0') {
+                continue;
+            }
+            if (ctype_digit($volStr)) {
+                $volStr = (string)intval($volStr);
+            } else {
+                // Non-numeric volumes are ignored to avoid corrupt output
+                continue;
+            }
+            if (!in_array($volStr, $normalized, true)) {
+                $normalized[] = $volStr;
             }
         }
 
-        return $volumes;
+        return implode('; ', $normalized);
     }
 }

@@ -62,7 +62,7 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
         $issue->setVolume($issueVolume);
         $issue->setPublished(true);
 
-        $issueDao = DAORegistry::getDAO('IssueDAO');
+        $issueDao = DAORegistry::getDAO('IssueDAO'); /** @var IssueDAO $issueDao */
         $issueDao->insertObject($issue);
     }
 
@@ -102,5 +102,97 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
             $this->ojsVersion
         ];
         $this->assertEquals($expectedRecord, $preservedJournal->asRecord());
+    }
+
+    public function testVolumesAreNormalizedAndUnique(): void
+    {
+        $journalId = 88881;
+        $journal = new Journal();
+        $journal->setId($journalId);
+        $journal->setData('publisherInstitution', $this->publisherOrInstitution);
+        $journal->setData('name', $this->title, $this->locale);
+        $journal->setData('printIssn', $this->issn);
+        $journal->setData('onlineIssn', $this->eIssn);
+        $journal->setData('urlPath', $this->journalPath);
+
+        $this->createIssueForJournal($journalId, '2020-01-01', 15);
+        $this->createIssueForJournal($journalId, '2020-06-01', 15);
+        $this->createIssueForJournal($journalId, '2021-01-01', 16);
+        $this->createIssueForJournal($journalId, '2021-06-01', 16);
+        $this->createIssueForJournal($journalId, '2022-01-01', 19);
+        $this->createIssueForJournal($journalId, '2022-06-01', 19);
+        $this->createIssueForJournal($journalId, '2023-01-01', 37);
+        $this->createIssueForJournal($journalId, '2023-06-01', 0);
+
+        $factory = new PreservedJournalFactory();
+        $preservedJournal = $factory->buildPreservedJournal($journal, $this->baseUrl, $this->notesAndComments, $this->locale);
+
+        $record = $preservedJournal->asRecord();
+        $issuesVolumes = $record[7];
+
+        $this->assertEquals('15; 16; 19; 37', $issuesVolumes);
+    }
+
+    public function testVolumesSkipZeroAndEmpty(): void
+    {
+        $journalId = 88882;
+        $journal = new Journal();
+        $journal->setId($journalId);
+        $journal->setData('publisherInstitution', $this->publisherOrInstitution);
+        $journal->setData('name', $this->title, $this->locale);
+        $journal->setData('printIssn', $this->issn);
+        $journal->setData('onlineIssn', $this->eIssn);
+        $journal->setData('urlPath', $this->journalPath);
+
+        $this->createIssueForJournal($journalId, '2021-01-01', 0);
+        $this->createIssueForJournal($journalId, '2021-02-01', 0);
+        $this->createIssueForJournal($journalId, '2021-03-01', 0);
+        $this->createIssueForJournal($journalId, '2021-04-01', 55);
+        $this->createIssueForJournal($journalId, '2021-05-01', 55);
+
+        $factory = new PreservedJournalFactory();
+        $preservedJournal = $factory->buildPreservedJournal($journal, $this->baseUrl, $this->notesAndComments, $this->locale);
+        $issuesVolumes = $preservedJournal->asRecord()[7];
+
+        $this->assertEquals('55', $issuesVolumes);
+    }
+
+    public function testYearsPreferIssueYearWithDatePublishedFallback(): void
+    {
+        $journalId = 88883;
+        $journal = new Journal();
+        $journal->setId($journalId);
+        $journal->setData('publisherInstitution', $this->publisherOrInstitution);
+        $journal->setData('name', $this->title, $this->locale);
+        $journal->setData('printIssn', $this->issn);
+        $journal->setData('onlineIssn', $this->eIssn);
+        $journal->setData('urlPath', $this->journalPath);
+
+        $this->createIssueForJournal($journalId, '2024-07-10', 12);
+
+        $issue = new Issue();
+        $issue->setData('journalId', $journalId);
+        $issue->setData('year', '2025');
+        $issue->setPublished(true);
+        $issueDao = DAORegistry::getDAO('IssueDAO'); /** @var IssueDAO $issueDao */
+        $issueDao->insertObject($issue);
+
+        $factory = new PreservedJournalFactory();
+        $preservedJournal = $factory->buildPreservedJournal($journal, $this->baseUrl, $this->notesAndComments, $this->locale);
+        $availableYears = $preservedJournal->asRecord()[6];
+
+        $this->assertEquals('2024; 2025', $availableYears);
+    }
+
+    private function createIssueForJournal(int $journalId, string $datePublished, int $volume): void
+    {
+        $issue = new Issue();
+        $issue->setData('journalId', $journalId);
+        $issue->setData('datePublished', $datePublished);
+        $issue->setVolume($volume);
+        $issue->setPublished(true);
+
+        $issueDao = DAORegistry::getDAO('IssueDAO'); /** @var IssueDAO $issueDao */
+        $issueDao->insertObject($issue);
     }
 }

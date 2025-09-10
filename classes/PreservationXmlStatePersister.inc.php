@@ -16,7 +16,7 @@ class PreservationXmlStatePersister
 
         if (is_readable($xmlFilePath)) {
             $xmlContent = file_get_contents($xmlFilePath);
-            if ($xmlContent !== false && trim($xmlContent) !== '') {
+            if (!empty($xmlContent)) {
                 $plugin->updateSetting($journalId, 'preservedXMLcontent', $xmlContent);
             }
         }

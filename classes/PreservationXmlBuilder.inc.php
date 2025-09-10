@@ -54,7 +54,6 @@ class PreservationXmlBuilder
                 }
             }
             if (!$issueYear) {
-                // Skip issues we cannot determine year for
                 continue;
             }
             if (array_key_exists($issueYear, $issuesByYear)) {

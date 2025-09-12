@@ -11,8 +11,9 @@
  * @brief Cariniana Preservation Plugin
  */
 
-import('lib.pkp.classes.plugins.GenericPlugin');
-import('lib.pkp.classes.file.FileManager');
+use PKP\plugins\GenericPlugin;
+use PKP\file\FileManager;
+use PKP\plugins\Hook;
 
 class CarinianaPreservationPlugin extends GenericPlugin
 {
@@ -20,7 +21,7 @@ class CarinianaPreservationPlugin extends GenericPlugin
     {
         $success = parent::register($category, $path, $mainContextId);
 
-        HookRegistry::register('AcronPlugin::parseCronTab', array($this, 'addTasksToCronTab'));
+        Hook::add('AcronPlugin::parseCronTab', array($this, 'addTasksToCronTab'));
 
         if (!Config::getVar('general', 'installed') || defined('RUNNING_UPGRADE')) {
             return true;

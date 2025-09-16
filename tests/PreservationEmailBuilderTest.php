@@ -8,7 +8,7 @@ use APP\issue\Issue;
 use APP\plugins\generic\carinianaPreservation\classes\PreservationEmailBuilder;
 use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
 use PKP\file\PrivateFileManager;
-use PKP\db\DAORegistry;
+use APP\facades\Repo;
 
 class PreservationEmailBuilderTest extends DatabaseTestCase
 {
@@ -74,8 +74,7 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
         $issue->setData('year', $issueYear);
         $issue->setData('published', 1);
 
-        $issueDao = DAORegistry::getDAO('IssueDAO');
-        $issueDao->insertObject($issue);
+        Repo::issue()->add($issue);
     }
 
     protected function tearDown(): void

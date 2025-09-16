@@ -7,7 +7,7 @@ use APP\journal\Journal;
 use APP\issue\Issue;
 use APP\plugins\generic\carinianaPreservation\classes\PreservationUpdateEmailBuilder;
 use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
-use PKP\db\DAORegistry;
+use APP\facades\Repo;
 
 class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
 {
@@ -67,8 +67,7 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
         $issue->setData('datePublished', $issueDatePublished);
         $issue->setData('published', 1);
 
-        $issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
-        $issueDao->insertObject($issue);
+        Repo::issue()->add($issue);
     }
 
     public function testBuiltPreservationUpdateEmailFrom(): void

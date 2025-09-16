@@ -6,6 +6,7 @@ use PKP\tests\DatabaseTestCase;
 use APP\journal\Journal;
 use APP\issue\Issue;
 use APP\plugins\generic\carinianaPreservation\classes\PreservedJournalFactory;
+use APP\facades\Repo;
 use PKP\db\DAORegistry;
 
 class PreservedJournalFactoryTest extends DatabaseTestCase
@@ -34,6 +35,7 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
         $this->preservedJournalFactory = new PreservedJournalFactory();
         $this->createTestIssue($this->firstIssueYear, $this->firstIssueVolume);
         $this->createTestIssue($this->lastIssueYear, $this->secondIssueVolume);
+        /** @var \PKP\site\VersionDAO $versionDao */
         $versionDao = DAORegistry::getDAO('VersionDAO');
         $currentVersion = $versionDao->getCurrentVersion();
         $this->ojsVersion = $currentVersion->getVersionString();
@@ -65,8 +67,7 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
         $issue->setVolume($issueVolume);
         $issue->setPublished(true);
 
-        $issueDao = DAORegistry::getDAO('IssueDAO'); /** @var IssueDAO $issueDao */
-        $issueDao->insertObject($issue);
+        Repo::issue()->add($issue);
     }
 
     public function testFactoryBuildsPreservedJournal(): void
@@ -177,8 +178,7 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
         $issue->setData('journalId', $journalId);
         $issue->setData('year', '2025');
         $issue->setPublished(true);
-        $issueDao = DAORegistry::getDAO('IssueDAO'); /** @var IssueDAO $issueDao */
-        $issueDao->insertObject($issue);
+        Repo::issue()->add($issue);
 
         $factory = new PreservedJournalFactory();
         $preservedJournal = $factory->buildPreservedJournal($journal, $this->baseUrl, $this->notesAndComments, $this->locale);
@@ -195,7 +195,6 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
         $issue->setVolume($volume);
         $issue->setPublished(true);
 
-        $issueDao = DAORegistry::getDAO('IssueDAO'); /** @var IssueDAO $issueDao */
-        $issueDao->insertObject($issue);
+        Repo::issue()->add($issue);
     }
 }

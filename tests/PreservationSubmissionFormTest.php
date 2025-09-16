@@ -7,10 +7,10 @@ use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
 use APP\plugins\generic\carinianaPreservation\classes\form\PreservationSubmissionForm;
 use APP\journal\Journal;
 use PKP\file\PrivateFileManager;
-use PKP\plugins\Hook as HookRegistry;
+use PKP\plugins\Hook;
 use APP\core\Application;
 use APP\plugins\generic\carinianaPreservation\classes\PreservationXmlBuilder;
-use PKP\db\DAORegistry;
+use APP\facades\Repo;
 
 class PreservationSubmissionFormTest extends DatabaseTestCase
 {
@@ -129,11 +129,12 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
 
     private function insertPublishedIssue(int $journalId): void
     {
-        $issueDao = DAORegistry::getDAO('IssueDAO');
-        $issueDao->update(
-            'INSERT INTO issues (journal_id, date_published, year, published) VALUES (?, ?, ?, 1)',
-            [$journalId, '2024-01-01', 2024]
-        );
+        $issue = new \APP\issue\Issue();
+        $issue->setData('journalId', $journalId);
+        $issue->setData('datePublished', '2024-01-01');
+        $issue->setData('year', 2024);
+        $issue->setPublished(true);
+        Repo::issue()->add($issue);
     }
 
     private function createStatementFileForFirstPreservation(): void
@@ -156,7 +157,7 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
 
     public function testFirstPreservationRemovesStatementFile(): void
     {
-        HookRegistry::register('Mail::send', function () {
+        Hook::add('Mail::send', function () {
             return true;
         });
 

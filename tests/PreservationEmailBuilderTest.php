@@ -12,13 +12,14 @@ use APP\facades\Repo;
 
 class PreservationEmailBuilderTest extends DatabaseTestCase
 {
+    use CarinianaTestFixtureTrait;
     private $preservationEmailBuilder;
     private $email;
     private $journal;
     private const ATTACHMENT_INDEX_SPREADSHEET = 0;
     private const ATTACHMENT_INDEX_STATEMENT = 1;
     private const ATTACHMENT_INDEX_XML = 2;
-    private $journalId = 9999;
+    private $journalId;
     private $locale = 'pt_BR';
     private $journalAcronym = 'RBRB';
     private $journalContactEmail = 'contact@rbrb.com.br';
@@ -38,10 +39,20 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->createTestJournal();
+        $this->journal = $this->buildAndPersistJournal([
+            'publisherInstitution' => $this->publisherOrInstitution,
+            'name' => $this->title,
+            'printIssn' => $this->issn,
+            'onlineIssn' => $this->eIssn,
+            'urlPath' => $this->journalPath . '_' . uniqid(),
+            'primaryLocale' => $this->locale,
+            'acronym' => $this->journalAcronym,
+            'contactEmail' => $this->journalContactEmail,
+        ]);
+        $this->journalId = $this->journal->getId();
         $this->preservationEmailBuilder = new PreservationEmailBuilder();
-        $this->createTestIssue($this->firstIssueYear);
-        $this->createTestIssue($this->lastIssueYear);
+        $this->persistIssue($this->journal, ['year' => $this->firstIssueYear]);
+        $this->persistIssue($this->journal, ['year' => $this->lastIssueYear]);
         $this->createStatementFileSetting();
         $this->email = $this->preservationEmailBuilder->buildPreservationEmail($this->journal, $this->baseUrl, $this->notesAndComments, $this->locale);
     }
@@ -49,32 +60,6 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
     protected function getAffectedTables()
     {
         return ['issues', 'issue_settings', 'plugin_settings'];
-    }
-
-    private function createTestJournal(): void
-    {
-        $this->journal = new Journal();
-        $this->journal->setId($this->journalId);
-        $this->journal->setData('publisherInstitution', $this->publisherOrInstitution);
-        $this->journal->setData('name', $this->title, $this->locale);
-        $this->journal->setData('printIssn', $this->issn);
-        $this->journal->setData('onlineIssn', $this->eIssn);
-        $this->journal->setData('urlPath', $this->journalPath);
-        $this->journal->setData('acronym', $this->journalAcronym, $this->locale);
-        $this->journal->setData('contactEmail', $this->journalContactEmail);
-    }
-
-    private function createTestIssue($issueYear): void
-    {
-        $issueDatePublished = $issueYear.'-01-01';
-
-        $issue = new Issue();
-        $issue->setData('journalId', $this->journalId);
-        $issue->setData('datePublished', $issueDatePublished);
-        $issue->setData('year', $issueYear);
-        $issue->setData('published', 1);
-
-        Repo::issue()->add($issue);
     }
 
     protected function tearDown(): void

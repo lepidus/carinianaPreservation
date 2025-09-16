@@ -14,6 +14,7 @@ use APP\facades\Repo;
 
 class PreservationSubmissionFormTest extends DatabaseTestCase
 {
+    use CarinianaTestFixtureTrait;
     public const JOURNAL_WITH_LOCKSS_ID = 880022;
     public const JOURNAL_WITHOUT_LOCKSS_ID = 880055;
 
@@ -32,7 +33,7 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
     {
         parent::setUp();
         $this->plugin = new CarinianaPreservationPlugin();
-        $this->mockJournalDao();
+        $this->persistTestJournals();
         $this->ensureRouter();
         $this->seedPublishedIssues();
         $this->seedStatementFile();
@@ -41,7 +42,7 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
 
     protected function tearDown(): void
     {
-        HookRegistry::clear('Mail::send');
+        Hook::clear('Mail::send');
         foreach ([self::JOURNAL_WITH_LOCKSS_ID, self::JOURNAL_WITHOUT_LOCKSS_ID] as $jid) {
             $this->plugin->updateSetting($jid, 'statementFile', null);
             $this->plugin->updateSetting($jid, 'lastPreservationTimestamp', null);
@@ -64,46 +65,39 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
         parent::tearDown();
     }
 
-    private function buildJournals(): array
+    private function persistTestJournals(): void
     {
-        $with = new Journal();
-        $with->setId(self::JOURNAL_WITH_LOCKSS_ID);
-        $with->setData('publisherInstitution', 'PKP');
-        $with->setData('name', 'Revista Teste', 'pt_BR');
-        $with->setData('printIssn', '1234-1234');
-        $with->setData('onlineIssn', '0101-1010');
-        $with->setData('urlPath', 'revistateste');
-        $with->setData('acronym', 'RT', 'pt_BR');
-        $with->setData('contactEmail', 'contato@revistateste.org');
-        $with->setData('enableLockss', true);
+        $with = $this->buildAndPersistJournal([
+            'publisherInstitution' => 'PKP',
+            'name' => 'Revista Teste',
+            'printIssn' => '1234-1234',
+            'onlineIssn' => '0101-1010',
+            'urlPath' => 'revistateste_' . uniqid(),
+            'primaryLocale' => 'pt_BR',
+            'acronym' => 'RT',
+            'contactEmail' => 'contato@revistateste.org',
+            'enableLockss' => true,
+        ]);
+        $this->journalsById[self::JOURNAL_WITH_LOCKSS_ID] = $with; // map expected id to persisted object
 
-        $without = new Journal();
-        $without->setId(self::JOURNAL_WITHOUT_LOCKSS_ID);
-        $without->setData('publisherInstitution', 'PKP');
-        $without->setData('name', 'Revista Teste LOCKSS', 'pt_BR');
-        $without->setData('printIssn', '2222-2222');
-        $without->setData('onlineIssn', '3333-3333');
-        $without->setData('urlPath', 'revista-lockss');
-        $without->setData('acronym', 'RL', 'pt_BR');
-        $without->setData('contactEmail', 'contato@rl.org');
-        $without->setData('enableLockss', false);
+        $without = $this->buildAndPersistJournal([
+            'publisherInstitution' => 'PKP',
+            'name' => 'Revista Teste LOCKSS',
+            'printIssn' => '2222-2222',
+            'onlineIssn' => '3333-3333',
+            'urlPath' => 'revista-lockss_' . uniqid(),
+            'primaryLocale' => 'pt_BR',
+            'acronym' => 'RL',
+            'contactEmail' => 'contato@rl.org',
+            'enableLockss' => false,
+        ]);
+        $this->journalsById[self::JOURNAL_WITHOUT_LOCKSS_ID] = $without;
 
-        return [$with, $without];
-    }
-
-    private function mockJournalDao(): void
-    {
-        $journals = $this->buildJournals();
-        foreach ($journals as $j) {
-            $this->journalsById[$j->getId()] = $j;
-        }
-        $this->journalDaoMock = $this->getMockBuilder('JournalDAO')
-            ->onlyMethods(['getById'])
-            ->getMock();
-        $this->journalDaoMock->method('getById')
-            ->willReturnCallback(function ($id) {
-                return $this->journalsById[$id] ?? null;
-            });
+        $this->journalDaoMock = new class($this) {
+            private $outer;
+            public function __construct($outer){$this->outer = $outer;}
+            public function getById($id){return $this->outer->journalsById[$id] ?? null;}
+        };
     }
 
     private function ensureRouter(): void
@@ -129,12 +123,10 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
 
     private function insertPublishedIssue(int $journalId): void
     {
-        $issue = new \APP\issue\Issue();
-        $issue->setData('journalId', $journalId);
-        $issue->setData('datePublished', '2024-01-01');
-        $issue->setData('year', 2024);
-        $issue->setPublished(true);
-        Repo::issue()->add($issue);
+        $journal = $this->getJournal($journalId);
+        if ($journal) {
+            $this->persistIssue($journal, ['year' => 2024, 'datePublished' => '2024-01-01']);
+        }
     }
 
     private function createStatementFileForFirstPreservation(): void
@@ -245,13 +237,13 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
 
     public function testMissingRequirementsBlocksFirstPreservation(): void
     {
-        $journalIncomplete = new Journal();
-        $journalIncomplete->setId(self::JOURNAL_WITH_LOCKSS_ID);
-        $journalIncomplete->setData('enableLockss', true);
-        $mockDao = $this->getMockBuilder('JournalDAO')
-                ->onlyMethods(['getById'])
-                ->getMock();
-        $mockDao->method('getById')->willReturn($journalIncomplete);
+        $journalIncomplete = $this->buildAndPersistJournal([
+            'publisherInstitution' => null,
+            'urlPath' => 'incomplete_' . uniqid(),
+            'primaryLocale' => 'pt_BR',
+            'enableLockss' => true,
+        ]);
+        $mockDao = new class($journalIncomplete) { private $j; public function __construct($j){$this->j=$j;} public function getById($id){return $this->j;} };
 
         $this->plugin->updateSetting(self::JOURNAL_WITH_LOCKSS_ID, 'statementFile', json_encode(['fileName' => 'dummy.pdf']));
         $form = new PreservationSubmissionForm($this->plugin, self::JOURNAL_WITH_LOCKSS_ID, $mockDao);
@@ -265,8 +257,8 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
     private function createBaselineNoChanges(int $journalId): void
     {
         $this->plugin->updateSetting($journalId, 'lastPreservationTimestamp', time() - 3600);
-        $journal = $this->getJournal($journalId);
-        $this->assertNotNull($journal, 'Baseline journal not available');
+    $journal = $this->getJournal($journalId);
+    $this->assertNotNull($journal, 'Baseline journal not available');
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
         $builder = new PreservationXmlBuilder($journal, $baseUrl);
         $acronym = $journal->getLocalizedData('acronym', $journal->getPrimaryLocale());

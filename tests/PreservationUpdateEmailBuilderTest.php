@@ -11,11 +11,12 @@ use APP\facades\Repo;
 
 class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
 {
+    use CarinianaTestFixtureTrait;
     private $preservationUpdateEmailBuilder;
     private $email;
     private $journal;
     private const ATTACHMENT_INDEX_XML = 0;
-    private $journalId = 3;
+    private $journalId;
     private $locale = 'pt_BR';
     private $journalAcronym = 'RBRU';
     private $journalContactEmail = 'contact@rbru.com.br';
@@ -32,42 +33,26 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->createTestJournal();
+        $this->journal = $this->buildAndPersistJournal([
+            'publisherInstitution' => $this->publisherOrInstitution,
+            'name' => $this->title,
+            'printIssn' => $this->issn,
+            'onlineIssn' => $this->eIssn,
+            'urlPath' => $this->journalPath . '_' . uniqid(),
+            'primaryLocale' => $this->locale,
+            'acronym' => $this->journalAcronym,
+            'contactEmail' => $this->journalContactEmail,
+        ]);
+        $this->journalId = $this->journal->getId();
         $this->preservationUpdateEmailBuilder = new PreservationUpdateEmailBuilder();
-        $this->createTestIssue($this->firstIssueYear);
-        $this->createTestIssue($this->lastIssueYear);
+        $this->persistIssue($this->journal, ['year' => $this->firstIssueYear]);
+        $this->persistIssue($this->journal, ['year' => $this->lastIssueYear]);
         $this->email = $this->preservationUpdateEmailBuilder->buildPreservationUpdateEmail($this->journal, $this->baseUrl, $this->locale);
     }
 
     protected function getAffectedTables()
     {
         return ['issues', 'issue_settings', 'plugin_settings'];
-    }
-
-    private function createTestJournal(): void
-    {
-        $this->journal = new Journal();
-        $this->journal->setId($this->journalId);
-        $this->journal->setData('publisherInstitution', $this->publisherOrInstitution);
-        $this->journal->setData('name', $this->title, $this->locale);
-        $this->journal->setData('printIssn', $this->issn);
-        $this->journal->setData('onlineIssn', $this->eIssn);
-        $this->journal->setData('urlPath', $this->journalPath);
-        $this->journal->setData('acronym', $this->journalAcronym, $this->locale);
-        $this->journal->setData('contactEmail', $this->journalContactEmail);
-    }
-
-    private function createTestIssue($issueYear): void
-    {
-        $issueDatePublished = $issueYear.'-01-01';
-
-        $issue = new Issue();
-        $issue->setData('year', $issueYear);
-        $issue->setData('journalId', $this->journalId);
-        $issue->setData('datePublished', $issueDatePublished);
-        $issue->setData('published', 1);
-
-        Repo::issue()->add($issue);
     }
 
     public function testBuiltPreservationUpdateEmailFrom(): void
@@ -156,7 +141,7 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
     public function testDiffAttachmentPresentAfterDataChange(): void
     {
         $newYear = (string)(((int)$this->lastIssueYear) + 1);
-        $this->createTestIssue($newYear);
+        $this->persistIssue($this->journal, ['year' => $newYear]);
 
         // Build email again after change
         $this->email = $this->preservationUpdateEmailBuilder->buildPreservationUpdateEmail($this->journal, $this->baseUrl, $this->locale);

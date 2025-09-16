@@ -20,7 +20,7 @@ class PreservationUpdateEmailBuilder extends BasePreservationEmailBuilder
         $oldContent = $plugin->getSetting($journal->getId(), 'preservedXMLcontent') ?? '';
 
         $xmlFilePath = $this->createXml($journal, $baseUrl);
-        $email->addAttachment($xmlFilePath);
+        $this->addAttachment($email, $xmlFilePath);
 
         $newContent = '';
         if (is_readable($xmlFilePath)) {
@@ -34,7 +34,7 @@ class PreservationUpdateEmailBuilder extends BasePreservationEmailBuilder
                 $timestamp = date('YmdHis');
                 $diffFilePath = "/tmp/diff_preservacao_{$journalAcronym}_{$timestamp}.diff";
                 file_put_contents($diffFilePath, $diff);
-                $email->addAttachment($diffFilePath);
+                $this->addAttachment($email, $diffFilePath);
             }
         }
 
@@ -47,7 +47,6 @@ class PreservationUpdateEmailBuilder extends BasePreservationEmailBuilder
     {
         $subject = __('plugins.generic.carinianaPreservation.preservationUpdateEmail.subject', ['journalAcronym' => $journalAcronym], $locale);
         $body = __('plugins.generic.carinianaPreservation.preservationUpdateEmail.body', ['journalAcronym' => $journalAcronym], $locale);
-        $email->setSubject($subject);
-        $email->setBody($body);
+        $email->addData(['subject' => $subject, 'body' => $body]);
     }
 }

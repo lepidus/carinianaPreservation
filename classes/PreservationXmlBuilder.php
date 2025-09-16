@@ -4,7 +4,7 @@ namespace APP\plugins\generic\carinianaPreservation\classes;
 
 use APP\journal\Journal;
 use DOMDocument;
-use PKP\db\DAORegistry;
+use APP\facades\Repo;
 
 class PreservationXmlBuilder
 {
@@ -190,8 +190,13 @@ class PreservationXmlBuilder
 
     private function getPublishedIssues($journal)
     {
-        $issueDao = DAORegistry::getDAO('IssueDAO');
-        $issues = $issueDao->getPublishedIssues($journal->getId())->toArray();
-        return array_reverse($issues);
+        return Repo::issue()
+            ->getCollector()
+            ->filterByContextIds([$journal->getId()])
+            ->filterByPublished(true)
+            ->getMany()
+            ->sortByDesc(fn($issue) => $issue->getId())
+            ->values()
+            ->all();
     }
 }

@@ -18,25 +18,60 @@ abstract class BasePreservationEmailBuilder
 
         $fromName = $journal->getLocalizedData('acronym', $locale);
         $fromEmail = $journal->getData('contactEmail');
-        $email->setFrom($fromEmail, $fromName);
+
+    $from = ['name' => $fromName, 'email' => $fromEmail];
+    $recipients = [];
+    $copies = [];
 
         if (Config::getVar('carinianapreservation', 'email_for_tests')) {
-            $email->addRecipient(
-                Config::getVar('carinianapreservation', 'email_for_tests'),
-                $journal->getData('contactName')
-            );
+            $recipients[] = [
+                'name' => $journal->getData('contactName'),
+                'email' => Config::getVar('carinianapreservation', 'email_for_tests'),
+            ];
         } else {
-            $email->addRecipient(CARINIANA_EMAIL, CARINIANA_NAME);
-            $email->addCc($fromEmail, $fromName);
+            $recipients[] = ['name' => CARINIANA_NAME, 'email' => CARINIANA_EMAIL];
+            $copies[] = $from; // contato da revista recebe cópia
         }
 
         $plugin = new CarinianaPreservationPlugin();
         $extraCopyEmail = $plugin->getSetting($journal->getId(), 'extraCopyEmail');
         if (!empty($extraCopyEmail)) {
-            $email->addCc($extraCopyEmail);
+            $copies[] = ['name' => '', 'email' => $extraCopyEmail];
         }
 
+        $email->addData([
+            'from' => $from,
+            'recipients' => $recipients,
+            'copies' => $copies,
+            'ccs' => $copies, // manter chave antiga para compatibilidade
+            'attachments' => [],
+        ]);
+
         return $email;
+    }
+
+    protected function addAttachment(Mailable $email, string $path, ?string $filename = null, ?string $contentType = null): void
+    {
+        $data = $email->getData();
+        $attachments = $data['attachments'] ?? [];
+
+        $filename = $filename ?? basename($path);
+        if ($contentType === null) {
+            $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+            $contentType = match ($ext) {
+                'xml' => 'text/xml',
+                'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'diff' => 'text/plain',
+                default => 'application/octet-stream'
+            };
+        }
+
+        $attachments[] = [
+            'path' => $path,
+            'filename' => $filename,
+            'content-type' => $contentType,
+        ];
+        $email->addData(['attachments' => $attachments]);
     }
 
     protected function createXml($journal, $baseUrl): string

@@ -41,7 +41,6 @@ class PreservedJournalSpreadsheet
 
     public function createSpreadsheet(string $filePath)
     {
-        AppLocale::requireComponents(LOCALE_COMPONENT_APP_ADMIN);
         $spreadsheet = new Spreadsheet();
         $worksheet = $spreadsheet->getActiveSheet();
 

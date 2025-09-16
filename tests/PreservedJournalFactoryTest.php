@@ -11,9 +11,10 @@ use PKP\db\DAORegistry;
 
 class PreservedJournalFactoryTest extends DatabaseTestCase
 {
+    use CarinianaTestFixtureTrait;
     private $journal;
     private $preservedJournalFactory;
-    private $journalId = 77777;
+    private $journalId;
     private $locale = 'pt_BR';
     private $publisherOrInstitution = 'PKP';
     private $title = 'PKP Journal n18';
@@ -21,6 +22,7 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
     private $eIssn = '0101-1010';
     private $baseUrl = 'https://pkp-journal-18.test/';
     private $journalPath = 'pkpjournal18';
+    private $journalPathPersisted;
     private $firstIssueYear = '2018';
     private $lastIssueYear = '2022';
     private $firstIssueVolume = 1;
@@ -31,10 +33,19 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->createTestJournal();
+        $this->journalPathPersisted = $this->journalPath . '_' . uniqid();
+        $this->journal = $this->buildAndPersistJournal([
+            'publisherInstitution' => $this->publisherOrInstitution,
+            'name' => $this->title,
+            'printIssn' => $this->issn,
+            'onlineIssn' => $this->eIssn,
+            'urlPath' => $this->journalPathPersisted,
+            'primaryLocale' => $this->locale,
+        ]);
+        $this->journalId = $this->journal->getId();
         $this->preservedJournalFactory = new PreservedJournalFactory();
-        $this->createTestIssue($this->firstIssueYear, $this->firstIssueVolume);
-        $this->createTestIssue($this->lastIssueYear, $this->secondIssueVolume);
+        $this->persistIssue($this->journal, ['year' => $this->firstIssueYear, 'volume' => $this->firstIssueVolume]);
+        $this->persistIssue($this->journal, ['year' => $this->lastIssueYear, 'volume' => $this->secondIssueVolume]);
         /** @var \PKP\site\VersionDAO $versionDao */
         $versionDao = DAORegistry::getDAO('VersionDAO');
         $currentVersion = $versionDao->getCurrentVersion();
@@ -46,29 +57,6 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
         return ['issues', 'issue_settings'];
     }
 
-    private function createTestJournal(): void
-    {
-        $this->journal = new Journal();
-        $this->journal->setId($this->journalId);
-        $this->journal->setData('publisherInstitution', $this->publisherOrInstitution);
-        $this->journal->setData('name', $this->title, $this->locale);
-        $this->journal->setData('printIssn', $this->issn);
-        $this->journal->setData('onlineIssn', $this->eIssn);
-        $this->journal->setData('urlPath', $this->journalPath);
-    }
-
-    private function createTestIssue($issueYear, $issueVolume): void
-    {
-        $issueDatePublished = $issueYear.'-01-01';
-
-        $issue = new Issue();
-        $issue->setData('journalId', $this->journalId);
-        $issue->setData('datePublished', $issueDatePublished);
-        $issue->setVolume($issueVolume);
-        $issue->setPublished(true);
-
-        Repo::issue()->add($issue);
-    }
 
     public function testFactoryBuildsPreservedJournal(): void
     {
@@ -80,7 +68,7 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
             '1234-1234',
             '0101-1010',
             'https://pkp-journal-18.test/',
-            'pkpjournal18',
+            $this->journalPathPersisted,
             '2018; 2022',
             '1; 2',
             'We are the 18th PKP journal',
@@ -99,7 +87,7 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
             '1234-1234',
             '0101-1010',
             'https://pkp-journal-18.test/',
-            'pkpjournal18',
+            $this->journalPathPersisted,
             '2018; 2022',
             '1; 2',
             '',
@@ -110,23 +98,22 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
 
     public function testVolumesAreNormalizedAndUnique(): void
     {
-        $journalId = 88881;
-        $journal = new Journal();
-        $journal->setId($journalId);
-        $journal->setData('publisherInstitution', $this->publisherOrInstitution);
-        $journal->setData('name', $this->title, $this->locale);
-        $journal->setData('printIssn', $this->issn);
-        $journal->setData('onlineIssn', $this->eIssn);
-        $journal->setData('urlPath', $this->journalPath);
-
-        $this->createIssueForJournal($journalId, '2020-01-01', 15);
-        $this->createIssueForJournal($journalId, '2020-06-01', 15);
-        $this->createIssueForJournal($journalId, '2021-01-01', 16);
-        $this->createIssueForJournal($journalId, '2021-06-01', 16);
-        $this->createIssueForJournal($journalId, '2022-01-01', 19);
-        $this->createIssueForJournal($journalId, '2022-06-01', 19);
-        $this->createIssueForJournal($journalId, '2023-01-01', 37);
-        $this->createIssueForJournal($journalId, '2023-06-01', 0);
+        $journal = $this->buildAndPersistJournal([
+            'publisherInstitution' => $this->publisherOrInstitution,
+            'name' => $this->title,
+            'printIssn' => $this->issn,
+            'onlineIssn' => $this->eIssn,
+            'urlPath' => $this->journalPath . '_' . uniqid(),
+            'primaryLocale' => $this->locale,
+        ]);
+        $this->persistIssue($journal, ['datePublished' => '2020-01-01', 'volume' => 15]);
+        $this->persistIssue($journal, ['datePublished' => '2020-06-01', 'volume' => 15]);
+        $this->persistIssue($journal, ['datePublished' => '2021-01-01', 'volume' => 16]);
+        $this->persistIssue($journal, ['datePublished' => '2021-06-01', 'volume' => 16]);
+        $this->persistIssue($journal, ['datePublished' => '2022-01-01', 'volume' => 19]);
+        $this->persistIssue($journal, ['datePublished' => '2022-06-01', 'volume' => 19]);
+        $this->persistIssue($journal, ['datePublished' => '2023-01-01', 'volume' => 37]);
+        $this->persistIssue($journal, ['datePublished' => '2023-06-01', 'volume' => 0]);
 
         $factory = new PreservedJournalFactory();
         $preservedJournal = $factory->buildPreservedJournal($journal, $this->baseUrl, $this->notesAndComments, $this->locale);
@@ -139,20 +126,19 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
 
     public function testVolumesSkipZeroAndEmpty(): void
     {
-        $journalId = 88882;
-        $journal = new Journal();
-        $journal->setId($journalId);
-        $journal->setData('publisherInstitution', $this->publisherOrInstitution);
-        $journal->setData('name', $this->title, $this->locale);
-        $journal->setData('printIssn', $this->issn);
-        $journal->setData('onlineIssn', $this->eIssn);
-        $journal->setData('urlPath', $this->journalPath);
-
-        $this->createIssueForJournal($journalId, '2021-01-01', 0);
-        $this->createIssueForJournal($journalId, '2021-02-01', 0);
-        $this->createIssueForJournal($journalId, '2021-03-01', 0);
-        $this->createIssueForJournal($journalId, '2021-04-01', 55);
-        $this->createIssueForJournal($journalId, '2021-05-01', 55);
+        $journal = $this->buildAndPersistJournal([
+            'publisherInstitution' => $this->publisherOrInstitution,
+            'name' => $this->title,
+            'printIssn' => $this->issn,
+            'onlineIssn' => $this->eIssn,
+            'urlPath' => $this->journalPath . '_' . uniqid(),
+            'primaryLocale' => $this->locale,
+        ]);
+        $this->persistIssue($journal, ['datePublished' => '2021-01-01', 'volume' => 0]);
+        $this->persistIssue($journal, ['datePublished' => '2021-02-01', 'volume' => 0]);
+        $this->persistIssue($journal, ['datePublished' => '2021-03-01', 'volume' => 0]);
+        $this->persistIssue($journal, ['datePublished' => '2021-04-01', 'volume' => 55]);
+        $this->persistIssue($journal, ['datePublished' => '2021-05-01', 'volume' => 55]);
 
         $factory = new PreservedJournalFactory();
         $preservedJournal = $factory->buildPreservedJournal($journal, $this->baseUrl, $this->notesAndComments, $this->locale);
@@ -163,38 +149,22 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
 
     public function testYearsPreferIssueYearWithDatePublishedFallback(): void
     {
-        $journalId = 88883;
-        $journal = new Journal();
-        $journal->setId($journalId);
-        $journal->setData('publisherInstitution', $this->publisherOrInstitution);
-        $journal->setData('name', $this->title, $this->locale);
-        $journal->setData('printIssn', $this->issn);
-        $journal->setData('onlineIssn', $this->eIssn);
-        $journal->setData('urlPath', $this->journalPath);
+        $journal = $this->buildAndPersistJournal([
+            'publisherInstitution' => $this->publisherOrInstitution,
+            'name' => $this->title,
+            'printIssn' => $this->issn,
+            'onlineIssn' => $this->eIssn,
+            'urlPath' => $this->journalPath . '_' . uniqid(),
+            'primaryLocale' => $this->locale,
+        ]);
 
-        $this->createIssueForJournal($journalId, '2024-07-10', 12);
-
-        $issue = new Issue();
-        $issue->setData('journalId', $journalId);
-        $issue->setData('year', '2025');
-        $issue->setPublished(true);
-        Repo::issue()->add($issue);
+        $this->persistIssue($journal, ['datePublished' => '2024-07-10', 'volume' => 12]);
+        $this->persistIssue($journal, ['year' => '2025']);
 
         $factory = new PreservedJournalFactory();
         $preservedJournal = $factory->buildPreservedJournal($journal, $this->baseUrl, $this->notesAndComments, $this->locale);
         $availableYears = $preservedJournal->asRecord()[6];
 
         $this->assertEquals('2024; 2025', $availableYears);
-    }
-
-    private function createIssueForJournal(int $journalId, string $datePublished, int $volume): void
-    {
-        $issue = new Issue();
-        $issue->setData('journalId', $journalId);
-        $issue->setData('datePublished', $datePublished);
-        $issue->setVolume($volume);
-        $issue->setPublished(true);
-
-        Repo::issue()->add($issue);
     }
 }

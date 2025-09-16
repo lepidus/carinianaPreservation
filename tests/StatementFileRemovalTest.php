@@ -1,9 +1,11 @@
 <?php
 
-import('lib.pkp.tests.DatabaseTestCase');
-import('classes.journal.Journal');
-import('plugins.generic.carinianaPreservation.CarinianaPreservationPlugin');
-import('lib.pkp.classes.file.PrivateFileManager');
+namespace APP\plugins\generic\carinianaPreservation\tests;
+
+use PKP\tests\DatabaseTestCase;
+use APP\journal\Journal;
+use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
+use PKP\file\PrivateFileManager;
 
 class StatementFileRemovalTest extends DatabaseTestCase
 {

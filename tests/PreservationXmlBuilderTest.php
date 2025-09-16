@@ -1,11 +1,12 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+namespace APP\plugins\generic\carinianaPreservation\tests;
 
-import('lib.pkp.tests.PKPTestCase');
-import('classes.journal.Journal');
-import('classes.issue.Issue');
-import('plugins.generic.carinianaPreservation.classes.PreservationXmlBuilder');
+use PKP\tests\PKPTestCase;
+use APP\journal\Journal;
+use APP\issue\Issue;
+use APP\plugins\generic\carinianaPreservation\classes\PreservationXmlBuilder;
+use DOMDocument;
 
 class TestablePreservationXmlBuilder extends PreservationXmlBuilder
 {
@@ -109,7 +110,7 @@ class PreservationXmlBuilderTest extends PKPTestCase
 
     private function createPreservedYearProperty($dom, $year, $volume, $volumeText)
     {
-        $preservedYear = $this->createXmlProperty($dom, "OJS3PluginRBRB${volume}_${year}");
+        $preservedYear = $this->createXmlProperty($dom, "OJS3PluginRBRB{$volume}_{$year}");
 
         $publisherProperty = $this->createXmlProperty($dom, 'attributes.publisher', $this->publisherOrInstitution);
         $preservedYear->appendChild($publisherProperty);

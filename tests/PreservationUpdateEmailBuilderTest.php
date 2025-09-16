@@ -1,12 +1,13 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+namespace APP\plugins\generic\carinianaPreservation\tests;
 
-import('lib.pkp.tests.DatabaseTestCase');
-import('classes.journal.Journal');
-import('classes.issue.Issue');
-import('plugins.generic.carinianaPreservation.classes.PreservationUpdateEmailBuilder');
-import('plugins.generic.carinianaPreservation.CarinianaPreservationPlugin');
+use PKP\tests\DatabaseTestCase;
+use APP\journal\Journal;
+use APP\issue\Issue;
+use APP\plugins\generic\carinianaPreservation\classes\PreservationUpdateEmailBuilder;
+use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
+use PKP\db\DAORegistry;
 
 class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
 {

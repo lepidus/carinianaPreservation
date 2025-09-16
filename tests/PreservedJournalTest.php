@@ -1,9 +1,9 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+namespace APP\plugins\generic\carinianaPreservation\tests;
 
-import('classes.submission.Submission');
-import('plugins.generic.carinianaPreservation.classes.PreservedJournal');
+use PHPUnit\Framework\TestCase;
+use APP\plugins\generic\carinianaPreservation\classes\PreservedJournal;
 
 class PreservedJournalTest extends TestCase
 {

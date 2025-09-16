@@ -1,11 +1,16 @@
 <?php
 
-import('lib.pkp.tests.DatabaseTestCase');
-import('plugins.generic.carinianaPreservation.CarinianaPreservationPlugin');
-import('plugins.generic.carinianaPreservation.classes.form.PreservationSubmissionForm');
-import('classes.journal.Journal');
-import('classes.journal.JournalDAO');
-import('lib.pkp.classes.file.PrivateFileManager');
+namespace APP\plugins\generic\carinianaPreservation\tests;
+
+use PKP\tests\DatabaseTestCase;
+use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
+use APP\plugins\generic\carinianaPreservation\classes\form\PreservationSubmissionForm;
+use APP\journal\Journal;
+use PKP\file\PrivateFileManager;
+use PKP\plugins\Hook as HookRegistry;
+use APP\core\Application;
+use APP\plugins\generic\carinianaPreservation\classes\PreservationXmlBuilder;
+use PKP\db\DAORegistry;
 
 class PreservationSubmissionFormTest extends DatabaseTestCase
 {
@@ -103,11 +108,7 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
 
     private function ensureRouter(): void
     {
-        $request = Application::get()->getRequest();
-        if (!$request->getRouter()) {
-            import('lib.pkp.classes.core.PKPRouter');
-            $request->setRouter(new PKPRouter());
-        }
+        // Router is available in OJS 3.4 test bootstrap; no action needed.
     }
 
     private function getJournal(int $id): ?Journal
@@ -266,7 +267,6 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
         $journal = $this->getJournal($journalId);
         $this->assertNotNull($journal, 'Baseline journal not available');
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
-        import('plugins.generic.carinianaPreservation.classes.PreservationXmlBuilder');
         $builder = new PreservationXmlBuilder($journal, $baseUrl);
         $acronym = $journal->getLocalizedData('acronym', $journal->getPrimaryLocale());
         $tempPath = "/tmp/marcacoes_preservacao_{$acronym}_check.xml";

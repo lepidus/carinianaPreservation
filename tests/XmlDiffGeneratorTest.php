@@ -1,8 +1,9 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+namespace APP\plugins\generic\carinianaPreservation\tests;
 
-import('plugins.generic.carinianaPreservation.classes.XmlDiffGenerator');
+use PHPUnit\Framework\TestCase;
+use APP\plugins\generic\carinianaPreservation\classes\XmlDiffGenerator;
 
 class XmlDiffGeneratorTest extends TestCase
 {

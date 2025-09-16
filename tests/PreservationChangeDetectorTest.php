@@ -1,12 +1,10 @@
 <?php
 
-/**
- * @file plugins/generic/carinianaPreservation/tests/PreservationChangeDetectorTest.php
- */
+namespace APP\plugins\generic\carinianaPreservation\tests;
 
-import('lib.pkp.tests.DatabaseTestCase');
-import('plugins.generic.carinianaPreservation.classes.PreservationChangeDetector');
-import('plugins.generic.carinianaPreservation.CarinianaPreservationPlugin');
+use PKP\tests\DatabaseTestCase;
+use APP\plugins\generic\carinianaPreservation\classes\PreservationChangeDetector;
+use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
 
 class PreservationChangeDetectorTest extends DatabaseTestCase
 {

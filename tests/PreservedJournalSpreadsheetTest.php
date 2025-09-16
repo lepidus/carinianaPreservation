@@ -1,13 +1,11 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
+namespace APP\plugins\generic\carinianaPreservation\tests;
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PHPUnit\Framework\TestCase;
-
-import('classes.submission.Submission');
-import('plugins.generic.carinianaPreservation.classes.PreservedJournalSpreadsheet');
-import('plugins.generic.carinianaPreservation.classes.PreservedJournal');
+use APP\plugins\generic\carinianaPreservation\classes\PreservedJournalSpreadsheet;
+use APP\plugins\generic\carinianaPreservation\classes\PreservedJournal;
 
 class PreservedJournalSpreadsheetTest extends TestCase
 {

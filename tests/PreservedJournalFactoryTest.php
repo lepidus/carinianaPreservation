@@ -1,9 +1,12 @@
 <?php
 
-import('lib.pkp.tests.DatabaseTestCase');
-import('classes.journal.Journal');
-import('classes.issue.Issue');
-import('plugins.generic.carinianaPreservation.classes.PreservedJournalFactory');
+namespace APP\plugins\generic\carinianaPreservation\tests;
+
+use PKP\tests\DatabaseTestCase;
+use APP\journal\Journal;
+use APP\issue\Issue;
+use APP\plugins\generic\carinianaPreservation\classes\PreservedJournalFactory;
+use PKP\db\DAORegistry;
 
 class PreservedJournalFactoryTest extends DatabaseTestCase
 {

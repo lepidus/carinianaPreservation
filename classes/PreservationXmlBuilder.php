@@ -1,6 +1,10 @@
 <?php
 
-import('classes.journal.Journal');
+namespace APP\plugins\generic\carinianaPreservation\classes;
+
+use APP\journal\Journal;
+use DOMDocument;
+use PKP\db\DAORegistry;
 
 class PreservationXmlBuilder
 {
@@ -186,7 +190,7 @@ class PreservationXmlBuilder
 
     private function getPublishedIssues($journal)
     {
-        $issueDao = DAORegistry::getDAO('IssueDAO'); /** @var IssueDAO $issueDao */
+        $issueDao = DAORegistry::getDAO('IssueDAO');
         $issues = $issueDao->getPublishedIssues($journal->getId())->toArray();
         return array_reverse($issues);
     }

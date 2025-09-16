@@ -1,5 +1,7 @@
 <?php
 
+namespace APP\plugins\generic\carinianaPreservation\classes;
+
 class PreservedJournal
 {
     private $publisherOrInstitution;

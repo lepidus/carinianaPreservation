@@ -1,9 +1,11 @@
 <?php
 
-import('lib.pkp.classes.mail.Mail');
-import('plugins.generic.carinianaPreservation.classes.PreservationXmlBuilder');
-import('plugins.generic.carinianaPreservation.CarinianaPreservationPlugin');
-import('plugins.generic.carinianaPreservation.classes.PreservationXmlStatePersister');
+namespace APP\plugins\generic\carinianaPreservation\classes;
+
+use PKP\mail\Mailable;
+use PKP\config\Config;
+use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
+use APP\plugins\generic\carinianaPreservation\classes\PreservationXmlBuilder;
 
 define('CARINIANA_NAME', 'Rede Cariniana');
 define('CARINIANA_EMAIL', 'cariniana-periodicos@ibict.br');
@@ -12,7 +14,7 @@ abstract class BasePreservationEmailBuilder
 {
     protected function buildBaseEmail($journal, $locale)
     {
-        $email = new Mail();
+        $email = new Mailable();
 
         $fromName = $journal->getLocalizedData('acronym', $locale);
         $fromEmail = $journal->getData('contactEmail');

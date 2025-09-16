@@ -1,5 +1,7 @@
 <?php
 
+namespace APP\plugins\generic\carinianaPreservation\classes;
+
 class XmlDiffGenerator
 {
     public function generate(string $oldContent, string $newContent): ?string

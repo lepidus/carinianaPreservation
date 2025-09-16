@@ -1,6 +1,8 @@
 <?php
 
-import('plugins.generic.carinianaPreservation.CarinianaPreservationPlugin');
+namespace APP\plugins\generic\carinianaPreservation\classes;
+
+use App\Plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
 
 class PreservationChangeDetector
 {

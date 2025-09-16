@@ -1,13 +1,15 @@
 <?php
 
-import('plugins.generic.carinianaPreservation.CarinianaPreservationPlugin');
+namespace APP\plugins\generic\carinianaPreservation\classes;
+
+use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
 
 class PreservationXmlStatePersister
 {
     public function persist(int $journalId, string $xmlFilePath): void
     {
         $plugin = new CarinianaPreservationPlugin();
-        $plugin->updateSetting($journalId, 'lastPreservationTimestamp', Core::getCurrentDate());
+        $plugin->updateSetting($journalId, 'lastPreservationTimestamp', \Core::getCurrentDate());
 
         $xmlMd5 = md5_file($xmlFilePath);
         if ($xmlMd5) {

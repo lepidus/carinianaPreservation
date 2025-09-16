@@ -22,6 +22,7 @@ use APP\plugins\generic\carinianaPreservation\classes\PreservationEmailBuilder;
 use APP\plugins\generic\carinianaPreservation\classes\PreservationUpdateEmailBuilder;
 use APP\plugins\generic\carinianaPreservation\classes\PreservationChangeDetector;
 use APP\plugins\generic\carinianaPreservation\classes\PreservationXmlBuilder;
+use Illuminate\Support\Facades\Mail;
 
 class PreservationSubmissionForm extends Form
 {
@@ -160,7 +161,7 @@ class PreservationSubmissionForm extends Form
             $emailBuilder = new PreservationEmailBuilder();
             $email = $emailBuilder->buildPreservationEmail($journal, $baseUrl, $notesAndComments, $locale);
         }
-        $email->send();
+        Mail::send($email);
 
         if ($isFirst) {
             $this->plugin->removeStatementFile($this->contextId);

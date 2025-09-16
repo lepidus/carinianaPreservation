@@ -1,9 +1,13 @@
 <?php
 
-import('plugins.generic.carinianaPreservation.classes.BasePreservationEmailBuilder');
-import('plugins.generic.carinianaPreservation.classes.PreservedJournalFactory');
-import('plugins.generic.carinianaPreservation.classes.PreservedJournalSpreadsheet');
-import('plugins.generic.carinianaPreservation.classes.PreservationXmlStatePersister');
+namespace APP\plugins\generic\carinianaPreservation\classes;
+
+use APP\plugins\generic\carinianaPreservation\classes\BasePreservationEmailBuilder;
+use APP\plugins\generic\carinianaPreservation\classes\PreservedJournalFactory;
+use APP\plugins\generic\carinianaPreservation\classes\PreservedJournalSpreadsheet;
+use APP\plugins\generic\carinianaPreservation\classes\PreservationXmlStatePersister;
+use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
+use PKP\file\PrivateFileManager;
 
 class PreservationEmailBuilder extends BasePreservationEmailBuilder
 {

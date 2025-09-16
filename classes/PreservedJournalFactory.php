@@ -1,6 +1,9 @@
 <?php
 
-import('plugins.generic.carinianaPreservation.classes.PreservedJournal');
+namespace APP\plugins\generic\carinianaPreservation\classes;
+
+use APP\plugins\generic\carinianaPreservation\classes\PreservedJournal;
+use PKP\db\DAORegistry;
 
 class PreservedJournalFactory
 {

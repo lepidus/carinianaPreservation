@@ -1,5 +1,7 @@
 <?php
 
+namespace APP\plugins\generic\carinianaPreservation\classes;
+
 require __DIR__ . '/../vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;

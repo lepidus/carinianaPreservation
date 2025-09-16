@@ -13,7 +13,17 @@
  */
 
 
-import('lib.pkp.classes.form.Form');
+namespace APP\plugins\generic\CarinianaPreservation\classes\form;
+
+use PKP\form\Form;
+use APP\template\TemplateManager;
+use APP\core\Application;
+use PKP\db\DAORegistry;
+use PKP\file\TemporaryFileManager;
+use PKP\file\PrivateFileManager;
+use PKP\file\FileManager;
+use PKP\form\validation\FormValidatorCSRF;
+use PKP\form\validation\FormValidatorPost;
 
 class CarinianaPreservationSettingsForm extends Form
 {
@@ -121,7 +131,7 @@ class CarinianaPreservationSettingsForm extends Form
         $targetPath = $dir . '/' . $statementFileName;
         copy($statementTempFile->getFilePath(), $targetPath);
         if (is_file($targetPath)) {
-            $privateFileManager->setMode($targetPath, FILE_MODE_MASK);
+            $privateFileManager->setMode($targetPath, FileManager::FILE_MODE_MASK);
             $temporaryFileManager->deleteById($statementTempFile->getId(), $userId);
             return $statementFileName;
         }

@@ -12,7 +12,16 @@
  * @brief Form to submit a journal to digital preservation by Cariniana
  */
 
-import('lib.pkp.classes.form.Form');
+namespace APP\plugins\generic\CarinianaPreservation\classes\form;
+
+use PKP\form\Form;
+use PKP\db\DAORegistry;
+use APP\template\TemplateManager;
+use APP\core\Application;
+use APP\plugins\generic\carinianaPreservation\classes\PreservationEmailBuilder;
+use APP\plugins\generic\carinianaPreservation\classes\PreservationUpdateEmailBuilder;
+use APP\plugins\generic\carinianaPreservation\classes\PreservationChangeDetector;
+use APP\plugins\generic\carinianaPreservation\classes\PreservationXmlBuilder;
 
 class PreservationSubmissionForm extends Form
 {
@@ -111,12 +120,7 @@ class PreservationSubmissionForm extends Form
 
     private function getMissingRequirements($journal)
     {
-        \AppLocale::requireComponents(
-            LOCALE_COMPONENT_PKP_ADMIN,
-            LOCALE_COMPONENT_APP_EDITOR
-        );
-
-        $issueDao = DAORegistry::getDAO('IssueDAO'); /** @var IssueDAO $issueDao */
+        $issueDao = DAORegistry::getDAO('IssueDAO');
         $issues = $issueDao->getPublishedIssues($journal->getId())->toArray();
 
         $requirements = [
@@ -141,7 +145,7 @@ class PreservationSubmissionForm extends Form
 
     public function execute(...$functionArgs)
     {
-        $journal = $this->journalDao->getById($this->contextId); /** @var Journal $journal */
+        $journal = $this->journalDao->getById($this->contextId);
         $locale = $journal->getPrimaryLocale();
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
 

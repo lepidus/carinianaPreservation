@@ -21,8 +21,9 @@ use PKP\plugins\Hook;
 use PKP\linkAction\LinkAction;
 use PKP\linkAction\request\AjaxModal;
 use PKP\core\JSONMessage;
-
 use APP\core\Application;
+use APP\plugins\generic\carinianaPreservation\classes\form\CarinianaPreservationSettingsForm;
+use APP\plugins\generic\carinianaPreservation\classes\form\PreservationSubmissionForm;
 
 class CarinianaPreservationPlugin extends GenericPlugin
 {
@@ -77,9 +78,11 @@ class CarinianaPreservationPlugin extends GenericPlugin
 
         switch ($request->getUserVar('verb')) {
             case 'settings':
-                return $this->handlePluginForm($request, $contextId, 'CarinianaPreservationSettingsForm');
+                $form = new CarinianaPreservationSettingsForm($this, $contextId);
+                return $this->handlePluginForm($request, $form);
             case 'preservationSubmission':
-                return $this->handlePluginForm($request, $contextId, 'PreservationSubmissionForm');
+                $form = new PreservationSubmissionForm($this, $contextId);
+                return $this->handlePluginForm($request, $form);
             case 'downloadStatement':
                 $fileManager = new FileManager();
                 $filePath = $this->getPluginPath() . '/resources/Termo_de_Responsabilidade.doc';
@@ -91,9 +94,8 @@ class CarinianaPreservationPlugin extends GenericPlugin
         return parent::manage($args, $request);
     }
 
-    public function handlePluginForm($request, $contextId, $formClass)
+    public function handlePluginForm($request, $form)
     {
-        $form = new $formClass($this, $contextId);
         if ($request->getUserVar('save')) {
             $form->readInputData();
             if ($form->validate()) {

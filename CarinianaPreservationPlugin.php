@@ -11,9 +11,19 @@
  * @brief Cariniana Preservation Plugin
  */
 
+namespace APP\plugins\generic\carinianaPreservation;
+
 use PKP\plugins\GenericPlugin;
 use PKP\file\FileManager;
+use PKP\file\TemporaryFileManager;
+use PKP\file\PrivateFileManager;
 use PKP\plugins\Hook;
+use PKP\linkAction\LinkAction;
+use PKP\linkAction\request\AjaxModal;
+use PKP\core\JSONMessage;
+
+use APP\core\Application;
+use APP\plugins\generic\carinianaPreservation\classes\migration\LegacyStatementMigration;
 
 class CarinianaPreservationPlugin extends GenericPlugin
 {
@@ -23,12 +33,11 @@ class CarinianaPreservationPlugin extends GenericPlugin
 
         Hook::add('AcronPlugin::parseCronTab', array($this, 'addTasksToCronTab'));
 
-        if (!Config::getVar('general', 'installed') || defined('RUNNING_UPGRADE')) {
+        if (Application::isUnderMaintenance()) {
             return true;
         }
 
         if (!$this->getSetting(0, 'legacyStatementMigrationDone')) {
-            $this->import('classes.migration.LegacyStatementMigration');
             (new LegacyStatementMigration($this))->run();
             $this->updateSetting(0, 'legacyStatementMigrationDone', 1, 'bool');
         }
@@ -90,7 +99,6 @@ class CarinianaPreservationPlugin extends GenericPlugin
 
     public function handlePluginForm($request, $contextId, $formClass)
     {
-        $this->import('classes.form.'.$formClass);
         $form = new $formClass($this, $contextId);
         if ($request->getUserVar('save')) {
             $form->readInputData();

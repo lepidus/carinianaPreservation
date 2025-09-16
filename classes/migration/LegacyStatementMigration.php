@@ -1,7 +1,10 @@
 <?php
 
-import('classes.file.PublicFileManager');
-import('lib.pkp.classes.file.PrivateFileManager');
+namespace APP\plugins\generic\carinianaPreservation\classes\migration;
+
+use PKP\file\PrivateFileManager;
+use APP\file\PublicFileManager;
+use PKP\db\DAORegistry;
 
 class LegacyStatementMigration
 {
@@ -14,7 +17,7 @@ class LegacyStatementMigration
 
     public function run(): void
     {
-        $journalDao = DAORegistry::getDAO('JournalDAO'); /** @var JournalDAO $journalDao */
+        $journalDao = DAORegistry::getDAO('JournalDAO');
         $names = $journalDao->getNames();
         foreach (array_keys($names) as $journalId) {
             $this->migrateStatementFile((int)$journalId);

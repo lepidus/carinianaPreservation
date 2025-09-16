@@ -23,7 +23,6 @@ use PKP\linkAction\request\AjaxModal;
 use PKP\core\JSONMessage;
 
 use APP\core\Application;
-use APP\plugins\generic\carinianaPreservation\classes\migration\LegacyStatementMigration;
 
 class CarinianaPreservationPlugin extends GenericPlugin
 {
@@ -35,11 +34,6 @@ class CarinianaPreservationPlugin extends GenericPlugin
 
         if (Application::isUnderMaintenance()) {
             return true;
-        }
-
-        if (!$this->getSetting(0, 'legacyStatementMigrationDone')) {
-            (new LegacyStatementMigration($this))->run();
-            $this->updateSetting(0, 'legacyStatementMigrationDone', 1, 'bool');
         }
 
         return $success;

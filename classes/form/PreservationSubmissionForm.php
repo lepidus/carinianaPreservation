@@ -12,7 +12,7 @@
  * @brief Form to submit a journal to digital preservation by Cariniana
  */
 
-namespace APP\plugins\generic\CarinianaPreservation\classes\form;
+namespace APP\plugins\generic\carinianaPreservation\classes\form;
 
 use PKP\form\Form;
 use PKP\db\DAORegistry;
@@ -23,6 +23,7 @@ use APP\plugins\generic\carinianaPreservation\classes\PreservationUpdateEmailBui
 use APP\plugins\generic\carinianaPreservation\classes\PreservationChangeDetector;
 use APP\plugins\generic\carinianaPreservation\classes\PreservationXmlBuilder;
 use Illuminate\Support\Facades\Mail;
+use APP\facades\Repo;
 
 class PreservationSubmissionForm extends Form
 {
@@ -75,6 +76,7 @@ class PreservationSubmissionForm extends Form
     private function getPreservationEmailCopies()
     {
         $journal = $this->journalDao->getById($this->contextId);
+        if (!$journal) { return ''; }
         $contactEmail = $journal->getData('contactEmail');
         $extraCopyEmail = $this->plugin->getSetting($journal->getId(), 'extraCopyEmail');
 
@@ -84,6 +86,7 @@ class PreservationSubmissionForm extends Form
     public function validate($callHooks = true)
     {
         $journal = $this->journalDao->getById($this->contextId);
+        if (!$journal) { return parent::validate($callHooks); }
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
         if (!$journal->getData('enableLockss')) {
             $this->addError('preservationSubmission', __(
@@ -116,13 +119,17 @@ class PreservationSubmissionForm extends Form
             }
         }
 
-        return parent::validate($callHooks);
+        return empty($this->getErrorsArray());
     }
 
     private function getMissingRequirements($journal)
     {
-        $issueDao = DAORegistry::getDAO('IssueDAO');
-        $issues = $issueDao->getPublishedIssues($journal->getId())->toArray();
+        $issues = Repo::issue()
+            ->getCollector()
+            ->filterByContextIds([$journal->getId()])
+            ->filterByPublished(true)
+            ->getMany()
+            ->toArray();
 
         $requirements = [
             'manager.setup.publisher' => $journal->getData('publisherInstitution'),
@@ -147,17 +154,16 @@ class PreservationSubmissionForm extends Form
     public function execute(...$functionArgs)
     {
         $journal = $this->journalDao->getById($this->contextId);
-        $locale = $journal->getPrimaryLocale();
+        if (!$journal) { return parent::execute(...$functionArgs); }
+        $locale = $journal->getData('primaryLocale') ?? $journal->getPrimaryLocale();
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
 
         $isFirst = $this->isFirstPreservation();
         if (!$isFirst) {
-            import('plugins.generic.carinianaPreservation.classes.PreservationUpdateEmailBuilder');
             $emailBuilder = new PreservationUpdateEmailBuilder();
             $email = $emailBuilder->buildPreservationUpdateEmail($journal, $baseUrl, $locale);
         } else {
             $notesAndComments = $this->getData('notesAndComments');
-            import('plugins.generic.carinianaPreservation.classes.PreservationEmailBuilder');
             $emailBuilder = new PreservationEmailBuilder();
             $email = $emailBuilder->buildPreservationEmail($journal, $baseUrl, $notesAndComments, $locale);
         }
@@ -172,9 +178,6 @@ class PreservationSubmissionForm extends Form
 
     protected function shouldSendUpdate($journal, $baseUrl): bool
     {
-        import('plugins.generic.carinianaPreservation.classes.PreservationChangeDetector');
-        import('plugins.generic.carinianaPreservation.classes.PreservationXmlBuilder');
-
         $builder = new PreservationXmlBuilder($journal, $baseUrl);
         $journalAcronym = $journal->getLocalizedData('acronym', $journal->getPrimaryLocale());
         $tempPath = "/tmp/marcacoes_preservacao_{$journalAcronym}_check.xml";

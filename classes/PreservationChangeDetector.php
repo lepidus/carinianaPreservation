@@ -2,7 +2,7 @@
 
 namespace APP\plugins\generic\carinianaPreservation\classes;
 
-use App\Plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
+use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
 
 class PreservationChangeDetector
 {

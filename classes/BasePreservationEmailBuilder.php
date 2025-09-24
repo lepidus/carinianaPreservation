@@ -14,37 +14,48 @@ abstract class BasePreservationEmailBuilder
 {
     protected function buildBaseEmail($journal, $locale)
     {
-        $email = new Mailable();
+        $email = new CarinianaMailable();
 
         $fromName = $journal->getLocalizedData('acronym', $locale);
         $fromEmail = $journal->getData('contactEmail');
 
-    $from = ['name' => $fromName, 'email' => $fromEmail];
-    $recipients = [];
-    $copies = [];
+        $email->from($fromEmail, $fromName);
 
-        if (Config::getVar('carinianapreservation', 'email_for_tests')) {
-            $recipients[] = [
-                'name' => $journal->getData('contactName'),
-                'email' => Config::getVar('carinianapreservation', 'email_for_tests'),
-            ];
-        } else {
-            $recipients[] = ['name' => CARINIANA_NAME, 'email' => CARINIANA_EMAIL];
-            $copies[] = $from; // contato da revista recebe cópia
+        $toName = CARINIANA_NAME;
+        $toEmail = CARINIANA_EMAIL;
+
+        $testEmail = Config::getVar('carinianapreservation', 'email_for_tests');
+        if ($testEmail) {
+            $toName = (string) $journal->getData('contactName');
+            $toEmail = $testEmail;
+        }
+
+        $email->to($toEmail, $toName);
+
+        if (!$testEmail) {
+            $email->cc($fromEmail, $fromName);
         }
 
         $plugin = new CarinianaPreservationPlugin();
         $extraCopyEmail = $plugin->getSetting($journal->getId(), 'extraCopyEmail');
         if (!empty($extraCopyEmail)) {
-            $copies[] = ['name' => '', 'email' => $extraCopyEmail];
+            $email->cc($extraCopyEmail);
         }
 
+        // Populate viewData for tests
+        $ccs = [];
+        if (!$testEmail) {
+            $ccs[] = ['name' => $fromName, 'email' => $fromEmail];
+        }
+        if (!empty($extraCopyEmail)) {
+            $ccs[] = ['name' => '', 'email' => $extraCopyEmail];
+        }
         $email->addData([
-            'from' => $from,
-            'recipients' => $recipients,
-            'copies' => $copies,
-            'ccs' => $copies, // manter chave antiga para compatibilidade
-            'attachments' => [],
+            'from' => ['name' => $fromName, 'email' => $fromEmail],
+            'recipients' => [
+                ['name' => $toName, 'email' => $toEmail]
+            ],
+            'ccs' => $ccs,
         ]);
 
         return $email;
@@ -52,9 +63,6 @@ abstract class BasePreservationEmailBuilder
 
     protected function addAttachment(Mailable $email, string $path, ?string $filename = null, ?string $contentType = null): void
     {
-        $data = $email->getData();
-        $attachments = $data['attachments'] ?? [];
-
         $filename = $filename ?? basename($path);
         if ($contentType === null) {
             $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
@@ -66,6 +74,11 @@ abstract class BasePreservationEmailBuilder
             };
         }
 
+        $email->attach($path, ['as' => $filename, 'mime' => $contentType]);
+
+        // Mirror attachment info into viewData for tests
+        $data = $email->getData();
+        $attachments = $data['attachments'] ?? [];
         $attachments[] = [
             'path' => $path,
             'filename' => $filename,
@@ -86,4 +99,10 @@ abstract class BasePreservationEmailBuilder
     }
 
     abstract protected function setEmailSubjectAndBody($email, $journalAcronym, $locale);
+
+    protected function formatBodyAsHtml(string $text): string
+    {
+        $escaped = htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
+        return '<div style="white-space:pre-line">' . $escaped . '</div>';
+    }
 }

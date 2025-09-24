@@ -36,7 +36,10 @@ class PreservationEmailBuilder extends BasePreservationEmailBuilder
     {
         $subject = __('plugins.generic.carinianaPreservation.preservationEmail.subject', ['journalAcronym' => $journalAcronym], $locale);
         $body = __('plugins.generic.carinianaPreservation.preservationEmail.body', ['journalAcronym' => $journalAcronym], $locale);
-        $email->addData(['subject' => $subject, 'body' => $body]);
+        $email->subject($subject);
+        $email->body($this->formatBodyAsHtml($body));
+        $email->setLocale($locale);
+        $email->addData(['subject' => $subject, 'body' => $this->formatBodyAsHtml($body)]);
     }
 
     private function createJournalSpreadsheet($journal, $baseUrl, $notesAndComments, $locale): string

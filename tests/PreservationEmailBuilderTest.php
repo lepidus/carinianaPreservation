@@ -74,6 +74,8 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
         if (is_dir($dir)) {
             @rmdir($dir);
         }
+        $journalDao = \PKP\db\DAORegistry::getDAO('JournalDAO'); /** @var \APP\journal\JournalDAO $journalDao */
+        $journalDao->deleteById($this->journalId);
         parent::tearDown();
     }
 
@@ -138,8 +140,9 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
 
     public function testBuiltPreservationEmailBody(): void
     {
-        $expectedBody = __('plugins.generic.carinianaPreservation.preservationEmail.body', ['journalAcronym' => $this->journalAcronym], $this->locale);
-        $this->assertEquals($expectedBody, $this->email->getData()['body']);
+        $expectedPlain = __('plugins.generic.carinianaPreservation.preservationEmail.body', ['journalAcronym' => $this->journalAcronym], $this->locale);
+        $expectedHtml = '<div style="white-space:pre-line">' . htmlspecialchars($expectedPlain, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8') . '</div>';
+        $this->assertEquals($expectedHtml, $this->email->getData()['body']);
     }
 
     public function testBuiltPreservationEmailSpreadsheet(): void

@@ -25,7 +25,7 @@ Além destas informações, no primeiro envio também é enviado o *Termo de Res
 
 ## Compatibilidade
 
-Este plugin é compatível com o **OJS** versão **3.3.0**.
+Este plugin é compatível com o **OJS** nas versões **3.3.0** e **3.4.0**.
 
 ## Instalação e Configuração
 
@@ -74,7 +74,7 @@ Caso hajam diferencas, o plugin irá enviar um e-mail para a rede Cariniana com 
 
 ## Configuração de monitoramento automático
 
-O monitoramento automático de atualizações utiliza o agendamento de tarefas Cron do OJS, através do plugin Acron que é instalado por padrão no OJS 3.3.x
+O monitoramento automático de atualizações utiliza o agendamento de tarefas Cron do OJS, através do plugin Acron que é instalado por padrão no OJS 3.3.0 e 3.4.0
 
 Para executar via Cron, diretamente no servidor, é possível utilizar o comando:
 

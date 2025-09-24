@@ -2,10 +2,10 @@
 
 namespace APP\plugins\generic\carinianaPreservation\tests;
 
-use PKP\tests\DatabaseTestCase;
 use APP\journal\Journal;
 use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
 use PKP\file\PrivateFileManager;
+use PKP\tests\DatabaseTestCase;
 
 class StatementFileRemovalTest extends DatabaseTestCase
 {

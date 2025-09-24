@@ -2,8 +2,8 @@
 
 namespace APP\plugins\generic\carinianaPreservation\tests;
 
-use PHPUnit\Framework\TestCase;
 use APP\plugins\generic\carinianaPreservation\classes\XmlDiffGenerator;
+use PHPUnit\Framework\TestCase;
 
 class XmlDiffGeneratorTest extends TestCase
 {
@@ -113,7 +113,7 @@ XML;
     public function testYearRemovedProducesDiff(): void
     {
         $oldContent = $this->stripHeader($this->originalXml);
-        $newContent = preg_replace('/\s*<property name=\"OJS3PluginJNL1_2023\">[\s\S]*?<\/property>\n/m', "", $oldContent);
+        $newContent = preg_replace('/\s*<property name=\"OJS3PluginJNL1_2023\">[\s\S]*?<\/property>\n/m', '', $oldContent);
         $diff = $this->generator->generate($oldContent, $newContent);
         $this->assertNotNull($diff);
         $this->assertStringContainsString('-    <property name="OJS3PluginJNL1_2023">', $diff);

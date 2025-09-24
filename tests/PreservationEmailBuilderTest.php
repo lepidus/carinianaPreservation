@@ -2,13 +2,10 @@
 
 namespace APP\plugins\generic\carinianaPreservation\tests;
 
-use PKP\tests\DatabaseTestCase;
-use APP\journal\Journal;
-use APP\issue\Issue;
-use APP\plugins\generic\carinianaPreservation\classes\PreservationEmailBuilder;
 use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
+use APP\plugins\generic\carinianaPreservation\classes\PreservationEmailBuilder;
 use PKP\file\PrivateFileManager;
-use APP\facades\Repo;
+use PKP\tests\DatabaseTestCase;
 
 class PreservationEmailBuilderTest extends DatabaseTestCase
 {
@@ -148,7 +145,7 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
     public function testBuiltPreservationEmailSpreadsheet(): void
     {
         $expectedFileName = "planilha_preservacao_{$this->journalAcronym}.xlsx";
-        $expectedFilePath = "/tmp/$expectedFileName";
+        $expectedFilePath = "/tmp/{$expectedFileName}";
         $xlsxContentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
         $expectedAttachment = ['path' => $expectedFilePath, 'filename' => $expectedFileName, 'content-type' => $xlsxContentType];
         $this->assertEquals($expectedAttachment, $this->email->getData()['attachments'][self::ATTACHMENT_INDEX_SPREADSHEET]);
@@ -170,7 +167,7 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
     public function testBuiltPreservationEmailXml(): void
     {
         $expectedFileName = "marcacoes_preservacao_{$this->journalAcronym}.xml";
-        $expectedFilePath = "/tmp/$expectedFileName";
+        $expectedFilePath = "/tmp/{$expectedFileName}";
         $xmlContentType = 'text/xml';
         $expectedAttachment = ['path' => $expectedFilePath, 'filename' => $expectedFileName, 'content-type' => $xmlContentType];
         $this->assertEquals($expectedAttachment, $this->email->getData()['attachments'][self::ATTACHMENT_INDEX_XML]);

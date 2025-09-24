@@ -19,16 +19,16 @@ class PreservedJournalSpreadsheet
     private function getHeaders(): array
     {
         return [
-            __("plugins.generic.carinianaPreservation.headers.publisherOrInstitution"),
-            __("plugins.generic.carinianaPreservation.headers.title"),
-            __("plugins.generic.carinianaPreservation.headers.issn"),
-            __("plugins.generic.carinianaPreservation.headers.eIssn"),
-            __("plugins.generic.carinianaPreservation.headers.baseUrl"),
-            __("plugins.generic.carinianaPreservation.headers.journalPath"),
-            __("plugins.generic.carinianaPreservation.headers.availableYears"),
-            __("plugins.generic.carinianaPreservation.headers.issuesVolumes"),
-            __("plugins.generic.carinianaPreservation.headers.notesAndComments"),
-            __("admin.systemVersion")
+            __('plugins.generic.carinianaPreservation.headers.publisherOrInstitution'),
+            __('plugins.generic.carinianaPreservation.headers.title'),
+            __('plugins.generic.carinianaPreservation.headers.issn'),
+            __('plugins.generic.carinianaPreservation.headers.eIssn'),
+            __('plugins.generic.carinianaPreservation.headers.baseUrl'),
+            __('plugins.generic.carinianaPreservation.headers.journalPath'),
+            __('plugins.generic.carinianaPreservation.headers.availableYears'),
+            __('plugins.generic.carinianaPreservation.headers.issuesVolumes'),
+            __('plugins.generic.carinianaPreservation.headers.notesAndComments'),
+            __('admin.systemVersion')
         ];
     }
 

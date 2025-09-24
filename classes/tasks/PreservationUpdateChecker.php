@@ -7,6 +7,7 @@
  * Distributed under the GNU GPL v3. For full terms see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt.
  *
  * @class PreservationUpdateChecker
+ *
  * @ingroup plugins_generic_carinianaPreservation
  *
  * @brief Scheduled task to check for XML changes and send preservation update emails to Cariniana.
@@ -14,15 +15,15 @@
 
 namespace APP\plugins\generic\carinianaPreservation\classes\tasks;
 
+use APP\core\Application;
+use APP\journal\JournalDAO;
+use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
+use APP\plugins\generic\carinianaPreservation\classes\PreservationUpdateEmailBuilder;
+use APP\plugins\generic\carinianaPreservation\classes\PreservationXmlBuilder;
+use Illuminate\Support\Facades\Mail;
+use PKP\plugins\PluginRegistry;
 use PKP\scheduledTask\ScheduledTask;
 use PKP\scheduledTask\ScheduledTaskHelper;
-use PKP\plugins\PluginRegistry;
-use APP\journal\JournalDAO;
-use APP\core\Application;
-use APP\plugins\generic\carinianaPreservation\classes\PreservationXmlBuilder;
-use APP\plugins\generic\carinianaPreservation\classes\PreservationUpdateEmailBuilder;
-use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
-use Illuminate\Support\Facades\Mail;
 
 class PreservationUpdateChecker extends ScheduledTask
 {
@@ -77,7 +78,7 @@ class PreservationUpdateChecker extends ScheduledTask
             $this->addExecutionLogEntry(
                 __(
                     'plugins.generic.carinianaPreservation.updateChecker.lockssDisabled',
-                    array('journalName' => $journal->getLocalizedName())
+                    ['journalName' => $journal->getLocalizedName()]
                 ),
                 ScheduledTaskHelper::SCHEDULED_TASK_MESSAGE_TYPE_NOTICE
             );
@@ -88,7 +89,7 @@ class PreservationUpdateChecker extends ScheduledTask
             $this->addExecutionLogEntry(
                 __(
                     'plugins.generic.carinianaPreservation.updateChecker.notPreserved',
-                    array('journalName' => $journal->getLocalizedName())
+                    ['journalName' => $journal->getLocalizedName()]
                 ),
                 ScheduledTaskHelper::SCHEDULED_TASK_MESSAGE_TYPE_NOTICE
             );
@@ -104,7 +105,7 @@ class PreservationUpdateChecker extends ScheduledTask
                 $this->addExecutionLogEntry(
                     __(
                         'plugins.generic.carinianaPreservation.updateChecker.updateEmailSent',
-                        array('journalName' => $journal->getLocalizedName())
+                        ['journalName' => $journal->getLocalizedName()]
                     ),
                     ScheduledTaskHelper::SCHEDULED_TASK_MESSAGE_TYPE_COMPLETED
                 );
@@ -112,7 +113,7 @@ class PreservationUpdateChecker extends ScheduledTask
                 $this->addExecutionLogEntry(
                     __(
                         'plugins.generic.carinianaPreservation.updateChecker.updateEmailFailed',
-                        array('journalName' => $journal->getLocalizedName(), 'error' => $e->getMessage())
+                        ['journalName' => $journal->getLocalizedName(), 'error' => $e->getMessage()]
                     ),
                     ScheduledTaskHelper::SCHEDULED_TASK_MESSAGE_TYPE_ERROR
                 );
@@ -122,7 +123,7 @@ class PreservationUpdateChecker extends ScheduledTask
             $this->addExecutionLogEntry(
                 __(
                     'plugins.generic.carinianaPreservation.updateChecker.noChanges',
-                    array('journalName' => $journal->getLocalizedName())
+                    ['journalName' => $journal->getLocalizedName()]
                 ),
                 ScheduledTaskHelper::SCHEDULED_TASK_MESSAGE_TYPE_NOTICE
             );

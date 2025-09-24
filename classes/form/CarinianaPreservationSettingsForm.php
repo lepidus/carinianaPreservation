@@ -7,30 +7,30 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class CarinianaPreservationSettingsForm
+ *
  * @ingroup plugins_generic_carinianaPreservation
  *
  * @brief Form for site admins to modify Plaudit Pre-Endorsement plugin settings
  */
 
-
 namespace APP\plugins\generic\CarinianaPreservation\classes\form;
 
-use PKP\form\Form;
-use APP\template\TemplateManager;
 use APP\core\Application;
+use APP\template\TemplateManager;
 use PKP\db\DAORegistry;
-use PKP\file\TemporaryFileManager;
-use PKP\file\PrivateFileManager;
 use PKP\file\FileManager;
+use PKP\file\PrivateFileManager;
+use PKP\file\TemporaryFileManager;
+use PKP\form\Form;
 use PKP\form\validation\FormValidatorCSRF;
 use PKP\form\validation\FormValidatorPost;
 
 class CarinianaPreservationSettingsForm extends Form
 {
-    public const CONFIG_VARS = array(
+    public const CONFIG_VARS = [
         'extraCopyEmail' => 'string',
         'statementFile' => 'string'
-    );
+    ];
 
     public $contextId;
     public $plugin;
@@ -49,7 +49,7 @@ class CarinianaPreservationSettingsForm extends Form
     {
         $contextId = $this->contextId;
         $plugin = &$this->plugin;
-        $this->_data = array();
+        $this->_data = [];
         foreach (self::CONFIG_VARS as $configVar => $type) {
             $this->_data[$configVar] = $plugin->getSetting($contextId, $configVar);
         }

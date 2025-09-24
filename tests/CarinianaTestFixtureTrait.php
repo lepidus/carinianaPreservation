@@ -2,10 +2,10 @@
 
 namespace APP\plugins\generic\carinianaPreservation\tests;
 
-use PKP\db\DAORegistry;
-use APP\journal\Journal;
 use APP\facades\Repo;
 use APP\issue\Issue;
+use APP\journal\Journal;
+use PKP\db\DAORegistry;
 use PKP\file\PrivateFileManager;
 
 trait CarinianaTestFixtureTrait
@@ -72,7 +72,7 @@ trait CarinianaTestFixtureTrait
 
     protected function cleanupStatementDir(int $journalId, ?string $fileName = null): void
     {
-    $fileMgr = new PrivateFileManager();
+        $fileMgr = new PrivateFileManager();
         $base = rtrim($fileMgr->getBasePath(), '/');
         $dir = $base . '/carinianaPreservation/' . $journalId;
         if ($fileName && is_file($dir . '/' . $fileName)) {

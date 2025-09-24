@@ -2,10 +2,9 @@
 
 namespace APP\plugins\generic\carinianaPreservation\classes;
 
-use PKP\mail\Mailable;
-use PKP\config\Config;
 use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
-use APP\plugins\generic\carinianaPreservation\classes\PreservationXmlBuilder;
+use PKP\config\Config;
+use PKP\mail\Mailable;
 
 define('CARINIANA_NAME', 'Rede Cariniana');
 define('CARINIANA_EMAIL', 'cariniana-periodicos@ibict.br');

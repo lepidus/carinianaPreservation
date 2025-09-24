@@ -2,8 +2,8 @@
 
 namespace APP\plugins\generic\carinianaPreservation\tests;
 
-use PHPUnit\Framework\TestCase;
 use APP\plugins\generic\carinianaPreservation\classes\PreservedJournal;
+use PHPUnit\Framework\TestCase;
 
 class PreservedJournalTest extends TestCase
 {

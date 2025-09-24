@@ -2,9 +2,9 @@
 
 namespace APP\plugins\generic\carinianaPreservation\tests;
 
-use PKP\tests\DatabaseTestCase;
-use APP\plugins\generic\carinianaPreservation\classes\PreservationXmlStatePersister;
 use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
+use APP\plugins\generic\carinianaPreservation\classes\PreservationXmlStatePersister;
+use PKP\tests\DatabaseTestCase;
 
 class PreservationXmlStatePersisterTest extends DatabaseTestCase
 {

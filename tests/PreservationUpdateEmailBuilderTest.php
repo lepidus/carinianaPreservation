@@ -2,12 +2,9 @@
 
 namespace APP\plugins\generic\carinianaPreservation\tests;
 
-use PKP\tests\DatabaseTestCase;
-use APP\journal\Journal;
-use APP\issue\Issue;
-use APP\plugins\generic\carinianaPreservation\classes\PreservationUpdateEmailBuilder;
 use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
-use APP\facades\Repo;
+use APP\plugins\generic\carinianaPreservation\classes\PreservationUpdateEmailBuilder;
+use PKP\tests\DatabaseTestCase;
 
 class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
 {
@@ -111,7 +108,7 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
     public function testBuiltPreservationUpdateEmailXml(): void
     {
         $expectedFileName = "marcacoes_preservacao_{$this->journalAcronym}.xml";
-        $expectedFilePath = "/tmp/$expectedFileName";
+        $expectedFilePath = "/tmp/{$expectedFileName}";
         $xmlContentType = 'text/xml';
         $expectedAttachment = ['path' => $expectedFilePath, 'filename' => $expectedFileName, 'content-type' => $xmlContentType];
         $this->assertEquals($expectedAttachment, $this->email->getData()['attachments'][self::ATTACHMENT_INDEX_XML]);

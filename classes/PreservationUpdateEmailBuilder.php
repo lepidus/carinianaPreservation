@@ -3,9 +3,6 @@
 namespace APP\plugins\generic\carinianaPreservation\classes;
 
 use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
-use APP\plugins\generic\carinianaPreservation\classes\BasePreservationEmailBuilder;
-use APP\plugins\generic\carinianaPreservation\classes\PreservationXmlStatePersister;
-use APP\plugins\generic\carinianaPreservation\classes\XmlDiffGenerator;
 
 class PreservationUpdateEmailBuilder extends BasePreservationEmailBuilder
 {

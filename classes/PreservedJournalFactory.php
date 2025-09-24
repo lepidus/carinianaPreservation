@@ -2,9 +2,8 @@
 
 namespace APP\plugins\generic\carinianaPreservation\classes;
 
-use APP\plugins\generic\carinianaPreservation\classes\PreservedJournal;
-use PKP\db\DAORegistry;
 use APP\facades\Repo;
+use PKP\db\DAORegistry;
 
 class PreservedJournalFactory
 {

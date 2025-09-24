@@ -7,6 +7,7 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PreservationSubmissionForm
+ *
  * @ingroup plugins_generic_carinianaPreservation
  *
  * @brief Form to submit a journal to digital preservation by Cariniana
@@ -14,17 +15,17 @@
 
 namespace APP\plugins\generic\carinianaPreservation\classes\form;
 
-use PKP\form\Form;
-use PKP\db\DAORegistry;
-use APP\template\TemplateManager;
 use APP\core\Application;
-use APP\plugins\generic\carinianaPreservation\classes\PreservationEmailBuilder;
-use APP\plugins\generic\carinianaPreservation\classes\PreservationUpdateEmailBuilder;
-use APP\plugins\generic\carinianaPreservation\classes\PreservationChangeDetector;
-use APP\plugins\generic\carinianaPreservation\classes\PreservationXmlBuilder;
-use Illuminate\Support\Facades\Mail;
 use APP\facades\Repo;
 use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
+use APP\plugins\generic\carinianaPreservation\classes\PreservationChangeDetector;
+use APP\plugins\generic\carinianaPreservation\classes\PreservationEmailBuilder;
+use APP\plugins\generic\carinianaPreservation\classes\PreservationUpdateEmailBuilder;
+use APP\plugins\generic\carinianaPreservation\classes\PreservationXmlBuilder;
+use APP\template\TemplateManager;
+use Illuminate\Support\Facades\Mail;
+use PKP\db\DAORegistry;
+use PKP\form\Form;
 
 class PreservationSubmissionForm extends Form
 {
@@ -84,7 +85,9 @@ class PreservationSubmissionForm extends Form
     private function getPreservationEmailCopies()
     {
         $journal = $this->journalDao->getById($this->contextId);
-        if (!$journal) { return ''; }
+        if (!$journal) {
+            return '';
+        }
         $contactEmail = $journal->getData('contactEmail');
         $extraCopyEmail = $this->plugin->getSetting($journal->getId(), 'extraCopyEmail');
 
@@ -107,13 +110,13 @@ class PreservationSubmissionForm extends Form
 
 
         $missingRequirements = $this->getMissingRequirements($journal);
-         if (!empty($missingRequirements)) {
+        if (!empty($missingRequirements)) {
             $missingRequirementsStr = implode(', ', $missingRequirements);
             $this->addError(
                 'preservationSubmission',
-                __("plugins.generic.carinianaPreservation.preservationSubmission.missingRequirements",[
+                __('plugins.generic.carinianaPreservation.preservationSubmission.missingRequirements', [
                     'missingRequirements' => $missingRequirementsStr
-                    ])
+                ])
             );
         }
 
@@ -122,7 +125,7 @@ class PreservationSubmissionForm extends Form
             if (empty($statementFile)) {
                 $this->addError(
                     'statementFilePresence',
-                    __("plugins.generic.carinianaPreservation.preservationSubmission.missingResponsabilityStatement")
+                    __('plugins.generic.carinianaPreservation.preservationSubmission.missingResponsabilityStatement')
                 );
             }
         }

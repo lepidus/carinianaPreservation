@@ -2,12 +2,9 @@
 
 namespace APP\plugins\generic\carinianaPreservation\tests;
 
-use PKP\tests\DatabaseTestCase;
-use APP\journal\Journal;
-use APP\issue\Issue;
 use APP\plugins\generic\carinianaPreservation\classes\PreservedJournalFactory;
-use APP\facades\Repo;
 use PKP\db\DAORegistry;
+use PKP\tests\DatabaseTestCase;
 
 class PreservedJournalFactoryTest extends DatabaseTestCase
 {
@@ -79,7 +76,7 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
 
     public function testFactoryBuildsPreservedJournalWithEmptyNotesAndComments(): void
     {
-        $preservedJournal = $this->preservedJournalFactory->buildPreservedJournal($this->journal, $this->baseUrl, "", $this->locale);
+        $preservedJournal = $this->preservedJournalFactory->buildPreservedJournal($this->journal, $this->baseUrl, '', $this->locale);
 
         $expectedRecord = [
             'PKP',

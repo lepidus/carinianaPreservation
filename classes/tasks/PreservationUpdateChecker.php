@@ -12,17 +12,32 @@
  * @brief Scheduled task to check for XML changes and send preservation update emails to Cariniana.
  */
 
-import('lib.pkp.classes.scheduledTask.ScheduledTask');
+namespace APP\plugins\generic\carinianaPreservation\classes\tasks;
+
+use PKP\scheduledTask\ScheduledTask;
+use PKP\scheduledTask\ScheduledTaskHelper;
+use PKP\plugins\PluginRegistry;
+use APP\journal\JournalDAO;
+use APP\core\Application;
+use APP\plugins\generic\carinianaPreservation\classes\PreservationXmlBuilder;
+use APP\plugins\generic\carinianaPreservation\classes\PreservationUpdateEmailBuilder;
+use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
+use Illuminate\Support\Facades\Mail;
 
 class PreservationUpdateChecker extends ScheduledTask
 {
+    /** @var CarinianaPreservationPlugin $plugin */
     public $plugin;
 
     public function __construct($args)
     {
         PluginRegistry::loadCategory('generic');
-        $this->plugin = PluginRegistry::getPlugin('generic', 'carinianapreservationplugin');
-        $this->plugin->addLocaleData();
+        $plugin = PluginRegistry::getPlugin('generic', 'carinianapreservationplugin');
+        $this->plugin = $plugin;
+
+        if (is_a($plugin, 'CarinianaPreservationPlugin')) {
+            $plugin->addLocaleData();
+        }
 
         parent::__construct($args);
     }
@@ -34,8 +49,13 @@ class PreservationUpdateChecker extends ScheduledTask
 
     public function executeActions()
     {
+        if (!$this->plugin) {
+            return false;
+        }
+
         $success = true;
-        $journalDao = DAORegistry::getDAO('JournalDAO'); /** @var JournalDAO $journalDao */
+
+        $journalDao = Application::getContextDAO(); /** @var JournalDAO $journalDao */
         $journals = $journalDao->getAll(true);
 
         while ($journal = $journals->next()) {
@@ -59,7 +79,7 @@ class PreservationUpdateChecker extends ScheduledTask
                     'plugins.generic.carinianaPreservation.updateChecker.lockssDisabled',
                     array('journalName' => $journal->getLocalizedName())
                 ),
-                SCHEDULED_TASK_MESSAGE_TYPE_NOTICE
+                ScheduledTaskHelper::SCHEDULED_TASK_MESSAGE_TYPE_NOTICE
             );
             return true;
         }
@@ -70,7 +90,7 @@ class PreservationUpdateChecker extends ScheduledTask
                     'plugins.generic.carinianaPreservation.updateChecker.notPreserved',
                     array('journalName' => $journal->getLocalizedName())
                 ),
-                SCHEDULED_TASK_MESSAGE_TYPE_NOTICE
+                ScheduledTaskHelper::SCHEDULED_TASK_MESSAGE_TYPE_NOTICE
             );
             return true;
         }
@@ -86,15 +106,15 @@ class PreservationUpdateChecker extends ScheduledTask
                         'plugins.generic.carinianaPreservation.updateChecker.updateEmailSent',
                         array('journalName' => $journal->getLocalizedName())
                     ),
-                    SCHEDULED_TASK_MESSAGE_TYPE_COMPLETED
+                    ScheduledTaskHelper::SCHEDULED_TASK_MESSAGE_TYPE_COMPLETED
                 );
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->addExecutionLogEntry(
                     __(
                         'plugins.generic.carinianaPreservation.updateChecker.updateEmailFailed',
                         array('journalName' => $journal->getLocalizedName(), 'error' => $e->getMessage())
                     ),
-                    SCHEDULED_TASK_MESSAGE_TYPE_ERROR
+                    ScheduledTaskHelper::SCHEDULED_TASK_MESSAGE_TYPE_ERROR
                 );
                 return false;
             }
@@ -104,7 +124,7 @@ class PreservationUpdateChecker extends ScheduledTask
                     'plugins.generic.carinianaPreservation.updateChecker.noChanges',
                     array('journalName' => $journal->getLocalizedName())
                 ),
-                SCHEDULED_TASK_MESSAGE_TYPE_NOTICE
+                ScheduledTaskHelper::SCHEDULED_TASK_MESSAGE_TYPE_NOTICE
             );
         }
 
@@ -113,8 +133,6 @@ class PreservationUpdateChecker extends ScheduledTask
 
     public function generateCurrentXmlMd5($journal)
     {
-        $this->plugin->import('classes.PreservationXmlBuilder');
-
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
 
         $preservationXmlBuilder = new PreservationXmlBuilder($journal, $baseUrl);
@@ -132,13 +150,11 @@ class PreservationUpdateChecker extends ScheduledTask
 
     public function sendUpdateEmail($journal)
     {
-        $this->plugin->import('classes.PreservationUpdateEmailBuilder');
-
-        $locale = AppLocale::getLocale();
+        $locale = $journal->getPrimaryLocale();
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
 
         $emailBuilder = new PreservationUpdateEmailBuilder();
         $email = $emailBuilder->buildPreservationUpdateEmail($journal, $baseUrl, $locale);
-        $email->send();
+        Mail::send($email);
     }
 }

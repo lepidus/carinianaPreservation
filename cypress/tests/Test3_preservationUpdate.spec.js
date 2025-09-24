@@ -12,7 +12,7 @@ function openPreservationModal() {
 function checkLockssOption(check) {
     cy.login('dbarnes', null, 'publicknowledge');
     cy.get('a:contains("Distribution")').click();
-    cy.contains('Archiving').click();
+    cy.contains('Archiving').click({force: true});
     cy.contains('LOCKSS and CLOCKSS').click();
     if (check) {
         cy.get('input[name="enableLockss"]').check();
@@ -54,7 +54,7 @@ describe("Preservation update", function () {
     });
     it("Fails and show errors if ISSN and eISSN are removed from the journal settings", function () {
         cy.login('dbarnes', null, 'publicknowledge');
-        cy.get('li a:contains("Journal")').click();
+        cy.get('li a:contains("Journal")').first().click();
         cy.get('input[name="onlineIssn"]').clear();
         cy.get('input[name="printIssn"]').clear();
         cy.get('.pkpButton:visible').contains('Save').click();

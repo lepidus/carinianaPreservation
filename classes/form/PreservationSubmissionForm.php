@@ -58,11 +58,18 @@ class PreservationSubmissionForm extends Form
         $emailCopies = $this->getPreservationEmailCopies();
         $lastPreservationTimestamp = $this->plugin->getSetting($this->contextId, 'lastPreservationTimestamp');
 
+        $lastPreservationDate = $lastPreservationTimestamp;
+        if (!empty($lastPreservationTimestamp)) {
+            $ts = strtotime($lastPreservationTimestamp);
+            if ($ts !== false) {
+                $lastPreservationDate = date('d/m/Y H:i:s', $ts);
+            }
+        }
+
         $templateMgr->assign([
             'pluginName' => $this->plugin->getName(),
-            'applicationName' => Application::get()->getName(),
             'emailCopies' => $emailCopies,
-            'lastPreservationTimestamp' => $lastPreservationTimestamp,
+            'lastPreservationDate' => $lastPreservationDate,
             'isFirstPreservation' => $this->isFirstPreservation()
         ]);
 

@@ -24,10 +24,11 @@ use APP\plugins\generic\carinianaPreservation\classes\PreservationChangeDetector
 use APP\plugins\generic\carinianaPreservation\classes\PreservationXmlBuilder;
 use Illuminate\Support\Facades\Mail;
 use APP\facades\Repo;
+use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
 
 class PreservationSubmissionForm extends Form
 {
-    public $plugin;
+    public CarinianaPreservationPlugin $plugin;
     public $contextId;
     private $journalDao;
 
@@ -35,7 +36,7 @@ class PreservationSubmissionForm extends Form
     {
         $this->contextId = $contextId;
         $this->plugin = $plugin;
-        $this->journalDao = $journalDao ?: DAORegistry::getDAO('JournalDAO'); /** @var JournalDAO $journalDao */
+        $this->journalDao = $journalDao ?: DAORegistry::getDAO('JournalDAO'); /** @var \JournalDAO $journalDao */
         parent::__construct($plugin->getTemplateResource('preservationSubmission.tpl'));
     }
 
@@ -86,40 +87,49 @@ class PreservationSubmissionForm extends Form
     public function validate($callHooks = true)
     {
         $journal = $this->journalDao->getById($this->contextId);
-        if (!$journal) { return parent::validate($callHooks); }
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
         if (!$journal->getData('enableLockss')) {
-            $this->addError('preservationSubmission', __(
-                'plugins.generic.carinianaPreservation.preservationSubmission.lockssDisabled',
-                ['lockssSettingsUrl' => $this->plugin->getLockssSettingsUrl($journal, $baseUrl)]
-            ));
+            $this->addError(
+                'lockssRequirement',
+                __('plugins.generic.carinianaPreservation.preservationSubmission.lockssDisabled', [
+                    'lockssSettingsUrl' => $this->plugin->getLockssSettingsUrl($journal, $baseUrl)
+                ])
+            );
         }
 
+
+
         $missingRequirements = $this->getMissingRequirements($journal);
-        if (!empty($missingRequirements)) {
+         if (!empty($missingRequirements)) {
             $missingRequirementsStr = implode(', ', $missingRequirements);
-            $this->addError('preservationSubmission', __(
-                "plugins.generic.carinianaPreservation.preservationSubmission.missingRequirements",
-                ['missingRequirements' => $missingRequirementsStr]
-            ));
+            $this->addError(
+                'preservationSubmission',
+                __("plugins.generic.carinianaPreservation.preservationSubmission.missingRequirements",[
+                    'missingRequirements' => $missingRequirementsStr
+                    ])
+            );
         }
 
         if ($this->isFirstPreservation()) {
             $statementFile = $this->plugin->getSetting($this->contextId, 'statementFile');
             if (empty($statementFile)) {
-                $this->addError('preservationSubmission', __(
-                    "plugins.generic.carinianaPreservation.preservationSubmission.missingResponsabilityStatement"
-                ));
+                $this->addError(
+                    'statementFilePresence',
+                    __("plugins.generic.carinianaPreservation.preservationSubmission.missingResponsabilityStatement")
+                );
             }
         }
 
         if (!$this->isFirstPreservation()) {
-            if (!$this->shouldSendUpdate($journal, Application::get()->getRequest()->getBaseUrl())) {
-                $this->addError('preservationSubmission', __('plugins.generic.carinianaPreservation.preservationSubmission.noChanges'));
+            if (!$this->shouldSendUpdate($journal, $baseUrl)) {
+                $this->addError(
+                    'changesInPreservableData',
+                    __('plugins.generic.carinianaPreservation.preservationSubmission.noChanges')
+                );
             }
         }
 
-        return empty($this->getErrorsArray());
+        return parent::validate($callHooks);
     }
 
     private function getMissingRequirements($journal)
@@ -154,8 +164,7 @@ class PreservationSubmissionForm extends Form
     public function execute(...$functionArgs)
     {
         $journal = $this->journalDao->getById($this->contextId);
-        if (!$journal) { return parent::execute(...$functionArgs); }
-        $locale = $journal->getData('primaryLocale') ?? $journal->getPrimaryLocale();
+        $locale = $journal->getPrimaryLocale();
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
 
         $isFirst = $this->isFirstPreservation();

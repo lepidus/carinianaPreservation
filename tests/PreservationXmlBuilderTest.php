@@ -1,11 +1,12 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+namespace APP\plugins\generic\carinianaPreservation\tests;
 
-import('lib.pkp.tests.PKPTestCase');
-import('classes.journal.Journal');
-import('classes.issue.Issue');
-import('plugins.generic.carinianaPreservation.classes.PreservationXmlBuilder');
+use APP\issue\Issue;
+use APP\journal\Journal;
+use APP\plugins\generic\carinianaPreservation\classes\PreservationXmlBuilder;
+use DOMDocument;
+use PKP\tests\PKPTestCase;
 
 class TestablePreservationXmlBuilder extends PreservationXmlBuilder
 {
@@ -96,12 +97,12 @@ class PreservationXmlBuilderTest extends PKPTestCase
 
     private function createPreservedYearParamProperty($dom, $index, $key, $value)
     {
-        $paramProperty = $this->createXmlProperty($dom, "param.$index");
+        $paramProperty = $this->createXmlProperty($dom, "param.{$index}");
 
-        $keyProperty = $this->createXmlProperty($dom, "key", $key);
+        $keyProperty = $this->createXmlProperty($dom, 'key', $key);
         $paramProperty->appendChild($keyProperty);
 
-        $valueProperty = $this->createXmlProperty($dom, "value", $value);
+        $valueProperty = $this->createXmlProperty($dom, 'value', $value);
         $paramProperty->appendChild($valueProperty);
 
         return $paramProperty;
@@ -109,7 +110,7 @@ class PreservationXmlBuilderTest extends PKPTestCase
 
     private function createPreservedYearProperty($dom, $year, $volume, $volumeText)
     {
-        $preservedYear = $this->createXmlProperty($dom, "OJS3PluginRBRB${volume}_${year}");
+        $preservedYear = $this->createXmlProperty($dom, "OJS3PluginRBRB{$volume}_{$year}");
 
         $publisherProperty = $this->createXmlProperty($dom, 'attributes.publisher', $this->publisherOrInstitution);
         $preservedYear->appendChild($publisherProperty);
@@ -126,7 +127,7 @@ class PreservationXmlBuilderTest extends PKPTestCase
         $typeProperty = $this->createXmlProperty($dom, 'type', 'journal');
         $preservedYear->appendChild($typeProperty);
 
-        $titleProperty = $this->createXmlProperty($dom, 'title', "RBRB 1sem $year");
+        $titleProperty = $this->createXmlProperty($dom, 'title', "RBRB 1sem {$year}");
         $preservedYear->appendChild($titleProperty);
 
         $pluginProperty = $this->createXmlProperty($dom, 'plugin', 'org.lockss.plugin.ojs3.ClockssOJS3Plugin');
@@ -164,7 +165,7 @@ class PreservationXmlBuilderTest extends PKPTestCase
         $lockssConfig->appendChild($titleProperty);
 
         foreach ($preservedYears as $preservedYear) {
-            list($year, $volume, $volumeText) = $preservedYear;
+            [$year, $volume, $volumeText] = $preservedYear;
             $preservedYearProperty = $this->createPreservedYearProperty($dom, $year, $volume, $volumeText);
             $titleProperty->appendChild($preservedYearProperty);
         }

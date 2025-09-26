@@ -1,25 +1,26 @@
+import 'cypress-file-upload';
+
 describe("Cariniana Preservation Plugin - Checking of plugin's settings", function() {
+    beforeEach(() => {
+        cy.setLocale('en_US');
+    });
     it("Sets recipient e-mail and responsability statement", function() {
         const pluginRowId = 'component-grid-settings-plugins-settingsplugingrid-category-generic-row-carinianapreservationplugin';
         const extraCopyEmail = 'copia.extra.cariniana@gmail.com';
         cy.login('dbarnes', null, 'publicknowledge');
         cy.get('a:contains("Website")').click();
 
-		cy.waitJQuery();
+        cy.waitJQuery();
         cy.get('button#plugins-button').click();
         cy.get('#' + pluginRowId + ' > .first_column > .show_extras').click();
         cy.get('a[id^='+ pluginRowId + '-settings-button]').click();
 
         cy.contains('Responsability statement');
-        cy.fixture('dummy.pdf', { encoding: 'base64' }).then((fileContent) => {
-            cy.get('#statementUpload input[type=file]')
-                .upload({
-					fileContent,
-					fileName: 'responsability_statement.pdf',
-					mimeType: 'application/pdf',
-					encoding: 'base64',
-				});
-		});
+        cy.get('#statementUpload input[type=file]').attachFile({
+            filePath: 'dummy.pdf',
+            fileName: 'responsability_statement.pdf',
+            mimeType: 'application/pdf'
+        });
         cy.wait(200);
         cy.contains('Extra copy e-mail');
         cy.get('input[id^=extraCopyEmail]').clear().type(extraCopyEmail);
@@ -44,6 +45,7 @@ describe("Cariniana Preservation Plugin - Checking of plugin's settings", functi
         cy.contains('has already been submitted previously');
         cy.contains('will be deleted after the first preservation');
         cy.contains('If you wish to replace the previously submitted file');
-        cy.get('#statementUpload input[type=file]').should('exist');
+        cy.get('input[type=file]', { timeout: 5000 }).should('exist');
+        cy.contains('Extra copy e-mail');
     });
 });

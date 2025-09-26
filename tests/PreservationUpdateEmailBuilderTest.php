@@ -1,20 +1,19 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+namespace APP\plugins\generic\carinianaPreservation\tests;
 
-import('lib.pkp.tests.DatabaseTestCase');
-import('classes.journal.Journal');
-import('classes.issue.Issue');
-import('plugins.generic.carinianaPreservation.classes.PreservationUpdateEmailBuilder');
-import('plugins.generic.carinianaPreservation.CarinianaPreservationPlugin');
+use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
+use APP\plugins\generic\carinianaPreservation\classes\PreservationUpdateEmailBuilder;
+use PKP\tests\DatabaseTestCase;
 
 class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
 {
+    use CarinianaTestFixtureTrait;
     private $preservationUpdateEmailBuilder;
     private $email;
     private $journal;
     private const ATTACHMENT_INDEX_XML = 0;
-    private $journalId = 3;
+    private $journalId;
     private $locale = 'pt_BR';
     private $journalAcronym = 'RBRU';
     private $journalContactEmail = 'contact@rbru.com.br';
@@ -31,10 +30,20 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->createTestJournal();
+        $this->journal = $this->buildAndPersistJournal([
+            'publisherInstitution' => $this->publisherOrInstitution,
+            'name' => $this->title,
+            'printIssn' => $this->issn,
+            'onlineIssn' => $this->eIssn,
+            'urlPath' => $this->journalPath . '_' . uniqid(),
+            'primaryLocale' => $this->locale,
+            'acronym' => $this->journalAcronym,
+            'contactEmail' => $this->journalContactEmail,
+        ]);
+        $this->journalId = $this->journal->getId();
         $this->preservationUpdateEmailBuilder = new PreservationUpdateEmailBuilder();
-        $this->createTestIssue($this->firstIssueYear);
-        $this->createTestIssue($this->lastIssueYear);
+        $this->persistIssue($this->journal, ['year' => $this->firstIssueYear]);
+        $this->persistIssue($this->journal, ['year' => $this->lastIssueYear]);
         $this->email = $this->preservationUpdateEmailBuilder->buildPreservationUpdateEmail($this->journal, $this->baseUrl, $this->locale);
     }
 
@@ -43,43 +52,23 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
         return ['issues', 'issue_settings', 'plugin_settings'];
     }
 
-    private function createTestJournal(): void
+    protected function tearDown(): void
     {
-        $this->journal = new Journal();
-        $this->journal->setId($this->journalId);
-        $this->journal->setData('publisherInstitution', $this->publisherOrInstitution);
-        $this->journal->setData('name', $this->title, $this->locale);
-        $this->journal->setData('printIssn', $this->issn);
-        $this->journal->setData('onlineIssn', $this->eIssn);
-        $this->journal->setData('urlPath', $this->journalPath);
-        $this->journal->setData('acronym', $this->journalAcronym, $this->locale);
-        $this->journal->setData('contactEmail', $this->journalContactEmail);
-    }
-
-    private function createTestIssue($issueYear): void
-    {
-        $issueDatePublished = $issueYear.'-01-01';
-
-        $issue = new Issue();
-        $issue->setData('year', $issueYear);
-        $issue->setData('journalId', $this->journalId);
-        $issue->setData('datePublished', $issueDatePublished);
-        $issue->setData('published', 1);
-
-        $issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
-        $issueDao->insertObject($issue);
+        $journalDao = \PKP\db\DAORegistry::getDAO('JournalDAO'); /** @var \APP\journal\JournalDAO $journalDao */
+        $journalDao->deleteById($this->journalId);
+        parent::tearDown();
     }
 
     public function testBuiltPreservationUpdateEmailFrom(): void
     {
         $expectedFrom = ['name' => $this->journalAcronym, 'email' => $this->journalContactEmail];
-        $this->assertEquals($expectedFrom, $this->email->getData('from'));
+        $this->assertEquals($expectedFrom, $this->email->getData()['from']);
     }
 
     public function testBuiltPreservationUpdateEmailRecipient(): void
     {
         $expectedRecipient = ['name' => CARINIANA_NAME, 'email' => CARINIANA_EMAIL];
-        $this->assertEquals($expectedRecipient, $this->email->getData('recipients')[0]);
+        $this->assertEquals($expectedRecipient, $this->email->getData()['recipients'][0]);
     }
 
     public function testBuiltPreservationUpdateEmailCarbonCopies(): void
@@ -87,7 +76,7 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
         $expectedCarbonCopies = [
             ['name' => $this->journalAcronym, 'email' => $this->journalContactEmail]
         ];
-        $this->assertEquals($expectedCarbonCopies, $this->email->getData('ccs'));
+        $this->assertEquals($expectedCarbonCopies, $this->email->getData()['ccs']);
     }
 
     public function testBuiltPreservationUpdateEmailCarbonCopiesWithExtra(): void
@@ -100,28 +89,29 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
             ['name' => $this->journalAcronym, 'email' => $this->journalContactEmail],
             ['name' => '', 'email' => $this->extraCopyEmail]
         ];
-        $this->assertEquals($expectedCarbonCopies, $this->email->getData('ccs'));
+        $this->assertEquals($expectedCarbonCopies, $this->email->getData()['ccs']);
     }
 
     public function testBuiltPreservationUpdateEmailSubject(): void
     {
         $expectedSubject = __('plugins.generic.carinianaPreservation.preservationUpdateEmail.subject', ['journalAcronym' => $this->journalAcronym], $this->locale);
-        $this->assertEquals($expectedSubject, $this->email->getData('subject'));
+        $this->assertEquals($expectedSubject, $this->email->getData()['subject']);
     }
 
     public function testBuiltPreservationUpdateEmailBody(): void
     {
-        $expectedBody = __('plugins.generic.carinianaPreservation.preservationUpdateEmail.body', ['journalAcronym' => $this->journalAcronym], $this->locale);
-        $this->assertEquals($expectedBody, $this->email->getData('body'));
+        $expectedPlain = __('plugins.generic.carinianaPreservation.preservationUpdateEmail.body', ['journalAcronym' => $this->journalAcronym], $this->locale);
+        $expectedHtml = '<div style="white-space:pre-line">' . htmlspecialchars($expectedPlain, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8') . '</div>';
+        $this->assertEquals($expectedHtml, $this->email->getData()['body']);
     }
 
     public function testBuiltPreservationUpdateEmailXml(): void
     {
         $expectedFileName = "marcacoes_preservacao_{$this->journalAcronym}.xml";
-        $expectedFilePath = "/tmp/$expectedFileName";
+        $expectedFilePath = "/tmp/{$expectedFileName}";
         $xmlContentType = 'text/xml';
         $expectedAttachment = ['path' => $expectedFilePath, 'filename' => $expectedFileName, 'content-type' => $xmlContentType];
-        $this->assertEquals($expectedAttachment, $this->email->getData('attachments')[self::ATTACHMENT_INDEX_XML]);
+        $this->assertEquals($expectedAttachment, $this->email->getData()['attachments'][self::ATTACHMENT_INDEX_XML]);
     }
 
     public function testPreservationSettingsAreUpdated(): void
@@ -139,7 +129,7 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
         $plugin = new CarinianaPreservationPlugin();
         $xmlSettingContent = $plugin->getSetting($this->journalId, 'preservedXMLcontent');
         $this->assertNotEmpty($xmlSettingContent, 'Expected persisted XML content in preservedXMLcontent');
-        $xmlAttachment = $this->email->getData('attachments')[self::ATTACHMENT_INDEX_XML];
+        $xmlAttachment = $this->email->getData()['attachments'][self::ATTACHMENT_INDEX_XML];
         $this->assertFileExists($xmlAttachment['path']);
         $expectedContent = file_get_contents($xmlAttachment['path']);
         $this->assertEquals($expectedContent, $xmlSettingContent, 'Persisted XML content differs from sent XML');
@@ -147,7 +137,7 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
 
     public function testNoDiffAttachmentWhenNoDataChanges(): void
     {
-        $attachments = $this->email->getData('attachments');
+        $attachments = $this->email->getData()['attachments'];
         foreach ($attachments as $attachment) {
             $this->assertStringEndsNotWith('.diff', $attachment['filename'], 'Diff should not appear when there are no data changes');
         }
@@ -156,12 +146,12 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
     public function testDiffAttachmentPresentAfterDataChange(): void
     {
         $newYear = (string)(((int)$this->lastIssueYear) + 1);
-        $this->createTestIssue($newYear);
+        $this->persistIssue($this->journal, ['year' => $newYear]);
 
         // Build email again after change
         $this->email = $this->preservationUpdateEmailBuilder->buildPreservationUpdateEmail($this->journal, $this->baseUrl, $this->locale);
 
-        $attachments = $this->email->getData('attachments');
+        $attachments = $this->email->getData()['attachments'];
         $diffAttachment = null;
         foreach ($attachments as $attachment) {
             if (substr($attachment['filename'], -5) === '.diff') {

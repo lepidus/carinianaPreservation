@@ -1,13 +1,11 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
+namespace APP\plugins\generic\carinianaPreservation\tests;
 
+use APP\plugins\generic\carinianaPreservation\classes\PreservedJournal;
+use APP\plugins\generic\carinianaPreservation\classes\PreservedJournalSpreadsheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PHPUnit\Framework\TestCase;
-
-import('classes.submission.Submission');
-import('plugins.generic.carinianaPreservation.classes.PreservedJournalSpreadsheet');
-import('plugins.generic.carinianaPreservation.classes.PreservedJournal');
 
 class PreservedJournalSpreadsheetTest extends TestCase
 {
@@ -54,16 +52,16 @@ class PreservedJournalSpreadsheetTest extends TestCase
         $this->spreadsheet->createSpreadsheet($this->filePath);
         $worksheet = $this->getWorksheet();
         $expectedHeaders = [
-            __("plugins.generic.carinianaPreservation.headers.publisherOrInstitution"),
-            __("plugins.generic.carinianaPreservation.headers.title"),
-            __("plugins.generic.carinianaPreservation.headers.issn"),
-            __("plugins.generic.carinianaPreservation.headers.eIssn"),
-            __("plugins.generic.carinianaPreservation.headers.baseUrl"),
-            __("plugins.generic.carinianaPreservation.headers.journalPath"),
-            __("plugins.generic.carinianaPreservation.headers.availableYears"),
-            __("plugins.generic.carinianaPreservation.headers.issuesVolumes"),
-            __("plugins.generic.carinianaPreservation.headers.notesAndComments"),
-            __("admin.systemVersion")
+            __('plugins.generic.carinianaPreservation.headers.publisherOrInstitution'),
+            __('plugins.generic.carinianaPreservation.headers.title'),
+            __('plugins.generic.carinianaPreservation.headers.issn'),
+            __('plugins.generic.carinianaPreservation.headers.eIssn'),
+            __('plugins.generic.carinianaPreservation.headers.baseUrl'),
+            __('plugins.generic.carinianaPreservation.headers.journalPath'),
+            __('plugins.generic.carinianaPreservation.headers.availableYears'),
+            __('plugins.generic.carinianaPreservation.headers.issuesVolumes'),
+            __('plugins.generic.carinianaPreservation.headers.notesAndComments'),
+            __('admin.systemVersion')
         ];
 
         $firstRow = $worksheet->toArray()[0];

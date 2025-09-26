@@ -7,12 +7,24 @@
  * Distributed under the GNU GPL v3. For full terms see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt.
  *
  * @class CarinianaPreservationPlugin
+ *
  * @ingroup plugins_generic_carinianaPreservation
+ *
  * @brief Cariniana Preservation Plugin
  */
 
-use PKP\plugins\GenericPlugin;
+namespace APP\plugins\generic\carinianaPreservation;
+
+use APP\core\Application;
+use APP\plugins\generic\carinianaPreservation\classes\form\CarinianaPreservationSettingsForm;
+use APP\plugins\generic\carinianaPreservation\classes\form\PreservationSubmissionForm;
+use PKP\core\JSONMessage;
 use PKP\file\FileManager;
+use PKP\file\PrivateFileManager;
+use PKP\file\TemporaryFileManager;
+use PKP\linkAction\LinkAction;
+use PKP\linkAction\request\AjaxModal;
+use PKP\plugins\GenericPlugin;
 use PKP\plugins\Hook;
 
 class CarinianaPreservationPlugin extends GenericPlugin
@@ -21,16 +33,10 @@ class CarinianaPreservationPlugin extends GenericPlugin
     {
         $success = parent::register($category, $path, $mainContextId);
 
-        Hook::add('AcronPlugin::parseCronTab', array($this, 'addTasksToCronTab'));
+        Hook::add('AcronPlugin::parseCronTab', [$this, 'addTasksToCronTab']);
 
-        if (!Config::getVar('general', 'installed') || defined('RUNNING_UPGRADE')) {
+        if (Application::isUnderMaintenance()) {
             return true;
-        }
-
-        if (!$this->getSetting(0, 'legacyStatementMigrationDone')) {
-            $this->import('classes.migration.LegacyStatementMigration');
-            (new LegacyStatementMigration($this))->run();
-            $this->updateSetting(0, 'legacyStatementMigrationDone', 1, 'bool');
         }
 
         return $success;
@@ -51,18 +57,18 @@ class CarinianaPreservationPlugin extends GenericPlugin
         $router = $request->getRouter();
         import('lib.pkp.classes.linkAction.request.AjaxModal');
         return array_merge(
-            array(
+            [
                 new LinkAction(
                     'preservationSubmission',
-                    new AjaxModal($router->url($request, null, null, 'manage', null, array('verb' => 'preservationSubmission', 'plugin' => $this->getName(), 'category' => 'generic')), __('plugins.generic.carinianaPreservation.preservationSubmission')),
+                    new AjaxModal($router->url($request, null, null, 'manage', null, ['verb' => 'preservationSubmission', 'plugin' => $this->getName(), 'category' => 'generic']), __('plugins.generic.carinianaPreservation.preservationSubmission')),
                     __('plugins.generic.carinianaPreservation.preservationSubmission'),
                 ),
                 new LinkAction(
                     'settings',
-                    new AjaxModal($router->url($request, null, null, 'manage', null, array('verb' => 'settings', 'plugin' => $this->getName(), 'category' => 'generic')), $this->getDisplayName()),
+                    new AjaxModal($router->url($request, null, null, 'manage', null, ['verb' => 'settings', 'plugin' => $this->getName(), 'category' => 'generic']), $this->getDisplayName()),
                     __('manager.plugins.settings'),
                 )
-            ),
+            ],
             parent::getActions($request, $actionArgs)
         );
     }
@@ -74,9 +80,11 @@ class CarinianaPreservationPlugin extends GenericPlugin
 
         switch ($request->getUserVar('verb')) {
             case 'settings':
-                return $this->handlePluginForm($request, $contextId, 'CarinianaPreservationSettingsForm');
+                $form = new CarinianaPreservationSettingsForm($this, $contextId);
+                return $this->handlePluginForm($request, $form);
             case 'preservationSubmission':
-                return $this->handlePluginForm($request, $contextId, 'PreservationSubmissionForm');
+                $form = new PreservationSubmissionForm($this, $contextId);
+                return $this->handlePluginForm($request, $form);
             case 'downloadStatement':
                 $fileManager = new FileManager();
                 $filePath = $this->getPluginPath() . '/resources/Termo_de_Responsabilidade.doc';
@@ -88,10 +96,8 @@ class CarinianaPreservationPlugin extends GenericPlugin
         return parent::manage($args, $request);
     }
 
-    public function handlePluginForm($request, $contextId, $formClass)
+    public function handlePluginForm($request, $form)
     {
-        $this->import('classes.form.'.$formClass);
-        $form = new $formClass($this, $contextId);
         if ($request->getUserVar('save')) {
             $form->readInputData();
             if ($form->validate()) {
@@ -113,9 +119,9 @@ class CarinianaPreservationPlugin extends GenericPlugin
         $temporaryFile = $temporaryFileManager->handleUpload('uploadedFile', $user->getId());
         if ($temporaryFile) {
             $json = new JSONMessage(true);
-            $json->setAdditionalAttributes(array(
+            $json->setAdditionalAttributes([
                 'temporaryFileId' => $temporaryFile->getId()
-            ));
+            ]);
             return $json;
         } else {
             return new JSONMessage(false, __('common.uploadFailed'));

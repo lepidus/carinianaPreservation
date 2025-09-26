@@ -23,14 +23,14 @@
         {csrf}
         {include file="controllers/notification/inPlaceNotification.tpl" notificationId="preservationSubmissionFormNotification"}
 
-        {if !$isFirstPreservation && $lastPreservationTimestamp}
+        {if !$isFirstPreservation && $lastPreservationDate}
             <div class="pkp_notification">
                 {include
                     file="controllers/notification/inPlaceNotificationContent.tpl"
                     notificationId=lastPreservationNotification
                     notificationStyleClass="notifyCommon"
                     notificationTitle="plugins.generic.carinianaPreservation.preservationSubmission.lastPreservation"|translate
-                    notificationContents="$lastPreservationTimestamp"|date_format:"%d/%m/%Y %H:%M:%S"
+                    notificationContents=$lastPreservationDate
                 }
             </div>
         {/if}

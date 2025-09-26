@@ -11,7 +11,7 @@ function openPreservationModal() {
 
 function enableLockss() {
     cy.get('a:contains("Distribution")').click();
-    cy.contains('Archiving').click();
+    cy.contains('Archiving').click({force: true});
     cy.contains('LOCKSS and CLOCKSS').click();
     cy.get('input[name="enableLockss"]').check();
     cy.get('.pkpButton:visible').contains('Save').click();
@@ -28,7 +28,7 @@ describe("Preservation attempt is not successfull", () => {
     it("LOCKSS enabled, but ISSNs are missing", () => {
         cy.login('dbarnes', null, 'publicknowledge');
         enableLockss();
-        cy.get('li a:contains("Journal")').click();
+        cy.get('li a:contains("Journal")').first().click();
         cy.get('input[name="onlineIssn"]').clear();
         cy.get('input[name="printIssn"]').clear();
         cy.get('.pkpButton:visible').contains('Save').click();
@@ -46,7 +46,7 @@ describe("Preservation attempt is not successfull", () => {
 describe("Successful submission to preservation", () => {
     it("LOCKSS enabled, ISSNs in place and performs first submission on preservation Form", () => {
         cy.login('dbarnes', null, 'publicknowledge');
-        cy.get('li a:contains("Journal")').click();
+        cy.get('li a:contains("Journal")').first().click();
         cy.get('input[name="onlineIssn"]').clear().type('0000-0000');
         cy.get('input[name="printIssn"]').clear().type('0000-0000');
         cy.get('.pkpButton:visible').contains('Save').click();

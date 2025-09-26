@@ -1,6 +1,9 @@
 <?php
 
-import('plugins.generic.carinianaPreservation.classes.PreservedJournal');
+namespace APP\plugins\generic\carinianaPreservation\classes;
+
+use APP\facades\Repo;
+use PKP\db\DAORegistry;
 
 class PreservedJournalFactory
 {
@@ -32,8 +35,7 @@ class PreservedJournalFactory
 
     private function getAvailableYears($journal): string
     {
-        $issueDao = DAORegistry::getDAO('IssueDAO'); /** @var IssueDAO $issueDao */
-        $issues = $issueDao->getPublishedIssues($journal->getId())->toArray();
+        $issues = Repo::issue()->getCollector()->filterByContextIds([$journal->getId()])->filterByPublished(true)->getMany();
 
         $years = [];
         foreach ($issues as $issue) {
@@ -59,8 +61,7 @@ class PreservedJournalFactory
 
     private function getIssuesVolumes($journal): string
     {
-        $issueDao = DAORegistry::getDAO('IssueDAO'); /** @var IssueDAO $issueDao */
-        $issues = array_reverse($issueDao->getPublishedIssues($journal->getId())->toArray());
+        $issues = Repo::issue()->getCollector()->filterByContextIds([$journal->getId()])->filterByPublished(true)->getMany()->toArray();
 
         $normalized = [];
         foreach ($issues as $issue) {
@@ -83,6 +84,7 @@ class PreservedJournalFactory
             }
         }
 
+        sort($normalized, SORT_NUMERIC);
         return implode('; ', $normalized);
     }
 }

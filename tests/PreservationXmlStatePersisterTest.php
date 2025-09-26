@@ -1,8 +1,10 @@
 <?php
 
-import('lib.pkp.tests.DatabaseTestCase');
-import('plugins.generic.carinianaPreservation.classes.PreservationXmlStatePersister');
-import('plugins.generic.carinianaPreservation.CarinianaPreservationPlugin');
+namespace APP\plugins\generic\carinianaPreservation\tests;
+
+use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
+use APP\plugins\generic\carinianaPreservation\classes\PreservationXmlStatePersister;
+use PKP\tests\DatabaseTestCase;
 
 class PreservationXmlStatePersisterTest extends DatabaseTestCase
 {

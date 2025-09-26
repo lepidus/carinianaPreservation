@@ -1,6 +1,10 @@
 <?php
 
-import('classes.journal.Journal');
+namespace APP\plugins\generic\carinianaPreservation\classes;
+
+use APP\facades\Repo;
+use APP\journal\Journal;
+use DOMDocument;
 
 class PreservationXmlBuilder
 {
@@ -73,7 +77,7 @@ class PreservationXmlBuilder
             if ($firstIssue->getData($indexToUse) == $lastIssue->getData($indexToUse)) {
                 $volumeText = $firstIssue->getData($indexToUse);
             } else {
-                $volumeText = $firstIssue->getData($indexToUse) . "-" . $lastIssue->getData($indexToUse);
+                $volumeText = $firstIssue->getData($indexToUse) . '-' . $lastIssue->getData($indexToUse);
             }
 
             $year = $firstIssue->getData('year');
@@ -107,7 +111,7 @@ class PreservationXmlBuilder
         $journalProperty = $this->createXmlProperty($dom, $publisherInstitution);
         $titleSetProperty->appendChild($journalProperty);
 
-        $nameProperty = $this->createXmlProperty($dom, 'name', "All $publisherInstitution");
+        $nameProperty = $this->createXmlProperty($dom, 'name', "All {$publisherInstitution}");
         $journalProperty->appendChild($nameProperty);
 
         $classProperty = $this->createXmlProperty($dom, 'class', 'xpath');
@@ -121,12 +125,12 @@ class PreservationXmlBuilder
 
     private function createPreservedYearParamProperty($dom, $index, $key, $value)
     {
-        $paramProperty = $this->createXmlProperty($dom, "param.$index");
+        $paramProperty = $this->createXmlProperty($dom, "param.{$index}");
 
-        $keyProperty = $this->createXmlProperty($dom, "key", $key);
+        $keyProperty = $this->createXmlProperty($dom, 'key', $key);
         $paramProperty->appendChild($keyProperty);
 
-        $valueProperty = $this->createXmlProperty($dom, "value", $value);
+        $valueProperty = $this->createXmlProperty($dom, 'value', $value);
         $paramProperty->appendChild($valueProperty);
 
         return $paramProperty;
@@ -180,14 +184,19 @@ class PreservationXmlBuilder
     private function normalize($string)
     {
         $string = str_replace('&', 'E', $string);
-        $string = iconv("utf-8", "ascii//TRANSLIT", $string);
+        $string = iconv('utf-8', 'ascii//TRANSLIT', $string);
         return $string;
     }
 
     private function getPublishedIssues($journal)
     {
-        $issueDao = DAORegistry::getDAO('IssueDAO'); /** @var IssueDAO $issueDao */
-        $issues = $issueDao->getPublishedIssues($journal->getId())->toArray();
-        return array_reverse($issues);
+        return Repo::issue()
+            ->getCollector()
+            ->filterByContextIds([$journal->getId()])
+            ->filterByPublished(true)
+            ->getMany()
+            ->sortByDesc(fn ($issue) => $issue->getId())
+            ->values()
+            ->all();
     }
 }

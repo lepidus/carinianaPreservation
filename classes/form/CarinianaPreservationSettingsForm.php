@@ -7,20 +7,30 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class CarinianaPreservationSettingsForm
+ *
  * @ingroup plugins_generic_carinianaPreservation
  *
  * @brief Form for site admins to modify Plaudit Pre-Endorsement plugin settings
  */
 
+namespace APP\plugins\generic\CarinianaPreservation\classes\form;
 
-import('lib.pkp.classes.form.Form');
+use APP\core\Application;
+use APP\template\TemplateManager;
+use PKP\db\DAORegistry;
+use PKP\file\FileManager;
+use PKP\file\PrivateFileManager;
+use PKP\file\TemporaryFileManager;
+use PKP\form\Form;
+use PKP\form\validation\FormValidatorCSRF;
+use PKP\form\validation\FormValidatorPost;
 
 class CarinianaPreservationSettingsForm extends Form
 {
-    public const CONFIG_VARS = array(
+    public const CONFIG_VARS = [
         'extraCopyEmail' => 'string',
         'statementFile' => 'string'
-    );
+    ];
 
     public $contextId;
     public $plugin;
@@ -39,7 +49,7 @@ class CarinianaPreservationSettingsForm extends Form
     {
         $contextId = $this->contextId;
         $plugin = &$this->plugin;
-        $this->_data = array();
+        $this->_data = [];
         foreach (self::CONFIG_VARS as $configVar => $type) {
             $this->_data[$configVar] = $plugin->getSetting($contextId, $configVar);
         }
@@ -55,13 +65,13 @@ class CarinianaPreservationSettingsForm extends Form
     {
         $templateMgr = TemplateManager::getManager($request);
         $templateMgr->assign('pluginName', $this->plugin->getName());
-        $templateMgr->assign('applicationName', Application::get()->getName());
         $alreadyPreserved = (bool)$this->plugin->getSetting($this->contextId, 'lastPreservationTimestamp');
         $templateMgr->assign('alreadyPreserved', $alreadyPreserved);
 
         $journal = $request->getContext();
         $templateMgr->assign('lockssEnabled', $journal->getData('enableLockss'));
         $templateMgr->assign('lockssSettingsUrl', $this->plugin->getLockssSettingsUrl($journal, $request->getBaseUrl()));
+        $templateMgr->assign('baseUrl', $request->getBaseUrl());
 
         return parent::fetch($request, $template, $display);
     }
@@ -121,7 +131,7 @@ class CarinianaPreservationSettingsForm extends Form
         $targetPath = $dir . '/' . $statementFileName;
         copy($statementTempFile->getFilePath(), $targetPath);
         if (is_file($targetPath)) {
-            $privateFileManager->setMode($targetPath, FILE_MODE_MASK);
+            $privateFileManager->setMode($targetPath, FileManager::FILE_MODE_MASK);
             $temporaryFileManager->deleteById($statementTempFile->getId(), $userId);
             return $statementFileName;
         }

@@ -1,5 +1,7 @@
 <?php
 
+namespace APP\plugins\generic\carinianaPreservation\classes;
+
 require __DIR__ . '/../vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -17,16 +19,16 @@ class PreservedJournalSpreadsheet
     private function getHeaders(): array
     {
         return [
-            __("plugins.generic.carinianaPreservation.headers.publisherOrInstitution"),
-            __("plugins.generic.carinianaPreservation.headers.title"),
-            __("plugins.generic.carinianaPreservation.headers.issn"),
-            __("plugins.generic.carinianaPreservation.headers.eIssn"),
-            __("plugins.generic.carinianaPreservation.headers.baseUrl"),
-            __("plugins.generic.carinianaPreservation.headers.journalPath"),
-            __("plugins.generic.carinianaPreservation.headers.availableYears"),
-            __("plugins.generic.carinianaPreservation.headers.issuesVolumes"),
-            __("plugins.generic.carinianaPreservation.headers.notesAndComments"),
-            __("admin.systemVersion")
+            __('plugins.generic.carinianaPreservation.headers.publisherOrInstitution'),
+            __('plugins.generic.carinianaPreservation.headers.title'),
+            __('plugins.generic.carinianaPreservation.headers.issn'),
+            __('plugins.generic.carinianaPreservation.headers.eIssn'),
+            __('plugins.generic.carinianaPreservation.headers.baseUrl'),
+            __('plugins.generic.carinianaPreservation.headers.journalPath'),
+            __('plugins.generic.carinianaPreservation.headers.availableYears'),
+            __('plugins.generic.carinianaPreservation.headers.issuesVolumes'),
+            __('plugins.generic.carinianaPreservation.headers.notesAndComments'),
+            __('admin.systemVersion')
         ];
     }
 
@@ -39,7 +41,6 @@ class PreservedJournalSpreadsheet
 
     public function createSpreadsheet(string $filePath)
     {
-        AppLocale::requireComponents(LOCALE_COMPONENT_APP_ADMIN);
         $spreadsheet = new Spreadsheet();
         $worksheet = $spreadsheet->getActiveSheet();
 

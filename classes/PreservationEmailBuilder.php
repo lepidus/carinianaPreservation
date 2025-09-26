@@ -1,9 +1,9 @@
 <?php
 
-import('plugins.generic.carinianaPreservation.classes.BasePreservationEmailBuilder');
-import('plugins.generic.carinianaPreservation.classes.PreservedJournalFactory');
-import('plugins.generic.carinianaPreservation.classes.PreservedJournalSpreadsheet');
-import('plugins.generic.carinianaPreservation.classes.PreservationXmlStatePersister');
+namespace APP\plugins\generic\carinianaPreservation\classes;
+
+use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
+use PKP\file\PrivateFileManager;
 
 class PreservationEmailBuilder extends BasePreservationEmailBuilder
 {
@@ -15,13 +15,13 @@ class PreservationEmailBuilder extends BasePreservationEmailBuilder
         $this->setEmailSubjectAndBody($email, $journalAcronym, $locale);
 
         $spreadsheetFilePath = $this->createJournalSpreadsheet($journal, $baseUrl, $notesAndComments, $locale);
-        $email->addAttachment($spreadsheetFilePath);
+        $this->addAttachment($email, $spreadsheetFilePath);
 
         $statementData = $this->getResponsabilityStatementData($journal);
-        $email->addAttachment($statementData['path'], $statementData['name'], $statementData['type']);
+        $this->addAttachment($email, $statementData['path'], $statementData['name'], $statementData['type']);
 
         $xmlFilePath = $this->createXml($journal, $baseUrl);
-        $email->addAttachment($xmlFilePath);
+        $this->addAttachment($email, $xmlFilePath);
 
         (new PreservationXmlStatePersister())->persist($journal->getId(), $xmlFilePath);
 
@@ -32,8 +32,10 @@ class PreservationEmailBuilder extends BasePreservationEmailBuilder
     {
         $subject = __('plugins.generic.carinianaPreservation.preservationEmail.subject', ['journalAcronym' => $journalAcronym], $locale);
         $body = __('plugins.generic.carinianaPreservation.preservationEmail.body', ['journalAcronym' => $journalAcronym], $locale);
-        $email->setSubject($subject);
-        $email->setBody($body);
+        $email->subject($subject);
+        $email->body($this->formatBodyAsHtml($body));
+        $email->setLocale($locale);
+        $email->addData(['subject' => $subject, 'body' => $this->formatBodyAsHtml($body)]);
     }
 
     private function createJournalSpreadsheet($journal, $baseUrl, $notesAndComments, $locale): string

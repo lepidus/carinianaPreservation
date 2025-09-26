@@ -19,7 +19,7 @@
 <!DOCTYPE scheduled_tasks SYSTEM "../../../lib/pkp/dtd/scheduledTasks.dtd">
 
 <scheduled_tasks>
-	<task class="plugins.generic.carinianaPreservation.classes.tasks.PreservationUpdateChecker">
+	<task class="APP\plugins\generic\carinianaPreservation\classes\tasks\PreservationUpdateChecker">
 		<descr>Check for XML changes and send preservation update emails to Cariniana.</descr>
 		<frequency dayofweek="1"/>
 	</task>

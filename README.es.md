@@ -27,7 +27,7 @@ Nota: El video está disponible solo en portugués (Brasil) por el momento.
 
 ## Compatibilidad
 
-Este plugin es compatible con **OJS** versión **3.3.0**.
+Este plugin es compatible con **OJS** versiones **3.3.0** y **3.4.0**.
 
 ## Instalación y Configuración
 
@@ -75,7 +75,7 @@ Cuando el plugin está **activo** en la revista, realiza una verificación seman
 
 ## Configuración de monitoreo automático
 
-El monitoreo automático de actualizaciones utiliza las tareas programadas Cron de OJS a través del plugin Acron que viene instalado por defecto en OJS 3.3.x.
+El monitoreo automático de actualizaciones utiliza las tareas programadas Cron de OJS a través del plugin Acron que viene instalado por defecto en OJS 3.3.0 y 3.4.0.
 
 Para ejecutar vía Cron directamente en el servidor se puede usar el comando:
 

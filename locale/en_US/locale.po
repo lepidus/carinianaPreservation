@@ -27,7 +27,7 @@ msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement"
 msgstr "Responsability statement"
 
 msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.alreadySent.notice"
-msgstr "The completed responsibility terms file <strong>has already been submitted previously</strong> and is saved in the system. It will be deleted after the first preservation (data minimization)."
+msgstr "The completed responsibility terms file <strong>has already been submitted previously</strong> and is saved in the system. It will be deleted after the first preservation."
 
 msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.alreadySent.instructions"
 msgstr "If you wish to replace the previously submitted file, download, complete, and sign the <a href=\"{$downloadStatementUrl}\">responsibility terms</a> document and then attach the file in the field below."
@@ -36,7 +36,7 @@ msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.pr
 msgstr "A signed responsibility terms file was sent with the first preservation request and then securely removed. Nothing else is required here."
 
 msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.description"
-msgstr "Download, complete and sign the <a href=\"{$downloadStatementUrl}\">responsibility terms</a> and attach the file below. After the first preservation the file will be deleted (data minimization)."
+msgstr "Download, complete and sign the <a href=\"{$downloadStatementUrl}\">responsibility terms</a> and attach the file below. After the first preservation the file will be deleted."
 
 msgid "plugins.generic.carinianaPreservation.headers.publisherOrInstitution"
 msgstr "Publisher/Institution"

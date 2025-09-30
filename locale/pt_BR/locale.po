@@ -27,7 +27,7 @@ msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement"
 msgstr "Termos de responsabilidade"
 
 msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.alreadySent.notice"
-msgstr "O arquivo preenchido dos termos de responsabilidade <strong>já foi enviado anteriormente</strong> e está salvo no sistema. Ele será apagado após a primeira preservação (minimização de dados)."
+msgstr "O arquivo preenchido dos termos de responsabilidade <strong>já foi enviado anteriormente</strong> e está salvo no sistema. Ele será apagado após a primeira preservação."
 
 msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.alreadySent.instructions"
 msgstr "Caso deseje substituir o arquivo enviado anteriormente, faça o download, preencha e assine o documento dos <a href=\"{$downloadStatementUrl}\">termos de responsabilidade</a> e em seguida anexe o arquivo no campo abaixo."
@@ -36,7 +36,7 @@ msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.pr
 msgstr "O arquivo assinado dos termos de responsabilidade foi enviado com o primeiro pedido de preservação e depois removido com segurança. Nada mais é necessário aqui."
 
 msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.description"
-msgstr "Faça o download, preencha e assine o <a href=\"{$downloadStatementUrl}\">termo de responsabilidade</a> e anexe o arquivo abaixo. Após a primeira preservação o arquivo será apagado (minimização de dados)."
+msgstr "Faça o download, preencha e assine o <a href=\"{$downloadStatementUrl}\">termo de responsabilidade</a> e anexe o arquivo abaixo. Após a primeira preservação o arquivo será apagado."
 
 msgid "plugins.generic.carinianaPreservation.headers.publisherOrInstitution"
 msgstr "Editora/Instituição"

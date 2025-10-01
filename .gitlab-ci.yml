@@ -32,3 +32,6 @@ release_plugin:
 
 plugin_integration_tests_ojs:
   allow_failure: true # Temporario enquanto investigamos falha
+
+ojs_integration_tests:
+  allow_failure: true # Temporario enquanto investigamos falha

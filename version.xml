@@ -13,6 +13,6 @@
 	<type>plugins.generic</type>
 	<lazy-load>0</lazy-load>
 	<release>1.5.5.2</release>
-	<date>2025-09-30</date>
+	<date>2025-10-01</date>
   <class>CarinianaPreservationPlugin</class>
 </version>

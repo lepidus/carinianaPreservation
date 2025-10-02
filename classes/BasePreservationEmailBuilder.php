@@ -13,7 +13,7 @@ abstract class BasePreservationEmailBuilder
 {
     protected function buildBaseEmail($journal, $locale)
     {
-        $email = new CarinianaMailable();
+        $email = new Mailable();
 
         $fromName = $journal->getLocalizedData('acronym', $locale);
         $fromEmail = $journal->getData('contactEmail');
@@ -41,22 +41,6 @@ abstract class BasePreservationEmailBuilder
             $email->cc($extraCopyEmail);
         }
 
-        // Populate viewData for tests
-        $ccs = [];
-        if (!$testEmail) {
-            $ccs[] = ['name' => $fromName, 'email' => $fromEmail];
-        }
-        if (!empty($extraCopyEmail)) {
-            $ccs[] = ['name' => '', 'email' => $extraCopyEmail];
-        }
-        $email->addData([
-            'from' => ['name' => $fromName, 'email' => $fromEmail],
-            'recipients' => [
-                ['name' => $toName, 'email' => $toEmail]
-            ],
-            'ccs' => $ccs,
-        ]);
-
         return $email;
     }
 
@@ -74,16 +58,6 @@ abstract class BasePreservationEmailBuilder
         }
 
         $email->attach($path, ['as' => $filename, 'mime' => $contentType]);
-
-        // Mirror attachment info into viewData for tests
-        $data = $email->getData();
-        $attachments = $data['attachments'] ?? [];
-        $attachments[] = [
-            'path' => $path,
-            'filename' => $filename,
-            'content-type' => $contentType,
-        ];
-        $email->addData(['attachments' => $attachments]);
     }
 
     protected function createXml($journal, $baseUrl): string

@@ -30,11 +30,11 @@ class PreservationEmailBuilder extends BasePreservationEmailBuilder
 
     protected function setEmailSubjectAndBody($email, $journalAcronym, $locale)
     {
+        $email->setData($locale);
         $subject = __('plugins.generic.carinianaPreservation.preservationEmail.subject', ['journalAcronym' => $journalAcronym], $locale);
         $body = __('plugins.generic.carinianaPreservation.preservationEmail.body', ['journalAcronym' => $journalAcronym], $locale);
         $email->subject($subject);
         $email->body($this->formatBodyAsHtml($body));
-        $email->setData($locale);
         $email->addData(['subject' => $subject, 'body' => $this->formatBodyAsHtml($body)]);
     }
 

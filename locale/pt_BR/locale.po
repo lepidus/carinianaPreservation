@@ -36,7 +36,7 @@ msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.pr
 msgstr "O arquivo assinado dos termos de responsabilidade foi enviado com o primeiro pedido de preservação e depois removido com segurança. Nada mais é necessário aqui."
 
 msgid "plugins.generic.carinianaPreservation.settings.responsabilityStatement.description"
-msgstr "Faça o download, preencha e assine o <a href=\"{$downloadStatementUrl}\">termo de responsabilidade</a> e anexe o arquivo abaixo. Após a primeira preservação o arquivo será apagado (minimização de dados)."
+msgstr "Faça o download, preencha e assine o <a href=\"{$downloadStatementUrl}\">termo de responsabilidade</a> e anexe o arquivo abaixo. Após a primeira preservação o arquivo será apagado."
 
 msgid "plugins.generic.carinianaPreservation.headers.publisherOrInstitution"
 msgstr "Editora/Instituição"

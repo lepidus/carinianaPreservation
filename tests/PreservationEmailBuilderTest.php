@@ -98,22 +98,27 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
 
     public function testBuiltPreservationEmailFrom(): void
     {
-        $expectedFrom = ['name' => $this->journalAcronym, 'email' => $this->journalContactEmail];
-        $this->assertEquals($expectedFrom, $this->email->getData()['from']);
+        $expectedEmail = $this->journalContactEmail;
+        $expectedName = $this->journalAcronym;
+        $this->assertCount(1, $this->email->from);
+        $this->assertEquals($expectedEmail, $this->email->from[0]['address']);
+        $this->assertEquals($expectedName, $this->email->from[0]['name']);
     }
 
     public function testBuiltPreservationEmailRecipient(): void
     {
-        $expectedRecipient = ['name' => CARINIANA_NAME, 'email' => CARINIANA_EMAIL];
-        $this->assertEquals($expectedRecipient, $this->email->getData()['recipients'][0]);
+        $expectedEmail = CARINIANA_EMAIL;
+        $expectedName = CARINIANA_NAME;
+        $this->assertCount(1, $this->email->to);
+        $this->assertEquals($expectedEmail, $this->email->to[0]['address']);
+        $this->assertEquals($expectedName, $this->email->to[0]['name']);
     }
 
     public function testBuiltPreservationEmailCarbonCopies(): void
     {
-        $expectedCarbonCopies = [
-            ['name' => $this->journalAcronym, 'email' => $this->journalContactEmail]
-        ];
-        $this->assertEquals($expectedCarbonCopies, $this->email->getData()['ccs']);
+        $this->assertCount(1, $this->email->cc);
+        $this->assertEquals($this->journalContactEmail, $this->email->cc[0]['address']);
+        $this->assertEquals($this->journalAcronym, $this->email->cc[0]['name']);
     }
 
     public function testBuiltPreservationEmailCarbonCopiesWithExtra(): void
@@ -122,55 +127,58 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
         $plugin->updateSetting($this->journalId, 'extraCopyEmail', $this->extraCopyEmail);
         $this->email = $this->preservationEmailBuilder->buildPreservationEmail($this->journal, $this->baseUrl, $this->notesAndComments, $this->locale);
 
-        $expectedCarbonCopies = [
-            ['name' => $this->journalAcronym, 'email' => $this->journalContactEmail],
-            ['name' => '', 'email' => $this->extraCopyEmail]
-        ];
-        $this->assertEquals($expectedCarbonCopies, $this->email->getData()['ccs']);
+        $this->assertCount(2, $this->email->cc);
+        $this->assertEquals($this->journalContactEmail, $this->email->cc[0]['address']);
+        $this->assertEquals($this->journalAcronym, $this->email->cc[0]['name']);
+        $this->assertEquals($this->extraCopyEmail, $this->email->cc[1]['address']);
     }
 
     public function testBuiltPreservationEmailSubject(): void
     {
         $expectedSubject = __('plugins.generic.carinianaPreservation.preservationEmail.subject', ['journalAcronym' => $this->journalAcronym], $this->locale);
-        $this->assertEquals($expectedSubject, $this->email->getData()['subject']);
+        $this->assertEquals($expectedSubject, $this->email->subject);
     }
 
     public function testBuiltPreservationEmailBody(): void
     {
         $expectedPlain = __('plugins.generic.carinianaPreservation.preservationEmail.body', ['journalAcronym' => $this->journalAcronym], $this->locale);
         $expectedHtml = '<div style="white-space:pre-line">' . htmlspecialchars($expectedPlain, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8') . '</div>';
-        $this->assertEquals($expectedHtml, $this->email->getData()['body']);
+        $this->assertEquals($expectedHtml, $this->email->viewData['body']);
     }
 
     public function testBuiltPreservationEmailSpreadsheet(): void
     {
         $expectedFileName = "planilha_preservacao_{$this->journalAcronym}.xlsx";
-        $expectedFilePath = "/tmp/{$expectedFileName}";
         $xlsxContentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-        $expectedAttachment = ['path' => $expectedFilePath, 'filename' => $expectedFileName, 'content-type' => $xlsxContentType];
-        $this->assertEquals($expectedAttachment, $this->email->getData()['attachments'][self::ATTACHMENT_INDEX_SPREADSHEET]);
+
+        $attachment = $this->email->attachments[self::ATTACHMENT_INDEX_SPREADSHEET];
+        $this->assertEquals($expectedFileName, $attachment['options']['as']);
+        $this->assertEquals($xlsxContentType, $attachment['options']['mime']);
+        $this->assertStringEndsWith($expectedFileName, $attachment['file']);
     }
 
     public function testBuiltPreservationEmailStatement(): void
     {
-        $attachment = $this->email->getData()['attachments'][self::ATTACHMENT_INDEX_STATEMENT];
-        $this->assertEquals($this->statementOriginalFileName, $attachment['filename']);
-        $this->assertEquals('application/pdf', $attachment['content-type']);
-        $this->assertFalse(str_starts_with($attachment['path'], 'public/'));
+        $attachment = $this->email->attachments[self::ATTACHMENT_INDEX_STATEMENT];
+        $this->assertEquals($this->statementOriginalFileName, $attachment['options']['as']);
+        $this->assertEquals('application/pdf', $attachment['options']['mime']);
+        $this->assertFalse(str_starts_with($attachment['file'], 'public/'));
         $expectedDirPrefix = 'files/carinianaPreservation/' . $this->journalId . '/';
-        $this->assertTrue(str_starts_with($attachment['path'], $expectedDirPrefix));
-        $fileName = basename($attachment['path']);
+        $this->assertTrue(str_starts_with($attachment['file'], $expectedDirPrefix));
+        $fileName = basename($attachment['file']);
         $this->assertEquals($this->statementFileName, $fileName);
-        $this->assertFileExists($attachment['path']);
+        $this->assertFileExists($attachment['file']);
     }
 
     public function testBuiltPreservationEmailXml(): void
     {
         $expectedFileName = "marcacoes_preservacao_{$this->journalAcronym}.xml";
-        $expectedFilePath = "/tmp/{$expectedFileName}";
         $xmlContentType = 'text/xml';
-        $expectedAttachment = ['path' => $expectedFilePath, 'filename' => $expectedFileName, 'content-type' => $xmlContentType];
-        $this->assertEquals($expectedAttachment, $this->email->getData()['attachments'][self::ATTACHMENT_INDEX_XML]);
+
+        $attachment = $this->email->attachments[self::ATTACHMENT_INDEX_XML];
+        $this->assertEquals($expectedFileName, $attachment['options']['as']);
+        $this->assertEquals($xmlContentType, $attachment['options']['mime']);
+        $this->assertStringEndsWith($expectedFileName, $attachment['file']);
     }
 
     public function testXmlContentIsPersistedOnFirstPreservation(): void
@@ -178,18 +186,17 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
         $plugin = new CarinianaPreservationPlugin();
         $xmlSettingContent = $plugin->getSetting($this->journalId, 'preservedXMLcontent');
         $this->assertNotEmpty($xmlSettingContent, 'Expected persisted XML content in preservedXMLcontent');
-        $xmlAttachment = $this->email->getData()['attachments'][self::ATTACHMENT_INDEX_XML];
-        $this->assertFileExists($xmlAttachment['path']);
-        $expectedContent = file_get_contents($xmlAttachment['path']);
+        $xmlAttachment = $this->email->attachments[self::ATTACHMENT_INDEX_XML];
+        $this->assertFileExists($xmlAttachment['file']);
+        $expectedContent = file_get_contents($xmlAttachment['file']);
         $this->assertEquals($expectedContent, $xmlSettingContent, 'Persisted XML content differs from sent XML');
     }
 
     public function testNoDiffAttachmentOnFirstPreservation(): void
     {
-        $attachments = $this->email->getData()['attachments'];
         $diffFound = false;
-        foreach ($attachments as $attachment) {
-            if (substr($attachment['filename'], -5) === '.diff') {
+        foreach ($this->email->attachments as $attachment) {
+            if (str_ends_with($attachment['options']['as'], '.diff')) {
                 $diffFound = true;
                 break;
             }

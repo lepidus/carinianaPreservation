@@ -11,6 +11,7 @@ class PreservedJournalSpreadsheetTest extends TestCase
 {
     private $spreadsheet;
     private $filePath = '/tmp/test_spreadsheet.xlsx';
+    private $locale = 'pt_BR';
 
     protected function setUp(): void
     {
@@ -29,7 +30,7 @@ class PreservedJournalSpreadsheetTest extends TestCase
             )
         ];
 
-        $this->spreadsheet = new PreservedJournalSpreadsheet($journals);
+        $this->spreadsheet = new PreservedJournalSpreadsheet($journals, $this->locale);
     }
 
     protected function tearDown(): void
@@ -52,16 +53,16 @@ class PreservedJournalSpreadsheetTest extends TestCase
         $this->spreadsheet->createSpreadsheet($this->filePath);
         $worksheet = $this->getWorksheet();
         $expectedHeaders = [
-            __('plugins.generic.carinianaPreservation.headers.publisherOrInstitution'),
-            __('plugins.generic.carinianaPreservation.headers.title'),
-            __('plugins.generic.carinianaPreservation.headers.issn'),
-            __('plugins.generic.carinianaPreservation.headers.eIssn'),
-            __('plugins.generic.carinianaPreservation.headers.baseUrl'),
-            __('plugins.generic.carinianaPreservation.headers.journalPath'),
-            __('plugins.generic.carinianaPreservation.headers.availableYears'),
-            __('plugins.generic.carinianaPreservation.headers.issuesVolumes'),
-            __('plugins.generic.carinianaPreservation.headers.notesAndComments'),
-            __('admin.systemVersion')
+            __('plugins.generic.carinianaPreservation.headers.publisherOrInstitution', [], $this->locale),
+            __('plugins.generic.carinianaPreservation.headers.title', [], $this->locale),
+            __('plugins.generic.carinianaPreservation.headers.issn', [], $this->locale),
+            __('plugins.generic.carinianaPreservation.headers.eIssn', [], $this->locale),
+            __('plugins.generic.carinianaPreservation.headers.baseUrl', [], $this->locale),
+            __('plugins.generic.carinianaPreservation.headers.journalPath', [], $this->locale),
+            __('plugins.generic.carinianaPreservation.headers.availableYears', [], $this->locale),
+            __('plugins.generic.carinianaPreservation.headers.issuesVolumes', [], $this->locale),
+            __('plugins.generic.carinianaPreservation.headers.notesAndComments', [], $this->locale),
+            __('admin.systemVersion', [], $this->locale)
         ];
 
         $firstRow = $worksheet->toArray()[0];

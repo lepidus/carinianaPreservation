@@ -10,25 +10,27 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 class PreservedJournalSpreadsheet
 {
     private $journals;
+    private $locale;
 
-    public function __construct(array $journals)
+    public function __construct(array $journals, string $locale)
     {
         $this->journals = $journals;
+        $this->locale = $locale;
     }
 
     private function getHeaders(): array
     {
         return [
-            __('plugins.generic.carinianaPreservation.headers.publisherOrInstitution'),
-            __('plugins.generic.carinianaPreservation.headers.title'),
-            __('plugins.generic.carinianaPreservation.headers.issn'),
-            __('plugins.generic.carinianaPreservation.headers.eIssn'),
-            __('plugins.generic.carinianaPreservation.headers.baseUrl'),
-            __('plugins.generic.carinianaPreservation.headers.journalPath'),
-            __('plugins.generic.carinianaPreservation.headers.availableYears'),
-            __('plugins.generic.carinianaPreservation.headers.issuesVolumes'),
-            __('plugins.generic.carinianaPreservation.headers.notesAndComments'),
-            __('admin.systemVersion')
+            __('plugins.generic.carinianaPreservation.headers.publisherOrInstitution', [], $this->locale),
+            __('plugins.generic.carinianaPreservation.headers.title', [], $this->locale),
+            __('plugins.generic.carinianaPreservation.headers.issn', [], $this->locale),
+            __('plugins.generic.carinianaPreservation.headers.eIssn', [], $this->locale),
+            __('plugins.generic.carinianaPreservation.headers.baseUrl', [], $this->locale),
+            __('plugins.generic.carinianaPreservation.headers.journalPath', [], $this->locale),
+            __('plugins.generic.carinianaPreservation.headers.availableYears', [], $this->locale),
+            __('plugins.generic.carinianaPreservation.headers.issuesVolumes', [], $this->locale),
+            __('plugins.generic.carinianaPreservation.headers.notesAndComments', [], $this->locale),
+            __('admin.systemVersion', [], $this->locale)
         ];
     }
 

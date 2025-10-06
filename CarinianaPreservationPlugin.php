@@ -57,7 +57,6 @@ class CarinianaPreservationPlugin extends GenericPlugin implements HasTaskSchedu
     public function getActions($request, $actionArgs)
     {
         $router = $request->getRouter();
-        import('lib.pkp.classes.linkAction.request.AjaxModal');
         return array_merge(
             [
                 new LinkAction(
@@ -116,7 +115,6 @@ class CarinianaPreservationPlugin extends GenericPlugin implements HasTaskSchedu
     {
         $user = $request->getUser();
 
-        import('lib.pkp.classes.file.TemporaryFileManager');
         $temporaryFileManager = new TemporaryFileManager();
         $temporaryFile = $temporaryFileManager->handleUpload('uploadedFile', $user->getId());
         if ($temporaryFile) {
@@ -140,7 +138,6 @@ class CarinianaPreservationPlugin extends GenericPlugin implements HasTaskSchedu
         if (empty($statementData['fileName'])) {
             return;
         }
-        import('lib.pkp.classes.file.PrivateFileManager');
         $privateFileManager = new PrivateFileManager();
         $base = rtrim($privateFileManager->getBasePath(), '/');
         $path = $base . '/carinianaPreservation/' . (int)$journalId . '/' . $statementData['fileName'];

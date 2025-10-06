@@ -60,7 +60,6 @@ class PreservationEmailBuilder extends BasePreservationEmailBuilder
         $type = $statementFileData['fileType'];
         $fileName = $statementFileData['fileName'];
 
-        import('lib.pkp.classes.file.PrivateFileManager');
         $privateFileManager = new PrivateFileManager();
         $basePath = rtrim($privateFileManager->getBasePath(), '/');
         $statementFilePath = $basePath . '/carinianaPreservation/' . (int)$journal->getId() . '/' . $fileName;

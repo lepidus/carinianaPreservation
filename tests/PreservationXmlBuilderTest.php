@@ -37,6 +37,7 @@ class PreservationXmlBuilderTest extends PKPTestCase
     public function setUp(): void
     {
         parent::setUp();
+        $this->mockRequest();
         $this->createTestJournal();
     }
 

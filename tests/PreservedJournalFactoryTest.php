@@ -40,6 +40,7 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
             'primaryLocale' => $this->locale,
         ]);
         $this->journalId = $this->journal->getId();
+        $this->mockRequestForJournal($this->journal);
         $this->preservedJournalFactory = new PreservedJournalFactory();
         $this->persistIssue($this->journal, ['year' => $this->firstIssueYear, 'volume' => $this->firstIssueVolume]);
         $this->persistIssue($this->journal, ['year' => $this->lastIssueYear, 'volume' => $this->secondIssueVolume]);
@@ -52,6 +53,12 @@ class PreservedJournalFactoryTest extends DatabaseTestCase
     protected function getAffectedTables()
     {
         return ['issues', 'issue_settings'];
+    }
+
+    protected function tearDown(): void
+    {
+        $this->cleanupJournal($this->journal);
+        parent::tearDown();
     }
 
 

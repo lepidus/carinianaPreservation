@@ -19,7 +19,11 @@ class StatementFileRemovalTest extends PKPTestCase
     {
         parent::setUp();
         $this->journal = $this->buildAndPersistJournal();
-        $this->createStatementFileSetting();
+        $this->createStatementFileWithSettings(
+            $this->journal->getId(),
+            $this->statementFileName,
+            $this->statementOriginalFileName
+        );
     }
 
     protected function tearDown(): void
@@ -27,25 +31,6 @@ class StatementFileRemovalTest extends PKPTestCase
         $this->cleanupStatementDir($this->journal->getId(), $this->statementFileName);
         $this->cleanupJournal($this->journal);
         parent::tearDown();
-    }
-
-    private function createStatementFileSetting(): void
-    {
-        $plugin = new CarinianaPreservationPlugin();
-        $fileMgr = new PrivateFileManager();
-        $base = rtrim($fileMgr->getBasePath(), '/');
-        $dir = $base . '/carinianaPreservation/' . $this->journal->getId();
-        if (!is_dir($dir)) {
-            mkdir($dir, 0777, true);
-        }
-        $fullPath = $dir . '/' . $this->statementFileName;
-        file_put_contents($fullPath, 'PDF');
-        $statementFileData = json_encode([
-            'originalFileName' => $this->statementOriginalFileName,
-            'fileName' => $this->statementFileName,
-            'fileType' => 'application/pdf',
-        ]);
-        $plugin->updateSetting($this->journal->getId(), 'statementFile', $statementFileData);
     }
 
     public function testRemoveStatementFile(): void

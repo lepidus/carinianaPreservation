@@ -41,6 +41,7 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
             'contactEmail' => $this->journalContactEmail,
         ]);
         $this->journalId = $this->journal->getId();
+        $this->mockRequestForJournal($this->journal);
         $this->preservationUpdateEmailBuilder = new PreservationUpdateEmailBuilder();
         $this->persistIssue($this->journal, ['year' => $this->firstIssueYear]);
         $this->persistIssue($this->journal, ['year' => $this->lastIssueYear]);
@@ -54,8 +55,7 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
 
     protected function tearDown(): void
     {
-        $journalDao = \PKP\db\DAORegistry::getDAO('JournalDAO'); /** @var \APP\journal\JournalDAO $journalDao */
-        $journalDao->deleteById($this->journalId);
+        $this->cleanupJournal($this->journal);
         parent::tearDown();
     }
 

@@ -82,4 +82,19 @@ trait CarinianaTestFixtureTrait
             @rmdir($dir);
         }
     }
+
+    protected function cleanupJournal(?Journal $journal): void
+    {
+        if (!$journal || !$journal->getId()) {
+            return;
+        }
+
+        $journalId = $journal->getId();
+
+        $this->cleanupStatementDir($journalId);
+
+        /** @var \APP\journal\JournalDAO $journalDao */
+        $journalDao = DAORegistry::getDAO('JournalDAO');
+        $journalDao->deleteById($journalId);
+    }
 }

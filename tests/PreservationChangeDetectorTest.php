@@ -4,14 +4,24 @@ namespace APP\plugins\generic\carinianaPreservation\tests;
 
 use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
 use APP\plugins\generic\carinianaPreservation\classes\PreservationChangeDetector;
-use PKP\tests\DatabaseTestCase;
+use PKP\tests\PKPTestCase;
 
-class PreservationChangeDetectorTest extends DatabaseTestCase
+class PreservationChangeDetectorTest extends PKPTestCase
 {
-    private $journalId = 9998;
-    protected function getAffectedTables()
+    use CarinianaTestFixtureTrait;
+
+    private $journal;
+
+    protected function setUp(): void
     {
-        return ['plugin_settings'];
+        parent::setUp();
+        $this->journal = $this->buildAndPersistJournal();
+    }
+
+    protected function tearDown(): void
+    {
+        $this->cleanupJournal($this->journal);
+        parent::tearDown();
     }
 
     private function seedStoredXml($journalId, $xml)
@@ -22,15 +32,15 @@ class PreservationChangeDetectorTest extends DatabaseTestCase
 
     public function testFirstPreservationAlwaysHasChanges()
     {
-        $detector = new PreservationChangeDetector($this->journalId);
+        $detector = new PreservationChangeDetector($this->journal->getId());
         $this->assertTrue($detector->hasChanges('<root/>'), 'First preservation (no previous XML) must report changes');
     }
 
     public function testIdenticalXmlHasNoChanges()
     {
         $xml = '<root><a>1</a></root>';
-        $this->seedStoredXml($this->journalId, $xml);
-        $detector = new PreservationChangeDetector($this->journalId);
+        $this->seedStoredXml($this->journal->getId(), $xml);
+        $detector = new PreservationChangeDetector($this->journal->getId());
         $this->assertFalse($detector->hasChanges($xml), 'Identical XML should not report changes');
     }
 
@@ -38,8 +48,8 @@ class PreservationChangeDetectorTest extends DatabaseTestCase
     {
         $previous = '<root><a>1</a></root>';
         $current = '<root><a>2</a></root>';
-        $this->seedStoredXml($this->journalId, $previous);
-        $detector = new PreservationChangeDetector($this->journalId);
+        $this->seedStoredXml($this->journal->getId(), $previous);
+        $detector = new PreservationChangeDetector($this->journal->getId());
         $this->assertTrue($detector->hasChanges($current), 'Different XML content should report changes');
     }
 
@@ -47,8 +57,8 @@ class PreservationChangeDetectorTest extends DatabaseTestCase
     {
         $pretty = "<root>\n  <a>1</a>\n</root>\n";
         $compact = '<root><a>1</a></root>';
-        $this->seedStoredXml($this->journalId, $pretty);
-        $detector = new PreservationChangeDetector($this->journalId);
+        $this->seedStoredXml($this->journal->getId(), $pretty);
+        $detector = new PreservationChangeDetector($this->journal->getId());
         $this->assertTrue($detector->hasChanges($compact), 'Whitespace differences change MD5 and are treated as changes');
     }
 }

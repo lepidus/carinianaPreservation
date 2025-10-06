@@ -26,7 +26,6 @@ use PKP\file\TemporaryFileManager;
 use PKP\linkAction\LinkAction;
 use PKP\linkAction\request\AjaxModal;
 use PKP\plugins\GenericPlugin;
-use PKP\plugins\Hook;
 use PKP\plugins\interfaces\HasTaskScheduler;
 use PKP\scheduledTask\PKPScheduler;
 

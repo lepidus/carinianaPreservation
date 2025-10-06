@@ -1,5 +1,7 @@
 variables:
   PLUGIN_NAME: 'carinianaPreservation'
+  APPLICATION_VERSION: '3.5.0'
+  CY_APPLICATION_VERSION: '3.5.0'
 
 include:
   - project: 'documentacao-e-tarefas/modelosparaintegracaocontinua'

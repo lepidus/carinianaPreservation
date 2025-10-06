@@ -18,6 +18,7 @@ namespace APP\plugins\generic\carinianaPreservation;
 use APP\core\Application;
 use APP\plugins\generic\carinianaPreservation\classes\form\CarinianaPreservationSettingsForm;
 use APP\plugins\generic\carinianaPreservation\classes\form\PreservationSubmissionForm;
+use APP\plugins\generic\carinianaPreservation\classes\tasks\PreservationUpdateChecker;
 use PKP\core\JSONMessage;
 use PKP\file\FileManager;
 use PKP\file\PrivateFileManager;
@@ -26,14 +27,15 @@ use PKP\linkAction\LinkAction;
 use PKP\linkAction\request\AjaxModal;
 use PKP\plugins\GenericPlugin;
 use PKP\plugins\Hook;
+use PKP\plugins\interfaces\HasTaskScheduler;
+use PKP\scheduledTask\PKPScheduler;
 
-class CarinianaPreservationPlugin extends GenericPlugin
+class CarinianaPreservationPlugin extends GenericPlugin implements HasTaskScheduler
 {
     public function register($category, $path, $mainContextId = null)
     {
         $success = parent::register($category, $path, $mainContextId);
 
-        Hook::add('AcronPlugin::parseCronTab', [$this, 'addTasksToCronTab']);
 
         if (Application::isUnderMaintenance()) {
             return true;
@@ -128,13 +130,6 @@ class CarinianaPreservationPlugin extends GenericPlugin
         }
     }
 
-    public function addTasksToCronTab($hookName, $args)
-    {
-        $taskFilesPath = &$args[0];
-        $taskFilesPath[] = $this->getPluginPath() . DIRECTORY_SEPARATOR . 'scheduledTasks.xml';
-        return false;
-    }
-
     public function removeStatementFile(int $journalId): void
     {
         $statementDataJson = $this->getSetting($journalId, 'statementFile');
@@ -158,5 +153,15 @@ class CarinianaPreservationPlugin extends GenericPlugin
     public function getLockssSettingsUrl($journal, $baseUrl)
     {
         return $baseUrl . '/index.php/' . $journal->getPath() . '/management/settings/distribution#archive/lockss';
+    }
+
+    public function registerSchedules(PKPScheduler $scheduler): void
+    {
+        $scheduler
+            ->addSchedule(new PreservationUpdateChecker([]))
+            ->weekly()
+            ->mondays()
+            ->name(PreservationUpdateChecker::class)
+            ->withoutOverlapping();
     }
 }

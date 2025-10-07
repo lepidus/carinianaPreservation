@@ -8,10 +8,11 @@ describe("Cariniana Preservation Plugin - Checking of plugin's settings", functi
         const pluginRowId = 'component-grid-settings-plugins-settingsplugingrid-category-generic-row-carinianapreservationplugin';
         const extraCopyEmail = 'copia.extra.cariniana@gmail.com';
         cy.login('dbarnes', null, 'publicknowledge');
-        cy.get('a:contains("Website")').click();
 
+        cy.get('nav').contains('Settings').click();
+        cy.get('nav').contains('Website').click({ force: true });
         cy.waitJQuery();
-        cy.get('button#plugins-button').click();
+        cy.get('button[id="plugins-button"]').click();
         cy.get('#' + pluginRowId + ' > .first_column > .show_extras').click();
         cy.get('a[id^='+ pluginRowId + '-settings-button]').click();
 
@@ -37,9 +38,11 @@ describe("Cariniana Preservation Plugin - Checking of plugin's settings", functi
     it("Shows replace instructions and deletion note before first preservation", function() {
         const pluginRowId = 'component-grid-settings-plugins-settingsplugingrid-category-generic-row-carinianapreservationplugin';
         cy.login('dbarnes', null, 'publicknowledge');
-        cy.get('a:contains("Website")').click();
+
+        cy.get('nav').contains('Settings').click();
+        cy.get('nav').contains('Website').click({ force: true });
         cy.waitJQuery();
-        cy.get('button#plugins-button').click();
+        cy.get('button[id="plugins-button"]').click();
         cy.get('#' + pluginRowId + ' > .first_column > .show_extras').click();
         cy.get('a[id^='+ pluginRowId + '-settings-button]').click();
         cy.contains('has already been submitted previously');

@@ -16,21 +16,38 @@ include:
     - apt update && apt install php-gd php-zip php-xml php-mbstring -yqq
 
 .unit_test_template:
+  variables:
+    APPLICATION_VERSION: '3.5.0'
+    CY_APPLICATION_VERSION: '3.5.0'
   before_script:
     - apt update && apt install php-gd php-zip -yqq
     - composer install
 
 .integration_tests_template:
+  variables:
+    APPLICATION_VERSION: '3.5.0'
+    CY_APPLICATION_VERSION: '3.5.0'
   before_script:
     - apt update && apt install php-gd php-zip php-xml php-mbstring -yqq
     - composer install
     - sed -i '$a\[carinianapreservation]\nemail_for_tests = "teste@email.com"' /var/www/$CY_APPLICATION/config.inc.php
 
 ojs_integration_tests:
+  variables:
+    APPLICATION_VERSION: '3.5.0'
+    CY_APPLICATION_VERSION: '3.5.0'
   allow_failure: true
+  <<: *php_dependencies
+
 
 code_formatting_check:
+  variables:
+    APPLICATION_VERSION: '3.5.0'
+    CY_APPLICATION_VERSION: '3.5.0'
   <<: *php_dependencies
 
 release_plugin:
+  variables:
+    APPLICATION_VERSION: '3.5.0'
+    CY_APPLICATION_VERSION: '3.5.0'
   <<: *php_dependencies

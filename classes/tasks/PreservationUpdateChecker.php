@@ -43,12 +43,12 @@ class PreservationUpdateChecker extends ScheduledTask
         parent::__construct($args);
     }
 
-    public function getName()
+    public function getName(): string
     {
         return __('plugins.generic.carinianaPreservation.updateChecker');
     }
 
-    public function executeActions()
+    protected function executeActions(): bool
     {
         if (!$this->plugin) {
             return false;

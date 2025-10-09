@@ -76,6 +76,6 @@ abstract class BasePreservationEmailBuilder
     protected function formatBodyAsHtml(string $text): string
     {
         $escaped = htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
-        return '<div style="white-space:pre-line">' . $escaped . '</div>';
+        return '<div">' . $escaped . '</div>';
     }
 }

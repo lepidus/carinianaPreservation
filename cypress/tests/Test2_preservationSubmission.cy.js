@@ -1,16 +1,18 @@
 const pluginRowId = 'component-grid-settings-plugins-settingsplugingrid-category-generic-row-carinianapreservationplugin';
 
 function openPreservationModal() {
-    cy.get('a:contains("Website")').click();
+    cy.get('nav').contains('Settings').click();
+    cy.get('nav').contains('Website').click({ force: true });
     cy.waitJQuery();
-    cy.get('button#plugins-button').click();
+    cy.get('button[id="plugins-button"]').click();
     cy.get('#' + pluginRowId + ' > .first_column > .show_extras').click();
     cy.get('a[id^=' + pluginRowId + '-preservationSubmission-button]').click();
     cy.wait(200);
 }
 
 function enableLockss() {
-    cy.get('a:contains("Distribution")').click();
+    cy.get('nav').contains('Settings').click();
+    cy.get('nav').contains('Distribution').click({ force: true });
     cy.contains('Archiving').click({force: true});
     cy.contains('LOCKSS and CLOCKSS').click();
     cy.get('input[name="enableLockss"]').check();
@@ -28,7 +30,8 @@ describe("Preservation attempt is not successfull", () => {
     it("LOCKSS enabled, but ISSNs are missing", () => {
         cy.login('dbarnes', null, 'publicknowledge');
         enableLockss();
-        cy.get('li a:contains("Journal")').first().click();
+        cy.get('nav').contains('Settings').click();
+        cy.get('nav').contains('Journal').click({ force: true });
         cy.get('input[name="onlineIssn"]').clear();
         cy.get('input[name="printIssn"]').clear();
         cy.get('.pkpButton:visible').contains('Save').click();
@@ -46,7 +49,8 @@ describe("Preservation attempt is not successfull", () => {
 describe("Successful submission to preservation", () => {
     it("LOCKSS enabled, ISSNs in place and performs first submission on preservation Form", () => {
         cy.login('dbarnes', null, 'publicknowledge');
-        cy.get('li a:contains("Journal")').first().click();
+        cy.get('nav').contains('Settings').click();
+        cy.get('nav').contains('Journal').click({ force: true });
         cy.get('input[name="onlineIssn"]').clear().type('0000-0000');
         cy.get('input[name="printIssn"]').clear().type('0000-0000');
         cy.get('.pkpButton:visible').contains('Save').click();

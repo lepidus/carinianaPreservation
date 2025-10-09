@@ -5,6 +5,7 @@ namespace APP\plugins\generic\carinianaPreservation\tests;
 use APP\facades\Repo;
 use APP\issue\Issue;
 use APP\journal\Journal;
+use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
 use PKP\db\DAORegistry;
 use PKP\file\PrivateFileManager;
 
@@ -70,6 +71,24 @@ trait CarinianaTestFixtureTrait
         file_put_contents($dir . '/' . $generatedName, $content);
     }
 
+    protected function createStatementFileWithSettings(
+        int $journalId,
+        string $fileName = 'responsabilityStatement.pdf',
+        string $originalFileName = 'Termos_responsabilidade_cariniana.pdf',
+        string $fileType = 'application/pdf',
+        string $content = 'PDF'
+    ): void {
+        $this->createStatementFile($journalId, $fileName, $content);
+
+        $plugin = new CarinianaPreservationPlugin();
+        $statementFileData = json_encode([
+            'originalFileName' => $originalFileName,
+            'fileName' => $fileName,
+            'fileType' => $fileType,
+        ]);
+        $plugin->updateSetting($journalId, 'statementFile', $statementFileData);
+    }
+
     protected function cleanupStatementDir(int $journalId, ?string $fileName = null): void
     {
         $fileMgr = new PrivateFileManager();
@@ -81,5 +100,32 @@ trait CarinianaTestFixtureTrait
         if (is_dir($dir)) {
             @rmdir($dir);
         }
+    }
+
+    protected function cleanupJournal(?Journal $journal): void
+    {
+        if (!$journal || !$journal->getId()) {
+            return;
+        }
+
+        $journalId = $journal->getId();
+
+        $this->cleanupStatementDir($journalId);
+
+        /** @var \APP\journal\JournalDAO $journalDao */
+        $journalDao = DAORegistry::getDAO('JournalDAO');
+        $journalDao->deleteById($journalId);
+    }
+
+    protected function mockRequestForJournal(Journal $journal): void
+    {
+        if (!method_exists($this, 'mockRequest')) {
+            throw new \RuntimeException('mockRequest() method not available. Test class must extend PKPTestCase.');
+        }
+
+        $this->mockRequest(
+            path: 'index/' . $journal->getData('urlPath') . '/index',
+            userId: 0
+        );
     }
 }

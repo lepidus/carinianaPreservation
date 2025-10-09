@@ -25,7 +25,15 @@ Além destas informações, no primeiro envio também é enviado o *Termo de Res
 
 ## Compatibilidade
 
-Este plugin é compatível com o **OJS** nas versões **3.3.0** e **3.4.0**.
+Este plugin é compatível com o **OJS** nas versões **3.3.0**, **3.4.0** e **3.5.0**.
+
+### Versionamento
+
+O versionamento do plugin segue o padrão de compatibilidade com as versões do OJS:
+
+* **v1.x.x** - Compatível com OJS 3.3
+* **v2.x.x** - Compatível com OJS 3.4
+* **v3.x.x** - Compatível com OJS 3.5
 
 ## Instalação e Configuração
 

@@ -11,8 +11,8 @@
 <version>
 	<application>carinianaPreservation</application>
 	<type>plugins.generic</type>
-	<release>2.0.0.1</release>
-	<date>2025-10-02</date>
+	<release>3.0.0.0</release>
+	<date>2025-10-09</date>
 	<lazy-load>0</lazy-load>
   <class>CarinianaPreservationPlugin</class>
 </version>

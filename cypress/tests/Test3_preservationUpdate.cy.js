@@ -1,9 +1,10 @@
 const pluginRowId = 'component-grid-settings-plugins-settingsplugingrid-category-generic-row-carinianapreservationplugin';
 
 function openPreservationModal() {
-    cy.get('a:contains("Website")').click();
+    cy.get('nav').contains('Settings').click();
+    cy.get('nav').contains('Website').click({ force: true });
     cy.waitJQuery();
-    cy.get('button#plugins-button').click();
+    cy.get('button[id="plugins-button"]').click();
     cy.get('#' + pluginRowId + ' > .first_column > .show_extras').click();
     cy.get('a[id^=' + pluginRowId + '-preservationSubmission-button]').click();
     cy.wait(250);
@@ -11,7 +12,8 @@ function openPreservationModal() {
 
 function checkLockssOption(check) {
     cy.login('dbarnes', null, 'publicknowledge');
-    cy.get('a:contains("Distribution")').click();
+    cy.get('nav').contains('Settings').click();
+    cy.get('nav').contains('Distribution').click({ force: true });
     cy.contains('Archiving').click({force: true});
     cy.contains('LOCKSS and CLOCKSS').click();
     if (check) {
@@ -54,15 +56,17 @@ describe("Preservation update", function () {
     });
     it("Fails and show errors if ISSN and eISSN are removed from the journal settings", function () {
         cy.login('dbarnes', null, 'publicknowledge');
-        cy.get('li a:contains("Journal")').first().click();
+        cy.get('nav').contains('Settings').click();
+        cy.get('nav').contains('Journal').click({ force: true });
         cy.get('input[name="onlineIssn"]').clear();
         cy.get('input[name="printIssn"]').clear();
         cy.get('.pkpButton:visible').contains('Save').click();
         cy.login('dbarnes', null, 'publicknowledge');
-        cy.get('a:contains("Website")').click();
 
+        cy.get('nav').contains('Settings').click();
+        cy.get('nav').contains('Website').click({ force: true });
         cy.waitJQuery();
-        cy.get('button#plugins-button').click();
+        cy.get('button[id="plugins-button"]').click();
         cy.get('#' + pluginRowId + ' > .first_column > .show_extras').click();
         cy.get('a[id^=' + pluginRowId + '-preservationSubmission-button]').click();
         cy.wait(200);
@@ -83,9 +87,10 @@ describe("Preservation update", function () {
 describe("Plugin Settings Form after the first preservation", function () {
     it("Shows preserved notice", function () {
         cy.login('dbarnes', null, 'publicknowledge');
-        cy.get('a:contains("Website")').click();
+        cy.get('nav').contains('Settings').click();
+        cy.get('nav').contains('Website').click({ force: true });
         cy.waitJQuery();
-        cy.get('button#plugins-button').click();
+        cy.get('button[id="plugins-button"]').click();
         cy.get('#' + pluginRowId + ' > .first_column > .show_extras').click();
         cy.get('a[id^=' + pluginRowId + '-settings-button]').click();
 

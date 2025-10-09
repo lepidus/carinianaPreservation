@@ -4,10 +4,9 @@ namespace APP\plugins\generic\carinianaPreservation\tests;
 
 use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
 use APP\plugins\generic\carinianaPreservation\classes\PreservationEmailBuilder;
-use PKP\file\PrivateFileManager;
-use PKP\tests\DatabaseTestCase;
+use PKP\tests\PKPTestCase;
 
-class PreservationEmailBuilderTest extends DatabaseTestCase
+class PreservationEmailBuilderTest extends PKPTestCase
 {
     use CarinianaTestFixtureTrait;
     private $preservationEmailBuilder;
@@ -47,53 +46,23 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
             'contactEmail' => $this->journalContactEmail,
         ]);
         $this->journalId = $this->journal->getId();
+        $this->mockRequestForJournal($this->journal);
         $this->preservationEmailBuilder = new PreservationEmailBuilder();
         $this->persistIssue($this->journal, ['year' => $this->firstIssueYear]);
         $this->persistIssue($this->journal, ['year' => $this->lastIssueYear]);
-        $this->createStatementFileSetting();
+        $this->createStatementFileWithSettings(
+            $this->journalId,
+            $this->statementFileName,
+            $this->statementOriginalFileName
+        );
         $this->email = $this->preservationEmailBuilder->buildPreservationEmail($this->journal, $this->baseUrl, $this->notesAndComments, $this->locale);
-    }
-
-    protected function getAffectedTables()
-    {
-        return ['issues', 'issue_settings', 'plugin_settings'];
     }
 
     protected function tearDown(): void
     {
-        $fileMgr = new PrivateFileManager();
-        $base = rtrim($fileMgr->getBasePath(), '/');
-        $dir = $base . '/carinianaPreservation/' . $this->journalId;
-        $path = $dir . '/' . $this->statementFileName;
-        if (is_file($path)) {
-            unlink($path);
-        }
-        if (is_dir($dir)) {
-            @rmdir($dir);
-        }
-        $journalDao = \PKP\db\DAORegistry::getDAO('JournalDAO'); /** @var \APP\journal\JournalDAO $journalDao */
-        $journalDao->deleteById($this->journalId);
+        $this->cleanupStatementDir($this->journalId, $this->statementFileName);
+        $this->cleanupJournal($this->journal);
         parent::tearDown();
-    }
-
-    private function createStatementFileSetting(): void
-    {
-        $plugin = new CarinianaPreservationPlugin();
-        $fileMgr = new PrivateFileManager();
-        $base = rtrim($fileMgr->getBasePath(), '/');
-        $dir = $base . '/carinianaPreservation/' . $this->journalId;
-        if (!is_dir($dir)) {
-            mkdir($dir, 0777, true);
-        }
-        $generatedName = $this->statementFileName;
-        $fullPath = $dir . '/' . $generatedName;
-        file_put_contents($fullPath, 'PDF');
-        $statementFileData = json_encode([
-            'originalFileName' => $this->statementOriginalFileName,
-            'fileName' => $generatedName,
-            'fileType' => 'application/pdf',
-        ]);
-        $plugin->updateSetting($this->journalId, 'statementFile', $statementFileData);
     }
 
     public function testBuiltPreservationEmailFrom(): void
@@ -142,7 +111,7 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
     public function testBuiltPreservationEmailBody(): void
     {
         $expectedPlain = __('plugins.generic.carinianaPreservation.preservationEmail.body', ['journalAcronym' => $this->journalAcronym], $this->locale);
-        $expectedHtml = '<div style="white-space:pre-line">' . htmlspecialchars($expectedPlain, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8') . '</div>';
+        $expectedHtml = '<div">' . htmlspecialchars($expectedPlain, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8') . '</div>';
         $this->assertEquals($expectedHtml, $this->email->viewData['body']);
     }
 

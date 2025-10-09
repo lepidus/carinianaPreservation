@@ -117,8 +117,6 @@ class CarinianaPreservationSettingsForm extends Form
 
     private function moveStatementTempFile($contextId, $statementTempFile, $userId)
     {
-        import('lib.pkp.classes.file.TemporaryFileManager');
-        import('lib.pkp.classes.file.PrivateFileManager');
         $temporaryFileManager = new TemporaryFileManager();
         $privateFileManager = new PrivateFileManager();
         $extension = pathinfo($statementTempFile->getOriginalFileName(), PATHINFO_EXTENSION) ?: 'pdf';

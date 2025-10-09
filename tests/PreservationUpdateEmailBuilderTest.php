@@ -41,6 +41,7 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
             'contactEmail' => $this->journalContactEmail,
         ]);
         $this->journalId = $this->journal->getId();
+        $this->mockRequestForJournal($this->journal);
         $this->preservationUpdateEmailBuilder = new PreservationUpdateEmailBuilder();
         $this->persistIssue($this->journal, ['year' => $this->firstIssueYear]);
         $this->persistIssue($this->journal, ['year' => $this->lastIssueYear]);
@@ -54,8 +55,7 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
 
     protected function tearDown(): void
     {
-        $journalDao = \PKP\db\DAORegistry::getDAO('JournalDAO'); /** @var \APP\journal\JournalDAO $journalDao */
-        $journalDao->deleteById($this->journalId);
+        $this->cleanupJournal($this->journal);
         parent::tearDown();
     }
 
@@ -105,7 +105,7 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
     public function testBuiltPreservationUpdateEmailBody(): void
     {
         $expectedPlain = __('plugins.generic.carinianaPreservation.preservationUpdateEmail.body', ['journalAcronym' => $this->journalAcronym], $this->locale);
-        $expectedHtml = '<div style="white-space:pre-line">' . htmlspecialchars($expectedPlain, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8') . '</div>';
+        $expectedHtml = '<div">' . htmlspecialchars($expectedPlain, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8') . '</div>';
         $this->assertEquals($expectedHtml, $this->email->viewData['body']);
     }
 

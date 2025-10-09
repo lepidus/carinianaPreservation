@@ -27,7 +27,15 @@ Note: The video is available only in Portuguese (Brazil) at this time.
 
 ## Compatibility
 
-This plugin is compatible with **OJS** versions **3.3.0** and **3.4.0**.
+This plugin is compatible with **OJS** versions **3.3.0**, **3.4.0**, and **3.5.0**.
+
+### Versioning
+
+The plugin versioning follows the OJS version compatibility pattern:
+
+* **v1.x.x** - Compatible with OJS 3.3
+* **v2.x.x** - Compatible with OJS 3.4
+* **v3.x.x** - Compatible with OJS 3.5
 
 ## Installation and Configuration
 

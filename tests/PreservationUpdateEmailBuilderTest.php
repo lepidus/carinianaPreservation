@@ -105,7 +105,7 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
     public function testBuiltPreservationUpdateEmailBody(): void
     {
         $expectedPlain = __('plugins.generic.carinianaPreservation.preservationUpdateEmail.body', ['journalAcronym' => $this->journalAcronym], $this->locale);
-        $expectedHtml = '<div style="white-space:pre-line">' . htmlspecialchars($expectedPlain, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8') . '</div>';
+        $expectedHtml = '<div">' . htmlspecialchars($expectedPlain, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8') . '</div>';
         $this->assertEquals($expectedHtml, $this->email->viewData['body']);
     }
 

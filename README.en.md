@@ -21,7 +21,7 @@ In addition to this information, on the first submission the *Responsibility and
 
 ## Presentation Video
 
-[![Watch the presentation video on Vimeo](https://img.shields.io/badge/Watch%20presentation%20video-Click%20here-blue?logo=vimeo)](https://vimeo.com/997938301/c62617794b)
+[![Watch the presentation video on Vimeo](https://img.shields.io/badge/Watch%20presentation%20video-Click%20here-blue?logo=vimeo)](https://vimeo.com/1089677111)
 
 Note: The video is available only in Portuguese (Brazil) at this time.
 

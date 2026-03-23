@@ -4,13 +4,12 @@ namespace APP\plugins\generic\carinianaPreservation\tests;
 
 use APP\plugins\generic\carinianaPreservation\classes\PreservedJournal;
 use APP\plugins\generic\carinianaPreservation\classes\PreservedJournalSpreadsheet;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use PHPUnit\Framework\TestCase;
 
 class PreservedJournalSpreadsheetTest extends TestCase
 {
     private $spreadsheet;
-    private $filePath = '/tmp/test_spreadsheet.xlsx';
+    private $filePath = '/tmp/test_spreadsheet.csv';
     private $locale = 'pt_BR';
 
     protected function setUp(): void
@@ -42,16 +41,24 @@ class PreservedJournalSpreadsheetTest extends TestCase
 
     private function getWorksheet()
     {
-        $reader = IOFactory::createReader('Xlsx');
-        $reader->setReadDataOnly(true);
-        $spreadsheet = $reader->load($this->filePath);
-        return $spreadsheet->getActiveSheet();
+        $file = fopen($this->filePath, 'r');
+        if ($file === false) {
+            throw new \RuntimeException("Failed to open file for reading: {$this->filePath}");
+        }
+
+        $rows = [];
+        while (($row = fgetcsv($file)) !== false) {
+            $rows[] = $row;
+        }
+        fclose($file);
+
+        return $rows;
     }
 
     public function testGeneratedSpreadsheetHasHeaders(): void
     {
         $this->spreadsheet->createSpreadsheet($this->filePath);
-        $worksheet = $this->getWorksheet();
+        $rows = $this->getWorksheet();
         $expectedHeaders = [
             __('plugins.generic.carinianaPreservation.headers.publisherOrInstitution', [], $this->locale),
             __('plugins.generic.carinianaPreservation.headers.title', [], $this->locale),
@@ -65,19 +72,17 @@ class PreservedJournalSpreadsheetTest extends TestCase
             __('admin.systemVersion', [], $this->locale)
         ];
 
-        $firstRow = $worksheet->toArray()[0];
-
+        $firstRow = $rows[0];
         $this->assertEquals($expectedHeaders, $firstRow);
     }
 
     public function testGeneratedSpreadsheetHasJournals(): void
     {
         $this->spreadsheet->createSpreadsheet($this->filePath);
-        $worksheet = $this->getWorksheet();
+        $rows = $this->getWorksheet();
 
         $expectedJournalData = ['PKP', 'PKP Journal n18', '1234-1234', '0101-1010', 'https://pkp-journal-18.test/', 'pkpjournal18', '2018; 2022', '1; 2; 12; 18', 'We are the 18th PKP journal', '3.3.0.20'];
-        $secondRow = $worksheet->toArray()[1];
 
-        $this->assertEquals($expectedJournalData, $secondRow);
+        $this->assertEquals($expectedJournalData, $rows[1]);
     }
 }

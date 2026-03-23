@@ -2,11 +2,6 @@
 
 namespace APP\plugins\generic\carinianaPreservation\classes;
 
-require __DIR__ . '/../vendor/autoload.php';
-
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-
 class PreservedJournalSpreadsheet
 {
     private $journals;
@@ -34,27 +29,19 @@ class PreservedJournalSpreadsheet
         ];
     }
 
-    private function writeRowOnSpreadSheet($worksheet, $data, $rowIndex)
-    {
-        for ($columnIndex = 1; $columnIndex <= count($data); $columnIndex++) {
-            $worksheet->setCellValueByColumnAndRow($columnIndex, $rowIndex, $data[$columnIndex - 1]);
-        }
-    }
-
     public function createSpreadsheet(string $filePath)
     {
-        $spreadsheet = new Spreadsheet();
-        $worksheet = $spreadsheet->getActiveSheet();
-
-        $this->writeRowOnSpreadSheet($worksheet, $this->getHeaders(), 1);
-
-        $rowIndex = 2;
-        foreach ($this->journals as $journal) {
-            $this->writeRowOnSpreadSheet($worksheet, $journal->asRecord(), $rowIndex);
-            $rowIndex++;
+        $file = fopen($filePath, 'w');
+        if ($file === false) {
+            throw new \RuntimeException("Failed to open file for writing: {$filePath}");
         }
 
-        $writer = new Xlsx($spreadsheet);
-        $writer->save($filePath);
+        fputcsv($file, $this->getHeaders());
+
+        foreach ($this->journals as $journal) {
+            fputcsv($file, $journal->asRecord());
+        }
+
+        fclose($file);
     }
 }

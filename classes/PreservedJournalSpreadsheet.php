@@ -4,12 +4,12 @@ namespace APP\plugins\generic\carinianaPreservation\classes;
 
 class PreservedJournalSpreadsheet
 {
-    private $journals;
-    private $locale;
+    private PreservedJournal $journal;
+    private string $locale;
 
-    public function __construct(array $journals, string $locale)
+    public function __construct(PreservedJournal $journal, string $locale)
     {
-        $this->journals = $journals;
+        $this->journal = $journal;
         $this->locale = $locale;
     }
 
@@ -29,7 +29,7 @@ class PreservedJournalSpreadsheet
         ];
     }
 
-    public function createSpreadsheet(string $filePath)
+    public function createSpreadsheet(string $filePath): void
     {
         $file = fopen($filePath, 'w');
         if ($file === false) {
@@ -37,10 +37,7 @@ class PreservedJournalSpreadsheet
         }
 
         fputcsv($file, $this->getHeaders());
-
-        foreach ($this->journals as $journal) {
-            fputcsv($file, $journal->asRecord());
-        }
+        fputcsv($file, $this->journal->asRecord());
 
         fclose($file);
     }

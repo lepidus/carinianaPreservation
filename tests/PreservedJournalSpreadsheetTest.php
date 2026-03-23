@@ -14,22 +14,20 @@ class PreservedJournalSpreadsheetTest extends TestCase
 
     protected function setUp(): void
     {
-        $journals = [
-            new PreservedJournal(
-                'PKP',
-                'PKP Journal n18',
-                '1234-1234',
-                '0101-1010',
-                'https://pkp-journal-18.test/',
-                'pkpjournal18',
-                '2018; 2022',
-                '1; 2; 12; 18',
-                'We are the 18th PKP journal',
-                '3.3.0.20'
-            )
-        ];
+        $journal = new PreservedJournal(
+            'PKP',
+            'PKP Journal n18',
+            '1234-1234',
+            '0101-1010',
+            'https://pkp-journal-18.test/',
+            'pkpjournal18',
+            '2018; 2022',
+            '1; 2; 12; 18',
+            'We are the 18th PKP journal',
+            '3.3.0.20'
+        );
 
-        $this->spreadsheet = new PreservedJournalSpreadsheet($journals, $this->locale);
+        $this->spreadsheet = new PreservedJournalSpreadsheet($journal, $this->locale);
     }
 
     protected function tearDown(): void

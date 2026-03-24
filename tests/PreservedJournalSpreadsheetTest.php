@@ -51,7 +51,7 @@ class PreservedJournalSpreadsheetTest extends TestCase
     {
         $this->spreadsheet->createCsv($this->filePath);
         $data = $this->getCsvData();
-        
+
         $expectedHeaders = [
             __("plugins.generic.carinianaPreservation.headers.publisherOrInstitution"),
             __("plugins.generic.carinianaPreservation.headers.title"),

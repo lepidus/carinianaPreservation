@@ -1,17 +1,12 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
-
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-
 class PreservedJournalSpreadsheet
 {
-    private $journals;
+    private $journal;
 
-    public function __construct(array $journals)
+    public function __construct(PreservedJournal $journal)
     {
-        $this->journals = $journals;
+        $this->journal = $journal;
     }
 
     private function getHeaders(): array
@@ -30,28 +25,16 @@ class PreservedJournalSpreadsheet
         ];
     }
 
-    private function writeRowOnSpreadSheet($worksheet, $data, $rowIndex)
-    {
-        for ($columnIndex = 1; $columnIndex <= count($data); $columnIndex++) {
-            $worksheet->setCellValueByColumnAndRow($columnIndex, $rowIndex, $data[$columnIndex - 1]);
-        }
-    }
-
-    public function createSpreadsheet(string $filePath)
+    public function createCsv(string $filePath)
     {
         AppLocale::requireComponents(LOCALE_COMPONENT_APP_ADMIN);
-        $spreadsheet = new Spreadsheet();
-        $worksheet = $spreadsheet->getActiveSheet();
 
-        $this->writeRowOnSpreadSheet($worksheet, $this->getHeaders(), 1);
-
-        $rowIndex = 2;
-        foreach ($this->journals as $journal) {
-            $this->writeRowOnSpreadSheet($worksheet, $journal->asRecord(), $rowIndex);
-            $rowIndex++;
+        $handle = fopen($filePath, 'w');
+        if ($handle === false) {
+            throw new Exception("Failed to open file for writing: {$filePath}");
         }
-
-        $writer = new Xlsx($spreadsheet);
-        $writer->save($filePath);
+        fputcsv($handle, $this->getHeaders());
+        fputcsv($handle, $this->journal->asRecord());
+        fclose($handle);
     }
 }

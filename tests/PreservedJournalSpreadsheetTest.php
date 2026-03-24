@@ -1,8 +1,5 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
-
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use PHPUnit\Framework\TestCase;
 
 import('classes.submission.Submission');
@@ -12,26 +9,24 @@ import('plugins.generic.carinianaPreservation.classes.PreservedJournal');
 class PreservedJournalSpreadsheetTest extends TestCase
 {
     private $spreadsheet;
-    private $filePath = '/tmp/test_spreadsheet.xlsx';
+    private $filePath = '/tmp/test_spreadsheet.csv';
 
     protected function setUp(): void
     {
-        $journals = [
-            new PreservedJournal(
-                'PKP',
-                'PKP Journal n18',
-                '1234-1234',
-                '0101-1010',
-                'https://pkp-journal-18.test/',
-                'pkpjournal18',
-                '2018; 2022',
-                '1; 2; 12; 18',
-                'We are the 18th PKP journal',
-                '3.3.0.20'
-            )
-        ];
+        $preservedJournal = new PreservedJournal(
+            'PKP',
+            'PKP Journal n18',
+            '1234-1234',
+            '0101-1010',
+            'https://pkp-journal-18.test/',
+            'pkpjournal18',
+            '2018; 2022',
+            '1; 2; 12; 18',
+            'We are the 18th PKP journal',
+            '3.3.0.20'
+        );
 
-        $this->spreadsheet = new PreservedJournalSpreadsheet($journals);
+        $this->spreadsheet = new PreservedJournalSpreadsheet($preservedJournal);
     }
 
     protected function tearDown(): void
@@ -41,18 +36,22 @@ class PreservedJournalSpreadsheetTest extends TestCase
         }
     }
 
-    private function getWorksheet()
+    private function getCsvData(): array
     {
-        $reader = IOFactory::createReader('Xlsx');
-        $reader->setReadDataOnly(true);
-        $spreadsheet = $reader->load($this->filePath);
-        return $spreadsheet->getActiveSheet();
+        $handle = fopen($this->filePath, 'r');
+        $data = [];
+        while (($row = fgetcsv($handle)) !== false) {
+            $data[] = $row;
+        }
+        fclose($handle);
+        return $data;
     }
 
-    public function testGeneratedSpreadsheetHasHeaders(): void
+    public function testGeneratedCsvHasHeaders(): void
     {
-        $this->spreadsheet->createSpreadsheet($this->filePath);
-        $worksheet = $this->getWorksheet();
+        $this->spreadsheet->createCsv($this->filePath);
+        $data = $this->getCsvData();
+        
         $expectedHeaders = [
             __("plugins.generic.carinianaPreservation.headers.publisherOrInstitution"),
             __("plugins.generic.carinianaPreservation.headers.title"),
@@ -66,19 +65,15 @@ class PreservedJournalSpreadsheetTest extends TestCase
             __("admin.systemVersion")
         ];
 
-        $firstRow = $worksheet->toArray()[0];
-
-        $this->assertEquals($expectedHeaders, $firstRow);
+        $this->assertEquals($expectedHeaders, $data[0]);
     }
 
-    public function testGeneratedSpreadsheetHasJournals(): void
+    public function testGeneratedCsvHasJournalData(): void
     {
-        $this->spreadsheet->createSpreadsheet($this->filePath);
-        $worksheet = $this->getWorksheet();
+        $this->spreadsheet->createCsv($this->filePath);
+        $data = $this->getCsvData();
 
         $expectedJournalData = ['PKP', 'PKP Journal n18', '1234-1234', '0101-1010', 'https://pkp-journal-18.test/', 'pkpjournal18', '2018; 2022', '1; 2; 12; 18', 'We are the 18th PKP journal', '3.3.0.20'];
-        $secondRow = $worksheet->toArray()[1];
-
-        $this->assertEquals($expectedJournalData, $secondRow);
+        $this->assertEquals($expectedJournalData, $data[1]);
     }
 }

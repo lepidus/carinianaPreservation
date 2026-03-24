@@ -42,10 +42,10 @@ class PreservationEmailBuilder extends BasePreservationEmailBuilder
         $preservedJournal = $preservedJournalFactory->buildPreservedJournal($journal, $baseUrl, $notesAndComments, $locale);
 
         $journalAcronym = $journal->getLocalizedData('acronym', $locale);
-        $spreadsheetFilePath = "/tmp/planilha_preservacao_{$journalAcronym}.xlsx";
+        $spreadsheetFilePath = "/tmp/planilha_preservacao_{$journalAcronym}.csv";
 
-        $preservedJournalSpreadsheet = new PreservedJournalSpreadsheet([$preservedJournal]);
-        $preservedJournalSpreadsheet->createSpreadsheet($spreadsheetFilePath);
+        $preservedJournalSpreadsheet = new PreservedJournalSpreadsheet($preservedJournal);
+        $preservedJournalSpreadsheet->createCsv($spreadsheetFilePath);
 
         return $spreadsheetFilePath;
     }

@@ -148,12 +148,13 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
 
     public function testBuiltPreservationEmailSpreadsheet(): void
     {
-        $expectedFileName = "planilha_preservacao_{$this->journalAcronym}.xlsx";
-        $xlsxContentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+
+        $expectedFileName = "planilha_preservacao_{$this->journalAcronym}.csv";
+        $csvContentType = 'text/csv';
 
         $attachment = $this->email->attachments[self::ATTACHMENT_INDEX_SPREADSHEET];
         $this->assertEquals($expectedFileName, $attachment['options']['as']);
-        $this->assertEquals($xlsxContentType, $attachment['options']['mime']);
+        $this->assertEquals($csvContentType, $attachment['options']['mime']);
         $this->assertStringEndsWith($expectedFileName, $attachment['file']);
     }
 

@@ -11,17 +11,15 @@ include:
 
 .php_dependencies: &php_dependencies
   before_script:
-    - apt update && apt install php-gd php-zip php-xml php-mbstring -yqq
+    - apt update && apt install php-xml php-mbstring -yqq
 
 .unit_test_template:
   before_script:
-    - apt update && apt install php{8.1,7.4,7.3}-gd php{8.1,7.4,7.3}-zip -yqq
-    - composer install
+    - apt update && apt install php{8.1,7.4,7.3}-gd php{8.1,7.4,7.3}-xml php{8.1,7.4,7.3}-mbstring -yqq
 
 .integration_tests_template:
   before_script:
-    - apt update && apt install php-gd php-zip php-xml php-mbstring -yqq
-    - composer install
+    - apt update && apt install php-xml php-mbstring -yqq
     - sed -i '$a\[carinianapreservation]\nemail_for_tests = "teste@email.com"' /var/www/$CY_APPLICATION/config.inc.php
 
 code_formatting_check:

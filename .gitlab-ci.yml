@@ -3,7 +3,7 @@ variables:
 
 include:
   - project: 'documentacao-e-tarefas/modelosparaintegracaocontinua'
-    ref: main
+    ref: stable-3_4_0
     file:
       - 'templates/groups/pkp_plugin.yml'
       - 'templates/groups/ojs/unit_tests.yml'
@@ -11,17 +11,15 @@ include:
 
 .php_dependencies: &php_dependencies
   before_script:
-    - apt update && apt install php-gd php-zip php-xml php-mbstring -yqq
+    - apt update && apt install php-xml php-mbstring -yqq
 
 .unit_test_template:
   before_script:
-    - apt update && apt install php-gd php-zip -yqq
-    - composer install
+    - apt update && apt install php-xml -yqq
 
 .integration_tests_template:
   before_script:
-    - apt update && apt install php-gd php-zip php-xml php-mbstring -yqq
-    - composer install
+    - apt update && apt install php-xml php-mbstring -yqq
     - sed -i '$a\[carinianapreservation]\nemail_for_tests = "teste@email.com"' /var/www/$CY_APPLICATION/config.inc.php
 
 ojs_integration_tests:

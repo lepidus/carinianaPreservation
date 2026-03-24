@@ -51,7 +51,7 @@ abstract class BasePreservationEmailBuilder
             $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
             $contentType = match ($ext) {
                 'xml' => 'text/xml',
-                'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'csv' => 'text/csv',
                 'diff' => 'text/plain',
                 default => 'application/octet-stream'
             };

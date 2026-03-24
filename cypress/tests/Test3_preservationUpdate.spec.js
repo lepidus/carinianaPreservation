@@ -58,7 +58,8 @@ describe("Preservation update", function () {
         cy.get('input[name="onlineIssn"]').clear();
         cy.get('input[name="printIssn"]').clear();
         cy.get('.pkpButton:visible').contains('Save').click();
-        cy.login('dbarnes', null, 'publicknowledge');
+
+        cy.visit('/index.php/publicknowledge/submissions');
         cy.get('a:contains("Website")').click();
 
         cy.waitJQuery();

@@ -2,8 +2,6 @@
 
 namespace APP\plugins\generic\carinianaPreservation\classes;
 
-require __DIR__ . '/../vendor/autoload.php';
-
 class PreservedJournalSpreadsheet
 {
     private PreservedJournal $journal;

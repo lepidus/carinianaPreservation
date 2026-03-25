@@ -33,6 +33,8 @@ describe("Preservation attempt is not successfull", () => {
         cy.get('input[name="printIssn"]').clear();
         cy.get('.pkpButton:visible').contains('Save').click();
 
+        cy.wait(200);
+
         openPreservationModal();
         cy.contains('The e-mail with the journal data will be sent');
         cy.contains('Notes and comments');

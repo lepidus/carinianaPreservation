@@ -73,7 +73,7 @@ class PreservationXmlBuilder
             if ($firstIssue->getData($indexToUse) == $lastIssue->getData($indexToUse)) {
                 $volumeText = $firstIssue->getData($indexToUse);
             } else {
-                $volumeText = $firstIssue->getData($indexToUse) . "-" . $lastIssue->getData($indexToUse);
+                $volumeText = $firstIssue->getData($indexToUse) . '-' . $lastIssue->getData($indexToUse);
             }
 
             $year = $firstIssue->getData('year');
@@ -93,7 +93,7 @@ class PreservationXmlBuilder
         $property = $dom->createElement('property');
         $property->setAttribute('name', $this->normalize($name));
         if ($value) {
-            $property->setAttribute('value', $this->normalize($value));
+            $property->setAttribute('value', $value);
         }
 
         return $property;
@@ -107,7 +107,7 @@ class PreservationXmlBuilder
         $journalProperty = $this->createXmlProperty($dom, $publisherInstitution);
         $titleSetProperty->appendChild($journalProperty);
 
-        $nameProperty = $this->createXmlProperty($dom, 'name', "All $publisherInstitution");
+        $nameProperty = $this->createXmlProperty($dom, 'name', "All {$publisherInstitution}");
         $journalProperty->appendChild($nameProperty);
 
         $classProperty = $this->createXmlProperty($dom, 'class', 'xpath');
@@ -121,12 +121,12 @@ class PreservationXmlBuilder
 
     private function createPreservedYearParamProperty($dom, $index, $key, $value)
     {
-        $paramProperty = $this->createXmlProperty($dom, "param.$index");
+        $paramProperty = $this->createXmlProperty($dom, "param.{$index}");
 
-        $keyProperty = $this->createXmlProperty($dom, "key", $key);
+        $keyProperty = $this->createXmlProperty($dom, 'key', $key);
         $paramProperty->appendChild($keyProperty);
 
-        $valueProperty = $this->createXmlProperty($dom, "value", $value);
+        $valueProperty = $this->createXmlProperty($dom, 'value', $value);
         $paramProperty->appendChild($valueProperty);
 
         return $paramProperty;
@@ -180,7 +180,7 @@ class PreservationXmlBuilder
     private function normalize($string)
     {
         $string = str_replace('&', 'E', $string);
-        $string = iconv("utf-8", "ascii//TRANSLIT", $string);
+        $string = iconv('utf-8', 'ascii//TRANSLIT', $string);
         return $string;
     }
 

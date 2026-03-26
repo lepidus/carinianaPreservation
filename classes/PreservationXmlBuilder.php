@@ -97,7 +97,7 @@ class PreservationXmlBuilder
         $property = $dom->createElement('property');
         $property->setAttribute('name', $this->normalize($name));
         if ($value) {
-            $property->setAttribute('value', $this->normalize($value));
+            $property->setAttribute('value', $value);
         }
 
         return $property;

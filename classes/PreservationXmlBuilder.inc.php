@@ -113,7 +113,7 @@ class PreservationXmlBuilder
         $classProperty = $this->createXmlProperty($dom, 'class', 'xpath');
         $journalProperty->appendChild($classProperty);
 
-        $xpathProperty = $this->createXmlProperty($dom, 'xpath', '[attributes/publisher="' . $publisherInstitution . '"]');
+        $xpathProperty = $this->createXmlProperty($dom, 'xpath', '[attributes/publisher=\'' . $publisherInstitution . '\']');
         $journalProperty->appendChild($xpathProperty);
 
         return $titleSetProperty;

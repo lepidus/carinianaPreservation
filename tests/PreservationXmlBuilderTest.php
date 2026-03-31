@@ -90,7 +90,7 @@ class PreservationXmlBuilderTest extends PKPTestCase
         $classProperty = $this->createXmlProperty($dom, 'class', 'xpath');
         $journalProperty->appendChild($classProperty);
 
-        $xpathProperty = $this->createXmlProperty($dom, 'xpath', '[attributes/publisher="' . $this->publisherOrInstitution . '"]');
+        $xpathProperty = $this->createXmlProperty($dom, 'xpath', '[attributes/publisher=\'' . $this->publisherOrInstitution . '\']');
         $journalProperty->appendChild($xpathProperty);
 
         return $titleSet;

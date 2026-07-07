@@ -15,13 +15,13 @@ class PreservationEmailBuilder extends BasePreservationEmailBuilder
         $this->setEmailSubjectAndBody($email, $journalAcronym, $locale);
 
         $spreadsheetFilePath = $this->createJournalSpreadsheet($journal, $baseUrl, $notesAndComments, $locale);
-        $email->addAttachment($spreadsheetFilePath);
+        $email->addAttachment($spreadsheetFilePath, $this->getSpreadsheetAttachmentName($journalAcronym), 'text/csv');
 
         $statementData = $this->getResponsabilityStatementData($journal);
         $email->addAttachment($statementData['path'], $statementData['name'], $statementData['type']);
 
         $xmlFilePath = $this->createXml($journal, $baseUrl);
-        $email->addAttachment($xmlFilePath);
+        $email->addAttachment($xmlFilePath, $this->getXmlAttachmentName($journalAcronym), 'text/xml');
 
         (new PreservationXmlStatePersister())->persist($journal->getId(), $xmlFilePath);
 
@@ -41,8 +41,7 @@ class PreservationEmailBuilder extends BasePreservationEmailBuilder
         $preservedJournalFactory = new PreservedJournalFactory();
         $preservedJournal = $preservedJournalFactory->buildPreservedJournal($journal, $baseUrl, $notesAndComments, $locale);
 
-        $journalAcronym = $journal->getLocalizedData('acronym', $locale);
-        $spreadsheetFilePath = "/tmp/planilha_preservacao_{$journalAcronym}.csv";
+        $spreadsheetFilePath = $this->createTempPath('cariniana_csv_');
 
         $preservedJournalSpreadsheet = new PreservedJournalSpreadsheet($preservedJournal);
         $preservedJournalSpreadsheet->createCsv($spreadsheetFilePath);
@@ -53,15 +52,18 @@ class PreservationEmailBuilder extends BasePreservationEmailBuilder
     private function getResponsabilityStatementData($journal): array
     {
         $plugin = new CarinianaPreservationPlugin();
-        $statementFileData = json_decode($plugin->getSetting($journal->getId(), 'statementFile'), true);
+        $statementFileData = $plugin->getStatementFileData($journal->getId());
+        if (!$statementFileData) {
+            throw new Exception('Invalid responsibility statement file data.');
+        }
+
         $originalName = $statementFileData['originalFileName'];
         $type = $statementFileData['fileType'];
-        $fileName = $statementFileData['fileName'];
+        $statementFilePath = $plugin->getStatementFilePath($journal->getId(), $statementFileData);
+        if (!$statementFilePath) {
+            throw new Exception('Responsibility statement file not found.');
+        }
 
-        import('lib.pkp.classes.file.PrivateFileManager');
-        $privateFileManager = new PrivateFileManager();
-        $basePath = rtrim($privateFileManager->getBasePath(), '/');
-        $statementFilePath = $basePath . '/carinianaPreservation/' . (int)$journal->getId() . '/' . $fileName;
         return [
             'path' => $statementFilePath,
             'name' => $originalName,

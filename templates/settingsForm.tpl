@@ -17,14 +17,17 @@
                 uploaderOptions: {ldelim}
 					uploadUrl: {url|json_encode router=$smarty.const.ROUTE_COMPONENT op="manage" category="generic" plugin=$pluginName verb="uploadStatementFile" save=true escape=false},
 					baseUrl: {$baseUrl|json_encode},
-					filters: {ldelim}
-						mime_types : [
-							{ldelim} title : "Document files", extensions : "pdf,doc,docx" {rdelim}
-						]
-					{rdelim}
-                {rdelim}
-            {rdelim}
-        );
+						filters: {ldelim}
+							mime_types : [
+								{ldelim} title : "Document files", extensions : "pdf,doc,docx" {rdelim}
+							]
+						{rdelim},
+						multipart_params: {ldelim}
+							csrfToken: {csrf type=json}
+						{rdelim}
+	                {rdelim}
+	            {rdelim}
+	        );
     {rdelim});
 </script>
 

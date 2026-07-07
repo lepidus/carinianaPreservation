@@ -221,6 +221,20 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
         $this->assertEmpty($form->getErrorsArray());
     }
 
+    public function testFirstPreservationRejectsUnsafeStatementFileSetting(): void
+    {
+        $this->plugin->updateSetting(self::JOURNAL_WITH_LOCKSS_ID, 'statementFile', json_encode([
+            'originalFileName' => 'passwd.pdf',
+            'fileName' => '../../passwd',
+            'fileType' => 'application/pdf'
+        ]));
+        $form = new PreservationSubmissionForm($this->plugin, self::JOURNAL_WITH_LOCKSS_ID, $this->journalDaoMock);
+        $form->setData('notesAndComments', 'Notas iniciais');
+
+        $this->assertFalse($form->validate());
+        $this->assertStringContainsString('missingResponsabilityStatement', implode(' ', $form->getErrorsArray()));
+    }
+
     public function testUpdateWithNoChangesLockssEnabled(): void
     {
         $this->createBaselineNoChanges(self::JOURNAL_WITH_LOCKSS_ID);
@@ -268,11 +282,7 @@ class PreservationSubmissionFormTest extends DatabaseTestCase
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
         import('plugins.generic.carinianaPreservation.classes.PreservationXmlBuilder');
         $builder = new PreservationXmlBuilder($journal, $baseUrl);
-        $acronym = $journal->getLocalizedData('acronym', $journal->getPrimaryLocale());
-        $tempPath = "/tmp/marcacoes_preservacao_{$acronym}_check.xml";
-        if (file_exists($tempPath)) {
-            @unlink($tempPath);
-        }
+        $tempPath = tempnam(sys_get_temp_dir(), 'cariniana_test_xml_');
         $builder->createPreservationXml($tempPath);
         $xmlContent = file_get_contents($tempPath);
         $this->plugin->updateSetting($journalId, 'preservedXMLcontent', $xmlContent);

@@ -41,7 +41,11 @@ class LegacyStatementMigration
 
         $statementFileSettingJson = $this->plugin->getSetting($journalId, 'statementFile');
         $statementFileSetting = $statementFileSettingJson ? json_decode($statementFileSettingJson, true) : null;
-        $hasPrivateFile = $statementFileSetting && !empty($statementFileSetting['fileName']) && is_file($privateDir . '/' . $statementFileSetting['fileName']);
+        $hasPrivateFile = false;
+        if ($statementFileSetting && !empty($statementFileSetting['fileName'])) {
+            $fileName = $statementFileSetting['fileName'];
+            $hasPrivateFile = basename($fileName) === $fileName && is_file($privateDir . '/' . $fileName);
+        }
 
         if ($alreadyPreserved) {
             $this->deleteFiles($legacyPublicFiles);

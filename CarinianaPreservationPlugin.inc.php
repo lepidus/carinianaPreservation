@@ -79,8 +79,13 @@ class CarinianaPreservationPlugin extends GenericPlugin
             case 'downloadStatement':
                 $fileManager = new FileManager();
                 $filePath = $this->getPluginPath() . '/resources/Termo_de_Responsabilidade.doc';
-                $fileManager->downloadByPath($filePath);
-                // no break
+                $fileManager->downloadByPath(
+                    $filePath,
+                    'application/msword',
+                    false,
+                    basename($filePath)
+                );
+                return null;
             case 'uploadStatementFile':
                 return $this->saveStatementFile($request);
         }

@@ -75,4 +75,23 @@ class StatementFileRemovalTest extends DatabaseTestCase
         $this->assertFileDoesNotExist($path);
         $this->assertEmpty($plugin->getSetting($this->journalId, 'statementFile'));
     }
+
+    public function testRemoveStatementFileIgnoresUnsafeStoredPath(): void
+    {
+        $plugin = new CarinianaPreservationPlugin();
+        $outsidePath = tempnam(sys_get_temp_dir(), 'cariniana_outside_');
+        file_put_contents($outsidePath, 'DO NOT DELETE');
+        $plugin->updateSetting($this->journalId, 'statementFile', json_encode([
+            'originalFileName' => 'outside.pdf',
+            'fileName' => '../' . basename($outsidePath),
+            'fileType' => 'application/pdf',
+        ]));
+
+        $plugin->removeStatementFile($this->journalId);
+
+        $this->assertFileExists($outsidePath);
+        $this->assertSame('DO NOT DELETE', file_get_contents($outsidePath));
+        $this->assertEmpty($plugin->getSetting($this->journalId, 'statementFile'));
+        @unlink($outsidePath);
+    }
 }

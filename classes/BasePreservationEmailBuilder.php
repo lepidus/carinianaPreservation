@@ -62,13 +62,43 @@ abstract class BasePreservationEmailBuilder
 
     protected function createXml($journal, $baseUrl): string
     {
-        $journalAcronym = $journal->getLocalizedData('acronym', $journal->getPrimaryLocale());
-        $xmlFilePath = "/tmp/marcacoes_preservacao_{$journalAcronym}.xml";
+        $xmlFilePath = $this->createTempPath('cariniana_xml_');
 
         $preservationXmlBuilder = new PreservationXmlBuilder($journal, $baseUrl);
         $preservationXmlBuilder->createPreservationXml($xmlFilePath);
 
         return $xmlFilePath;
+    }
+
+    protected function getXmlAttachmentName($journalAcronym): string
+    {
+        return 'marcacoes_preservacao_' . $this->sanitizeAttachmentNamePart($journalAcronym) . '.xml';
+    }
+
+    protected function getSpreadsheetAttachmentName($journalAcronym): string
+    {
+        return 'planilha_preservacao_' . $this->sanitizeAttachmentNamePart($journalAcronym) . '.csv';
+    }
+
+    protected function getDiffAttachmentName($journalAcronym, $timestamp): string
+    {
+        return 'diff_preservacao_' . $this->sanitizeAttachmentNamePart($journalAcronym) . '_' . $timestamp . '.diff';
+    }
+
+    protected function createTempPath(string $prefix): string
+    {
+        $path = tempnam(sys_get_temp_dir(), $prefix);
+        if (!$path) {
+            throw new \Exception('Unable to create temporary preservation file.');
+        }
+        return $path;
+    }
+
+    private function sanitizeAttachmentNamePart($value): string
+    {
+        $value = preg_replace('/[^A-Za-z0-9_.-]+/', '_', (string)$value);
+        $value = trim($value, '._-');
+        return $value !== '' ? $value : 'journal';
     }
 
     abstract protected function setEmailSubjectAndBody($email, $journalAcronym, $locale);

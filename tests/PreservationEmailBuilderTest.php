@@ -160,10 +160,11 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
     public function testBuiltPreservationEmailSpreadsheet(): void
     {
         $expectedFileName = "planilha_preservacao_{$this->journalAcronym}.csv";
-        $expectedFilePath = "/tmp/$expectedFileName";
-        $csvContentType = 'text/csv';
-        $expectedAttachment = ['path' => $expectedFilePath, 'filename' => $expectedFileName, 'content-type' => $csvContentType];
-        $this->assertEquals($expectedAttachment, $this->email->getData('attachments')[self::ATTACHMENT_INDEX_SPREADSHEET]);
+        $attachment = $this->email->getData('attachments')[self::ATTACHMENT_INDEX_SPREADSHEET];
+        $this->assertEquals($expectedFileName, $attachment['filename']);
+        $this->assertEquals('text/csv', $attachment['content-type']);
+        $this->assertFileExists($attachment['path']);
+        $this->assertStringStartsWith(sys_get_temp_dir(), $attachment['path']);
     }
 
     public function testBuiltPreservationEmailStatement(): void
@@ -172,8 +173,10 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
         $this->assertEquals($this->statementOriginalFileName, $attachment['filename']);
         $this->assertEquals('application/pdf', $attachment['content-type']);
         $this->assertFalse(str_starts_with($attachment['path'], 'public/'));
-        $expectedDirPrefix = 'files/carinianaPreservation/' . $this->journalId . '/';
-        $this->assertTrue(str_starts_with($attachment['path'], $expectedDirPrefix));
+        $fileMgr = new PrivateFileManager();
+        $expectedDir = realpath(rtrim($fileMgr->getBasePath(), '/') . '/carinianaPreservation/' . $this->journalId);
+        $this->assertNotFalse($expectedDir);
+        $this->assertStringStartsWith($expectedDir . DIRECTORY_SEPARATOR, realpath($attachment['path']));
         $fileName = basename($attachment['path']);
         $this->assertEquals($this->statementFileName, $fileName);
         $this->assertFileExists($attachment['path']);
@@ -182,10 +185,11 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
     public function testBuiltPreservationEmailXml(): void
     {
         $expectedFileName = "marcacoes_preservacao_{$this->journalAcronym}.xml";
-        $expectedFilePath = "/tmp/$expectedFileName";
-        $xmlContentType = 'text/xml';
-        $expectedAttachment = ['path' => $expectedFilePath, 'filename' => $expectedFileName, 'content-type' => $xmlContentType];
-        $this->assertEquals($expectedAttachment, $this->email->getData('attachments')[self::ATTACHMENT_INDEX_XML]);
+        $attachment = $this->email->getData('attachments')[self::ATTACHMENT_INDEX_XML];
+        $this->assertEquals($expectedFileName, $attachment['filename']);
+        $this->assertEquals('text/xml', $attachment['content-type']);
+        $this->assertFileExists($attachment['path']);
+        $this->assertStringStartsWith(sys_get_temp_dir(), $attachment['path']);
     }
 
     public function testXmlContentIsPersistedOnFirstPreservation(): void

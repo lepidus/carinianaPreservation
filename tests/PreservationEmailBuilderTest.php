@@ -133,8 +133,11 @@ class PreservationEmailBuilderTest extends PKPTestCase
         $this->assertEquals('application/pdf', $attachment['options']['mime']);
         $this->assertFalse(str_starts_with($attachment['file'], 'public/'));
         $fileMgr = new PrivateFileManager();
-        $expectedDirPrefix = rtrim($fileMgr->getBasePath(), '/') . '/carinianaPreservation/' . $this->journalId . '/';
-        $this->assertTrue(str_starts_with($attachment['file'], $expectedDirPrefix));
+        $expectedDir = realpath(rtrim($fileMgr->getBasePath(), '/') . '/carinianaPreservation/' . $this->journalId);
+        $this->assertNotFalse($expectedDir);
+        $attachmentPath = realpath($attachment['file']);
+        $this->assertNotFalse($attachmentPath);
+        $this->assertStringStartsWith($expectedDir . DIRECTORY_SEPARATOR, $attachmentPath);
         $fileName = basename($attachment['file']);
         $this->assertEquals($this->statementFileName, $fileName);
         $this->assertFileExists($attachment['file']);

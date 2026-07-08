@@ -73,6 +73,11 @@ class CarinianaPreservationSettingsForm extends Form
         $templateMgr->assign('lockssEnabled', $journal->getData('enableLockss'));
         $templateMgr->assign('lockssSettingsUrl', $this->plugin->getLockssSettingsUrl($journal, $request->getBaseUrl()));
         $templateMgr->assign('baseUrl', $request->getBaseUrl());
+        $statementFileData = $this->plugin->getStatementFileData($this->contextId);
+        $templateMgr->assign(
+            'statementFile',
+            $statementFileData && $this->plugin->getStatementFilePath($this->contextId, $statementFileData)
+        );
 
         return parent::fetch($request, $template, $display);
     }

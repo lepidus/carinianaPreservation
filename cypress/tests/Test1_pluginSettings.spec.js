@@ -21,7 +21,7 @@ describe("Cariniana Preservation Plugin - Checking of plugin's settings", functi
             fileName: 'responsability_statement.pdf',
             mimeType: 'application/pdf'
         });
-        cy.wait(200);
+        cy.get('#temporaryFileId').should('not.have.value', '');
         cy.contains('Extra copy e-mail');
         cy.get('input[id^=extraCopyEmail]').clear().type(extraCopyEmail);
         cy.get('button[id^=submitFormButton]').contains('Save').click();

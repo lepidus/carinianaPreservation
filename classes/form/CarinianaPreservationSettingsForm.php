@@ -23,13 +23,13 @@ use PKP\file\PrivateFileManager;
 use PKP\file\TemporaryFileManager;
 use PKP\form\Form;
 use PKP\form\validation\FormValidatorCSRF;
+use PKP\form\validation\FormValidatorEmail;
 use PKP\form\validation\FormValidatorPost;
 
 class CarinianaPreservationSettingsForm extends Form
 {
     public const CONFIG_VARS = [
-        'extraCopyEmail' => 'string',
-        'statementFile' => 'string'
+        'extraCopyEmail' => 'string'
     ];
 
     public $contextId;
@@ -43,6 +43,7 @@ class CarinianaPreservationSettingsForm extends Form
 
         $this->addCheck(new FormValidatorPost($this));
         $this->addCheck(new FormValidatorCSRF($this));
+        $this->addCheck(new FormValidatorEmail($this, 'extraCopyEmail', 'optional'));
     }
 
     public function initData()
@@ -72,6 +73,11 @@ class CarinianaPreservationSettingsForm extends Form
         $templateMgr->assign('lockssEnabled', $journal->getData('enableLockss'));
         $templateMgr->assign('lockssSettingsUrl', $this->plugin->getLockssSettingsUrl($journal, $request->getBaseUrl()));
         $templateMgr->assign('baseUrl', $request->getBaseUrl());
+        $statementFileData = $this->plugin->getStatementFileData($this->contextId);
+        $templateMgr->assign(
+            'statementFile',
+            $statementFileData && $this->plugin->getStatementFilePath($this->contextId, $statementFileData)
+        );
 
         return parent::fetch($request, $template, $display);
     }
@@ -81,7 +87,7 @@ class CarinianaPreservationSettingsForm extends Form
         $plugin = &$this->plugin;
         $contextId = $this->contextId;
         foreach (self::CONFIG_VARS as $configVar => $type) {
-            $plugin->updateSetting($contextId, $configVar, $this->getData($configVar), $type);
+            $plugin->updateSetting($contextId, $configVar, trim((string)$this->getData($configVar)), $type);
         }
 
         $temporaryFileId = $this->getData('temporaryFileId');
@@ -102,7 +108,11 @@ class CarinianaPreservationSettingsForm extends Form
             $user->getId()
         );
 
-        $statementFileName = $this->moveStatementTempFile($contextId, $statementTempFile, $user->getId());
+        if (!$statementTempFile || !$plugin->isAllowedStatementFile($statementTempFile->getOriginalFileName(), $statementTempFile->getFileType())) {
+            return;
+        }
+
+        $statementFileName = $this->moveStatementTempFile($contextId, $plugin, $statementTempFile, $user->getId());
 
         if ($statementFileName) {
             $statementFileData = json_encode([
@@ -115,21 +125,28 @@ class CarinianaPreservationSettingsForm extends Form
         }
     }
 
-    private function moveStatementTempFile($contextId, $statementTempFile, $userId)
+    private function moveStatementTempFile($contextId, $plugin, $statementTempFile, $userId)
     {
         import('lib.pkp.classes.file.TemporaryFileManager');
         import('lib.pkp.classes.file.PrivateFileManager');
         $temporaryFileManager = new TemporaryFileManager();
         $privateFileManager = new PrivateFileManager();
-        $extension = pathinfo($statementTempFile->getOriginalFileName(), PATHINFO_EXTENSION) ?: 'pdf';
-        $basePath = rtrim($privateFileManager->getBasePath(), '/');
-        $dir = $basePath . '/carinianaPreservation/' . (int)$contextId;
-        if (!$privateFileManager->fileExists($dir, 'dir')) {
-            $privateFileManager->mkdirtree($dir);
+        $dir = $plugin->getStatementFileDirectory((int)$contextId);
+        if (!is_dir($dir) && !mkdir($dir, 0777, true) && !is_dir($dir)) {
+            return false;
         }
-        $statementFileName = 'responsabilityStatement.' . $extension;
+        $statementFileName = $plugin->getStatementFileNameForOriginal($statementTempFile->getOriginalFileName());
+        if (!$statementFileName) {
+            return false;
+        }
+        $sourcePath = $statementTempFile->getFilePath();
+        if (!is_file($sourcePath)) {
+            return false;
+        }
         $targetPath = $dir . '/' . $statementFileName;
-        copy($statementTempFile->getFilePath(), $targetPath);
+        if (!copy($sourcePath, $targetPath)) {
+            return false;
+        }
         if (is_file($targetPath)) {
             $privateFileManager->setMode($targetPath, FileManager::FILE_MODE_MASK);
             $temporaryFileManager->deleteById($statementTempFile->getId(), $userId);

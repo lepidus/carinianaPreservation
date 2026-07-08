@@ -122,7 +122,8 @@ class PreservationSubmissionForm extends Form
 
         if ($this->isFirstPreservation()) {
             $statementFile = $this->plugin->getSetting($this->contextId, 'statementFile');
-            if (empty($statementFile)) {
+            $statementData = $this->plugin->getStatementFileData($this->contextId);
+            if (empty($statementFile) || !$statementData || !$this->plugin->getStatementFilePath($this->contextId, $statementData)) {
                 $this->addError(
                     'statementFilePresence',
                     __('plugins.generic.carinianaPreservation.preservationSubmission.missingResponsabilityStatement')
@@ -198,10 +199,13 @@ class PreservationSubmissionForm extends Form
     protected function shouldSendUpdate($journal, $baseUrl): bool
     {
         $builder = new PreservationXmlBuilder($journal, $baseUrl);
-        $journalAcronym = $journal->getLocalizedData('acronym', $journal->getPrimaryLocale());
-        $tempPath = "/tmp/marcacoes_preservacao_{$journalAcronym}_check.xml";
-        $builder->createPreservationXml($tempPath);
-        $currentXml = is_readable($tempPath) ? file_get_contents($tempPath) : '';
+        $tempPath = tempnam(sys_get_temp_dir(), 'cariniana_xml_check_');
+        $currentXml = '';
+        if ($tempPath) {
+            $builder->createPreservationXml($tempPath);
+            $currentXml = is_readable($tempPath) ? file_get_contents($tempPath) : '';
+            @unlink($tempPath);
+        }
 
         $detector = new PreservationChangeDetector($journal->getId());
         return $detector->hasChanges($currentXml);

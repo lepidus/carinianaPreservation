@@ -137,8 +137,10 @@ class PreservationUpdateChecker extends ScheduledTask
         $baseUrl = Application::get()->getRequest()->getBaseUrl();
 
         $preservationXmlBuilder = new PreservationXmlBuilder($journal, $baseUrl);
-        $journalAcronym = $journal->getLocalizedData('acronym', $journal->getPrimaryLocale());
-        $xmlFilePath = "/tmp/temp_marcacoes_preservacao_{$journalAcronym}.xml";
+        $xmlFilePath = tempnam(sys_get_temp_dir(), 'cariniana_xml_task_');
+        if (!$xmlFilePath) {
+            return false;
+        }
         $preservationXmlBuilder->createPreservationXml($xmlFilePath);
 
         $md5Hash = md5_file($xmlFilePath);

@@ -8,29 +8,32 @@
  *
  *}
 
-<script>
-	$(function() {ldelim}
-        if ($('#statementUpload').length && !{$alreadyPreserved|json_encode}) {ldelim}
-            $('#carinianaSettingsForm').pkpHandler(
-                '$.pkp.controllers.form.FileUploadFormHandler',
+	<script>
+		$(function() {ldelim}
+	        if ($('#statementUpload').length && !{$alreadyPreserved|json_encode}) {ldelim}
+	            $('#carinianaSettingsForm').pkpHandler(
+	                '$.pkp.controllers.form.FileUploadFormHandler',
                 {ldelim}
                     $uploader: $('#statementUpload'),
                     uploaderOptions: {ldelim}
                         uploadUrl: {url|json_encode router=$smarty.const.ROUTE_COMPONENT op="manage" category="generic" plugin=$pluginName verb="uploadStatementFile" save=true escape=false},
                         baseUrl: {$baseUrl|json_encode},
-                        filters: {ldelim}
-                            mime_types : [
-                                {ldelim} title : "Document files", extensions : "pdf,doc,docx" {rdelim}
-                            ]
-                        {rdelim}
-                    {rdelim}
-                {rdelim}
-            );
-        {rdelim} else {ldelim}
-            $('#carinianaSettingsForm').pkpHandler('$.pkp.controllers.form.AjaxFormHandler');
-        {rdelim}
-    {rdelim});
-</script>
+	                        filters: {ldelim}
+	                            mime_types : [
+	                                {ldelim} title : "Document files", extensions : "pdf,doc,docx" {rdelim}
+	                            ]
+	                        {rdelim},
+	                        multipart_params: {ldelim}
+	                            csrfToken: {csrf type=json}
+	                        {rdelim}
+	                    {rdelim}
+	                {rdelim}
+	            );
+	        {rdelim} else {ldelim}
+	            $('#carinianaSettingsForm').pkpHandler('$.pkp.controllers.form.AjaxFormHandler');
+	        {rdelim}
+	    {rdelim});
+	</script>
 
 <div id="carinianaPreservationSettings">
 	<form class="pkp_form" id="carinianaSettingsForm" method="post" action="{url router=$smarty.const.ROUTE_COMPONENT op="manage" category="generic" plugin=$pluginName verb="settings" save=true}">

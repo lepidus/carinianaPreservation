@@ -174,8 +174,9 @@ class PreservationEmailBuilderTest extends DatabaseTestCase
         $this->assertEquals('application/pdf', $attachment['content-type']);
         $this->assertFalse(str_starts_with($attachment['path'], 'public/'));
         $fileMgr = new PrivateFileManager();
-        $expectedDirPrefix = rtrim($fileMgr->getBasePath(), '/') . '/carinianaPreservation/' . $this->journalId . '/';
-        $this->assertTrue(str_starts_with($attachment['path'], $expectedDirPrefix));
+        $expectedDir = realpath(rtrim($fileMgr->getBasePath(), '/') . '/carinianaPreservation/' . $this->journalId);
+        $this->assertNotFalse($expectedDir);
+        $this->assertStringStartsWith($expectedDir . DIRECTORY_SEPARATOR, realpath($attachment['path']));
         $fileName = basename($attachment['path']);
         $this->assertEquals($this->statementFileName, $fileName);
         $this->assertFileExists($attachment['path']);

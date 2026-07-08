@@ -31,6 +31,13 @@ use PKP\scheduledTask\PKPScheduler;
 
 class CarinianaPreservationPlugin extends GenericPlugin implements HasTaskScheduler
 {
+    private const STATEMENT_ALLOWED_EXTENSIONS = ['pdf', 'doc', 'docx'];
+    private const STATEMENT_ALLOWED_MIME_TYPES_BY_EXTENSION = [
+        'pdf' => ['application/pdf'],
+        'doc' => ['application/msword', 'application/octet-stream'],
+        'docx' => ['application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/zip', 'application/octet-stream'],
+    ];
+
     public function register($category, $path, $mainContextId = null)
     {
         $success = parent::register($category, $path, $mainContextId);
@@ -88,8 +95,13 @@ class CarinianaPreservationPlugin extends GenericPlugin implements HasTaskSchedu
             case 'downloadStatement':
                 $fileManager = new FileManager();
                 $filePath = $this->getPluginPath() . '/resources/Termo_de_Responsabilidade.doc';
-                $fileManager->downloadByPath($filePath);
-                // no break
+                $fileManager->downloadByPath(
+                    $filePath,
+                    'application/msword',
+                    false,
+                    basename($filePath)
+                );
+                return null;
             case 'uploadStatementFile':
                 return $this->saveStatementFile($request);
         }
@@ -99,6 +111,9 @@ class CarinianaPreservationPlugin extends GenericPlugin implements HasTaskSchedu
     public function handlePluginForm($request, $form)
     {
         if ($request->getUserVar('save')) {
+            if (!$request->isPost() || !$request->checkCSRF()) {
+                return new JSONMessage(false, __('form.csrfInvalid'));
+            }
             $form->readInputData();
             if ($form->validate()) {
                 $form->execute();
@@ -113,10 +128,17 @@ class CarinianaPreservationPlugin extends GenericPlugin implements HasTaskSchedu
     public function saveStatementFile($request)
     {
         $user = $request->getUser();
+        if (!$user || !$request->checkCSRF()) {
+            return new JSONMessage(false, __('form.csrfInvalid'));
+        }
 
         $temporaryFileManager = new TemporaryFileManager();
         $temporaryFile = $temporaryFileManager->handleUpload('uploadedFile', $user->getId());
         if ($temporaryFile) {
+            if (!$this->isAllowedStatementFile($temporaryFile->getOriginalFileName(), $temporaryFile->getFileType())) {
+                $temporaryFileManager->deleteById($temporaryFile->getId(), $user->getId());
+                return new JSONMessage(false, __('common.uploadFailed'));
+            }
             $json = new JSONMessage(true);
             $json->setAdditionalAttributes([
                 'temporaryFileId' => $temporaryFile->getId()
@@ -129,17 +151,16 @@ class CarinianaPreservationPlugin extends GenericPlugin implements HasTaskSchedu
 
     public function removeStatementFile(int $journalId): void
     {
-        $statementDataJson = $this->getSetting($journalId, 'statementFile');
-        if (!$statementDataJson) {
+        $statementData = $this->getStatementFileData($journalId);
+        if (!$statementData) {
+            $this->updateSetting($journalId, 'statementFile', null);
             return;
         }
-        $statementData = json_decode($statementDataJson, true);
-        if (empty($statementData['fileName'])) {
+        $path = $this->getStatementFilePath($journalId, $statementData);
+        if (!$path) {
+            $this->updateSetting($journalId, 'statementFile', null);
             return;
         }
-        $privateFileManager = new PrivateFileManager();
-        $base = rtrim($privateFileManager->getBasePath(), '/');
-        $path = $base . '/carinianaPreservation/' . (int)$journalId . '/' . $statementData['fileName'];
         if (is_file($path)) {
             @unlink($path);
         }
@@ -149,6 +170,84 @@ class CarinianaPreservationPlugin extends GenericPlugin implements HasTaskSchedu
     public function getLockssSettingsUrl($journal, $baseUrl)
     {
         return $baseUrl . '/index.php/' . $journal->getPath() . '/management/settings/distribution#archive/lockss';
+    }
+
+    public function getStatementFileData(int $journalId): ?array
+    {
+        $statementDataJson = $this->getSetting($journalId, 'statementFile');
+        if (!$statementDataJson) {
+            return null;
+        }
+
+        $statementData = json_decode($statementDataJson, true);
+        if (!is_array($statementData)) {
+            return null;
+        }
+
+        foreach (['originalFileName', 'fileName', 'fileType'] as $field) {
+            if (empty($statementData[$field]) || !is_string($statementData[$field])) {
+                return null;
+            }
+        }
+
+        $fileName = $statementData['fileName'];
+        if (basename($fileName) !== $fileName) {
+            return null;
+        }
+
+        if (!$this->isAllowedStatementFile($fileName, $statementData['fileType'])) {
+            return null;
+        }
+
+        $statementData['originalFileName'] = basename($statementData['originalFileName']);
+        return $statementData;
+    }
+
+    public function getStatementFilePath(int $journalId, array $statementData): ?string
+    {
+        if (empty($statementData['fileName']) || basename($statementData['fileName']) !== $statementData['fileName']) {
+            return null;
+        }
+
+        $directory = $this->getStatementFileDirectory($journalId);
+        $realDirectory = realpath($directory);
+        if (!$realDirectory) {
+            return null;
+        }
+
+        $realPath = realpath($directory . '/' . $statementData['fileName']);
+        if (!$realPath || strpos($realPath, $realDirectory . DIRECTORY_SEPARATOR) !== 0) {
+            return null;
+        }
+
+        return $realPath;
+    }
+
+    public function getStatementFileDirectory(int $journalId): string
+    {
+        $privateFileManager = new PrivateFileManager();
+        $base = rtrim($privateFileManager->getBasePath(), '/');
+        return $base . '/carinianaPreservation/' . (int)$journalId;
+    }
+
+    public function getStatementFileNameForOriginal(string $originalFileName): ?string
+    {
+        $extension = strtolower(pathinfo($originalFileName, PATHINFO_EXTENSION));
+        if (!in_array($extension, self::STATEMENT_ALLOWED_EXTENSIONS, true)) {
+            return null;
+        }
+
+        return 'responsabilityStatement.' . $extension;
+    }
+
+    public function isAllowedStatementFile(string $fileName, ?string $fileType): bool
+    {
+        $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        if (!in_array($extension, self::STATEMENT_ALLOWED_EXTENSIONS, true)) {
+            return false;
+        }
+
+        return $fileType && in_array($fileType, self::STATEMENT_ALLOWED_MIME_TYPES_BY_EXTENSION[$extension], true);
     }
 
     public function registerSchedules(PKPScheduler $scheduler): void

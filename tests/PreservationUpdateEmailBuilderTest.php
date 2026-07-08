@@ -112,12 +112,11 @@ class PreservationUpdateEmailBuilderTest extends DatabaseTestCase
     public function testBuiltPreservationUpdateEmailXml(): void
     {
         $expectedFileName = "marcacoes_preservacao_{$this->journalAcronym}.xml";
-        $xmlContentType = 'text/xml';
-
         $attachment = $this->email->attachments[self::ATTACHMENT_INDEX_XML];
         $this->assertEquals($expectedFileName, $attachment['options']['as']);
-        $this->assertEquals($xmlContentType, $attachment['options']['mime']);
-        $this->assertStringEndsWith($expectedFileName, $attachment['file']);
+        $this->assertEquals('text/xml', $attachment['options']['mime']);
+        $this->assertFileExists($attachment['file']);
+        $this->assertStringStartsWith(sys_get_temp_dir(), $attachment['file']);
     }
 
     public function testPreservationSettingsAreUpdated(): void

@@ -18,6 +18,8 @@ class TestablePreservationXmlBuilder extends PreservationXmlBuilder
 
 class PreservationXmlBuilderTest extends PKPTestCase
 {
+    use CarinianaTestFixtureTrait;
+
     private $preservationXmlBuilder;
     private $xml;
     private $journal;
@@ -37,7 +39,7 @@ class PreservationXmlBuilderTest extends PKPTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->mockRequest();
+        $this->ensureTestRequest();
         $this->createTestJournal();
     }
 

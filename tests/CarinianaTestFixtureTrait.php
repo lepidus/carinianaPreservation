@@ -2,10 +2,13 @@
 
 namespace APP\plugins\generic\carinianaPreservation\tests;
 
+use APP\core\Application;
+use APP\core\PageRouter;
 use APP\facades\Repo;
 use APP\issue\Issue;
 use APP\journal\Journal;
 use APP\plugins\generic\carinianaPreservation\CarinianaPreservationPlugin;
+use PKP\core\Dispatcher;
 use PKP\db\DAORegistry;
 use PKP\file\PrivateFileManager;
 
@@ -13,6 +16,8 @@ trait CarinianaTestFixtureTrait
 {
     protected function buildAndPersistJournal(array $overrides = []): Journal
     {
+        $this->ensureTestRequest();
+
         /** @var \APP\journal\JournalDAO $journalDao */
         $journalDao = DAORegistry::getDAO('JournalDAO');
         $journal = $journalDao->newDataObject();
@@ -42,6 +47,8 @@ trait CarinianaTestFixtureTrait
 
     protected function persistIssue(Journal $journal, array $overrides = []): Issue
     {
+        $this->ensureTestRequest();
+
         $issue = Repo::issue()->newDataObject();
         $year = $overrides['year'] ?? date('Y');
         $issue->setData('journalId', $journal->getId());
@@ -127,5 +134,21 @@ trait CarinianaTestFixtureTrait
             path: 'index/' . $journal->getData('urlPath') . '/index',
             userId: 0
         );
+    }
+
+    protected function ensureTestRequest(): void
+    {
+        $application = Application::get();
+        $request = $application->getRequest();
+        if (is_null($request->getRouter())) {
+            $dispatcher = new Dispatcher();
+            $dispatcher->setApplication($application);
+
+            $router = new PageRouter();
+            $router->setApplication($application);
+            $router->setDispatcher($dispatcher);
+
+            $request->setRouter($router);
+        }
     }
 }

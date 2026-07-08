@@ -127,15 +127,21 @@ class CarinianaPreservationSettingsForm extends Form
         $temporaryFileManager = new TemporaryFileManager();
         $privateFileManager = new PrivateFileManager();
         $dir = $plugin->getStatementFileDirectory((int)$contextId);
-        if (!$privateFileManager->fileExists($dir, 'dir')) {
-            $privateFileManager->mkdirtree($dir);
+        if (!is_dir($dir) && !mkdir($dir, 0777, true) && !is_dir($dir)) {
+            return false;
         }
         $statementFileName = $plugin->getStatementFileNameForOriginal($statementTempFile->getOriginalFileName());
         if (!$statementFileName) {
             return false;
         }
+        $sourcePath = $statementTempFile->getFilePath();
+        if (!is_file($sourcePath)) {
+            return false;
+        }
         $targetPath = $dir . '/' . $statementFileName;
-        copy($statementTempFile->getFilePath(), $targetPath);
+        if (!copy($sourcePath, $targetPath)) {
+            return false;
+        }
         if (is_file($targetPath)) {
             $privateFileManager->setMode($targetPath, FileManager::FILE_MODE_MASK);
             $temporaryFileManager->deleteById($statementTempFile->getId(), $userId);
